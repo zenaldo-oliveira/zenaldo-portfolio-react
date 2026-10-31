@@ -1,0 +1,52 @@
+/* ===== INÍCIO: botão do WhatsApp ===== */
+/* Única definição do botão (antes repetida também no index.css).
+   bottom considera a área segura do iPhone. */
+.whatsapp-fixo {
+  position: fixed;
+  right: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 15;
+
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+
+  background-color: #25d366;
+  border-radius: 50%;
+  text-decoration: none;
+  animation: pulsar-whatsapp 1.5s ease-in-out infinite;
+}
+
+.whatsapp-fixo img {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+/* Pulsação (a versão que já estava em vigor) */
+@keyframes pulsar-whatsapp {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+  }
+
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 40px 14px rgba(37, 211, 102, 0.65);
+  }
+}
+
+.whatsapp-fixo:hover,
+.whatsapp-fixo:focus-visible {
+  animation-play-state: paused;
+}
+
+/* Sem pulsação para quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .whatsapp-fixo {
+    animation: none;
+  }
+}
+/* ===== FIM: botão do WhatsApp ===== */

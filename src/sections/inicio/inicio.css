@@ -1,0 +1,364 @@
+/* ===== INÍCIO: estrutura da seção ===== */
+section.inicio {
+  min-height: 0;
+  padding: 16px 0;
+}
+/* ===== FIM: estrutura da seção ===== */
+
+/* ===== INÍCIO: fundo em toda a janela ===== */
+body:has(.inicio) {
+  isolation: isolate;
+}
+
+.inicio-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.inicio-fundo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    linear-gradient(rgba(15, 15, 20, 0.88), rgba(15, 15, 20, 0.88)),
+    url("/fundo-tecnologia.jpg");
+
+  background-size: cover;
+  background-position: center;
+}
+
+:root[data-tema="claro"] .inicio-fundo::before {
+  background-image:
+    linear-gradient(rgba(240, 240, 242, 0.9), rgba(240, 240, 242, 0.9)),
+    url("/fundo-tecnologia.jpg");
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .inicio-fundo::before {
+    animation: mover-fundo-inicio 18s ease-in-out infinite alternate;
+  }
+}
+/* ===== FIM: fundo em toda a janela ===== */
+
+.inicio-apresentacao {
+  max-width: 780px;
+}
+/* ===== FIM: estrutura da seção ===== */
+
+/* ===== INÍCIO: etiqueta de apresentação ===== */
+.inicio-etiqueta {
+  display: inline-flex;
+  padding: 8px 12px;
+
+  background-color: var(--painel);
+  color: var(--texto-secundario);
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+/* ===== FIM: etiqueta de apresentação ===== */
+
+/* ===== INÍCIO: título e descrição ===== */
+.inicio h1 {
+  margin: 28px 0 24px;
+  color: var(--texto);
+
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -2px;
+}
+
+.inicio h1 span {
+  display: block;
+  margin-top: 12px;
+  color: var(--texto-secundario);
+}
+
+.inicio-descricao {
+  max-width: 58ch;
+  margin: 0;
+
+  color: var(--texto-secundario);
+  font-size: 18px;
+  line-height: 1.7;
+}
+/* ===== FIM: título e descrição ===== */
+
+/* ===== INÍCIO: botões de ação ===== */
+.inicio-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.inicio-botao-principal,
+.inicio-botao-secundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 46px;
+  padding: 12px 20px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+}
+
+.inicio-botao-principal {
+  background-color: var(--texto);
+  color: var(--fundo);
+}
+
+.inicio-botao-secundario {
+  background-color: var(--painel);
+  color: var(--texto);
+}
+
+.inicio-botao-principal:hover {
+  transform: translateY(-2px);
+}
+
+.inicio-botao-secundario:hover {
+  background-color: var(--hover);
+  transform: translateY(-2px);
+}
+
+.inicio-acoes a:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 4px;
+}
+/* ===== FIM: botões de ação ===== */
+
+/* ===== INÍCIO: cards de tecnologias ===== */
+.inicio-tecnologias {
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--borda);
+}
+
+.inicio-tecnologias p {
+  margin: 0 0 16px;
+  color: var(--texto-secundario);
+  font-size: 13px;
+}
+
+.inicio-tecnologias ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inicio-tecnologias li {
+  display: grid;
+  place-items: center;
+
+  min-width: 100px;
+  min-height: 48px;
+  padding: 12px 20px;
+
+  background-color: var(--painel);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+/* ===== FIM: cards de tecnologias ===== */
+
+/* ===== INÍCIO: adaptação para celular ===== */
+@media (max-width: 768px) {
+  section.inicio {
+    padding: 16px 0;
+  }
+
+  .inicio h1 {
+    letter-spacing: -1px;
+  }
+
+  .inicio-descricao {
+    font-size: 16px;
+  }
+
+  .inicio-tecnologias {
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .inicio-acoes {
+    flex-direction: column;
+  }
+
+  .inicio-tecnologias li {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 0;
+  }
+}
+/* ===== FIM: adaptação para celular ===== */
+
+/* ===== INÍCIO: preferência por menos movimento ===== */
+@media (prefers-reduced-motion: reduce) {
+  .inicio-acoes a {
+    transition: none;
+  }
+
+  .inicio-acoes a:hover {
+    transform: none;
+  }
+}
+/* ===== FIM: preferência por menos movimento ===== */
+/* ===== INÍCIO: apresentação e projeto lado a lado ===== */
+.inicio-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 40px;
+}
+
+.inicio-grade > * {
+  min-width: 0;
+}
+
+/* Painel do projeto */
+.inicio-resumo {
+  padding: 28px;
+  background-color: var(--painel);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 16px;
+}
+
+.inicio-resumo-etiqueta {
+  margin: 0 0 16px;
+  color: var(--texto-secundario);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.inicio-resumo h2 {
+  margin: 0 0 16px;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.inicio-projeto-descricao {
+  color: var(--texto-secundario);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.inicio-projeto-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inicio-projeto-tags li {
+  padding: 6px 10px;
+  background-color: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.inicio-github {
+  display: inline-block;
+  color: var(--texto);
+  font-size: 14px;
+  font-weight: 600;
+  text-underline-offset: 4px;
+}
+
+/* Uma coluna quando o espaço disponível for menor */
+@media (max-width: 1000px) {
+  .inicio-grade {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+/* ===== FIM: apresentação e projeto lado a lado ===== */
+
+/* ===== INÍCIO: redes acima do projeto ===== */
+.inicio-coluna-projeto {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.inicio-redes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.inicio-redes a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 76px;
+  padding: 12px 6px;
+
+  background-color: var(--painel);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.inicio-redes a:hover {
+  background-color: var(--hover);
+}
+
+.inicio-redes a:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .inicio-redes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* ===== FIM: redes acima do projeto ===== */
+/* ===== INÍCIO: movimento discreto do fundo ===== */
+@keyframes mover-fundo-inicio {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.02);
+  }
+}
+/* ===== FIM: movimento discreto do fundo ===== */

@@ -1,0 +1,99 @@
+/* ===== INÍCIO: grade de contatos ===== */
+/* Quatro canais em 2 × 2 no desktop (antes 3 + 1, com um cartão isolado);
+   uma coluna no celular */
+.contato .grade-cartoes {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  max-width: 960px;
+}
+/* ===== FIM: grade de contatos ===== */
+
+/* ===== INÍCIO: cartão de contato ===== */
+/* O link ocupa o cartão inteiro, para facilitar o toque no celular */
+.contato-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+}
+
+.contato-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  color: var(--texto);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+
+.contato-icone {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  background-color: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+}
+
+.contato-icone img {
+  display: block;
+  object-fit: contain;
+}
+
+/* O ícone do GitHub é preto: no tema escuro (padrão) ele sumia no fundo */
+:root:not([data-tema="claro"]) .contato-icone img[src="/github.png"] {
+  filter: invert(1);
+}
+
+.contato-textos {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.contato-canal {
+  font-weight: 600;
+}
+
+/* E-mail e URLs longas quebram em vez de vazar no celular */
+.contato-valor {
+  color: var(--texto-secundario);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+/* ===== FIM: cartão de contato ===== */
+
+/* ===== INÍCIO: copiar e-mail ===== */
+.contato-copiar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 0 24px 24px;
+}
+
+.contato-cartao .contato-aviso {
+  margin: 0;
+  font-size: 13px;
+}
+/* ===== FIM: copiar e-mail ===== */
+
+/* ===== INÍCIO: localização ===== */
+.contato-local {
+  margin: 24px 0 0;
+  font-size: 14px;
+}
+
+.contato-local dt {
+  color: var(--texto-secundario);
+  font-size: 13px;
+}
+
+.contato-local dd {
+  margin: 4px 0 0;
+}
+/* ===== FIM: localização ===== */

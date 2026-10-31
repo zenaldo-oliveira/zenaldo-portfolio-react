@@ -1,0 +1,156 @@
+/* ===== INÍCIO: estrutura das páginas ===== */
+/* O espaçamento externo vem do <main> (16px; 12px no celular).
+   80px no fim: o botão flutuante do WhatsApp não cobre o último conteúdo. */
+section.pagina {
+  width: 100%;
+  padding: 0 0 80px;
+  color: var(--texto);
+}
+
+.pagina-cabecalho {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--destaque);
+}
+
+.pagina-apoio {
+  margin: 0 0 8px;
+  color: var(--texto-secundario);
+  font-size: 13px;
+}
+
+.pagina-cabecalho h1 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.2;
+}
+
+.pagina-introducao {
+  max-width: 65ch;
+  margin: 8px 0 0;
+  color: var(--texto-secundario);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.pagina-secao + .pagina-secao {
+  margin-top: 24px;
+}
+
+.pagina-secao h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  line-height: 1.3;
+}
+/* ===== FIM: estrutura das páginas ===== */
+
+/* ===== INÍCIO: cartões ===== */
+.cartao {
+  min-width: 0;
+  padding: 24px;
+  background-color: var(--painel);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+}
+
+.cartao h2,
+.cartao h3 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.cartao p {
+  color: var(--texto-secundario);
+  line-height: 1.6;
+}
+
+/* Cartões com ação: realce de borda e leve elevação, sem mudar o layout */
+.cartao-interativo {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.cartao-interativo:hover,
+.cartao-interativo:focus-within {
+  border-color: color-mix(in srgb, var(--destaque) 55%, var(--borda));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cartao-interativo:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.grade-cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* ===== FIM: cartões ===== */
+
+/* ===== INÍCIO: etiquetas ===== */
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Ajusta o Badge do shadcn ao tamanho de leitura das páginas */
+.etiqueta {
+  height: auto;
+  padding: 4px 10px;
+  color: var(--texto);
+  font-size: 13px;
+  line-height: 1.3;
+}
+/* ===== FIM: etiquetas ===== */
+
+/* ===== INÍCIO: aviso de conteúdo vazio ===== */
+.estado-vazio {
+  margin: 0;
+  padding: 20px;
+  color: var(--texto-secundario);
+  border: 1px dashed var(--borda);
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+/* ===== FIM: aviso de conteúdo vazio ===== */
+
+/* ===== INÍCIO: ações e links ===== */
+.pagina-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* Botões do shadcn já trazem anel de foco; os demais links usam contorno */
+.pagina a:not([data-slot="button"]):focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 3px;
+}
+/* ===== FIM: ações e links ===== */
+
+/* ===== INÍCIO: celular ===== */
+@media (max-width: 768px) {
+  .cartao {
+    padding: 20px;
+  }
+
+  .pagina-acoes > a {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+}
+/* ===== FIM: celular ===== */

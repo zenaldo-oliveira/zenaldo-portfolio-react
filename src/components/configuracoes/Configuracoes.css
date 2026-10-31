@@ -1,0 +1,80 @@
+/* ===== INÍCIO: painel de configurações ===== */
+/* A posição é calculada pelo Popover do Base UI (Positioner), que desloca o
+   painel para dentro da tela. z-index acima da sidebar sobreposta do celular. */
+.config-posicao {
+  z-index: 200;
+}
+
+.config-painel {
+  width: min(300px, calc(100vw - 24px));
+  box-sizing: border-box;
+  padding: 8px;
+
+  background-color: var(--painel);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.config-painel[data-starting-style],
+.config-painel[data-ending-style] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .config-painel[data-starting-style],
+  .config-painel[data-ending-style] {
+    transform: scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .config-painel {
+    transition: none;
+  }
+}
+
+.config-painel .config-titulo {
+  margin: 0;
+  padding: 12px;
+  color: var(--texto-secundario);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.config-campo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.config-campo + .config-campo {
+  border-top: 1px solid var(--borda);
+}
+
+.config-campo select {
+  width: 130px;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background-color: var(--fundo);
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+}
+
+.config-campo select:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 2px;
+}
+/* ===== FIM: painel de configurações ===== */

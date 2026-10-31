@@ -1,0 +1,202 @@
+/* ===== INÍCIO: estrutura da página ===== */
+/* O espaçamento externo vem do <main> (16px; 12px no celular), como nas
+   demais páginas; 80px no fim para o botão do WhatsApp não cobrir a faixa. */
+section.tecnologias {
+  width: 100%;
+  padding: 0 0 80px;
+  color: var(--texto);
+}
+
+/* Mesmo cabeçalho das demais páginas (.pagina-cabecalho) */
+.tecnologias-cabecalho {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--destaque);
+}
+
+.tecnologias-cabecalho p {
+  margin: 0 0 8px;
+  color: var(--texto-secundario);
+  font-size: 13px;
+}
+
+.tecnologias-cabecalho h1 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.2;
+}
+/* ===== FIM: estrutura da página ===== */
+
+/* ===== INÍCIO: painel em duas colunas ===== */
+.tecnologias-painel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+}
+
+.tecnologias-painel > * {
+  min-width: 0;
+}
+
+.tecnologias-conteudo h2 {
+  max-width: 25ch;
+  margin: 0 0 16px;
+  font-size: clamp(24px, 2.5vw, 34px);
+  line-height: 1.25;
+}
+
+.tecnologias-descricao {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--texto-secundario);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.tecnologias-legenda {
+  margin: 24px 0 -12px;
+  color: var(--texto-secundario);
+  font-size: 13px;
+}
+/* ===== FIM: painel em duas colunas ===== */
+
+/* ===== INÍCIO: globo ===== */
+/* Sem altura mínima: o espaço é o do próprio canvas (até 560px de largura) */
+.tecnologias-globo {
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+
+.tecnologias-globo canvas {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+}
+/* ===== FIM: globo ===== */
+
+/* ===== INÍCIO: telas menores ===== */
+@media (max-width: 1100px) {
+  .tecnologias-painel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+/* ===== FIM: telas menores ===== */
+
+
+/* ===== INÍCIO: flutuação do globo ===== */
+@keyframes flutuar-globo {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tecnologias-globo canvas {
+    animation: flutuar-globo 6s ease-in-out infinite;
+  }
+}
+/* ===== FIM: flutuação do globo ===== */
+/* ===== INÍCIO: carrossel de tecnologias ===== */
+.tecnologias-carrossel {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 8px 0;
+}
+/* ===== INÍCIO: organização das duas faixas ===== */
+.tecnologias-carrosseis {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  margin-top: 24px;
+}
+/* ===== FIM: organização das duas faixas ===== */
+
+.tecnologias-trilha {
+  display: flex;
+  width: max-content;
+}
+
+.tecnologias-faixa {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 12px;
+
+  margin: 0;
+  padding: 0 12px 0 0;
+  list-style: none;
+}
+
+.tecnologias-item {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 18px;
+  background-color: var(--painel);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.tecnologias-item img {
+  display: block;
+  object-fit: contain;
+}
+
+.tecnologias-carrossel:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 4px;
+}
+
+@keyframes deslizar-tecnologias {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tecnologias-trilha {
+    animation: deslizar-tecnologias 40s linear infinite;
+  }
+}
+
+/* Pausa para facilitar a leitura */
+.tecnologias-carrossel:hover .tecnologias-trilha,
+.tecnologias-carrossel:focus-within .tecnologias-trilha {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tecnologias-carrossel {
+    overflow-x: auto;
+  }
+
+  .tecnologias-faixa[aria-hidden="true"] {
+    display: none;
+  }
+}
+/* ===== FIM: carrossel de tecnologias ===== */
+@media (prefers-reduced-motion: no-preference) {
+  /* Primeira: esquerda para direita */
+  .tecnologias-trilha {
+    animation: deslizar-tecnologias 35s linear infinite reverse;
+  }
+
+  /* Segunda: direita para esquerda */
+  .tecnologias-trilha-reversa {
+    animation-direction: normal;
+  }
+}

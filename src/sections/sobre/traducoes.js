@@ -1,0 +1,66 @@
+/* ===== INÍCIO: textos da página Sobre ===== */
+export const traducoesSobre = {
+  pt: {
+    apoio: "Quem sou",
+    titulo: "Sobre mim",
+    apresentacaoTitulo: "Apresentação",
+    apresentacao: [
+      "Sou Zenaldo Pereira de Oliveira, de Cuiabá, MT, e estou em transição de carreira para o desenvolvimento web.",
+      "Construo interfaces com React, Next.js e JavaScript, com foco em responsividade e organização de componentes.",
+      "Também estudo ferramentas de back-end, bancos de dados e integração com APIs.",
+    ],
+    trajetoriaTitulo: "Trajetória",
+    trajetoriaVazia: "Os detalhes da minha trajetória serão publicados em breve.",
+    verLinhaDoTempo: "Ver linha do tempo →",
+    objetivoTitulo: "Objetivo profissional",
+    objetivo: "Estou aberto a oportunidades como desenvolvedor Front-end Júnior.",
+    localizacao: "Localização",
+    verProjetos: "Ver projetos",
+    contato: "Entrar em contato",
+    curriculo: "Abrir currículo",
+    novaAba: "abre em nova aba",
+  },
+
+  en: {
+    apoio: "Who I am",
+    titulo: "About me",
+    apresentacaoTitulo: "Introduction",
+    apresentacao: [
+      "I'm Zenaldo Pereira de Oliveira, from Cuiabá, Brazil, and I'm transitioning my career into web development.",
+      "I build interfaces with React, Next.js and JavaScript, focusing on responsiveness and component organization.",
+      "I'm also studying back-end tools, databases and API integration.",
+    ],
+    trajetoriaTitulo: "Journey",
+    trajetoriaVazia: "Details about my journey will be published soon.",
+    verLinhaDoTempo: "View timeline →",
+    objetivoTitulo: "Career goal",
+    objetivo: "I'm open to opportunities as a Junior Front-end Developer.",
+    localizacao: "Location",
+    verProjetos: "View projects",
+    contato: "Get in touch",
+    curriculo: "Open résumé",
+    novaAba: "opens in a new tab",
+  },
+
+  es: {
+    apoio: "Quién soy",
+    titulo: "Sobre mí",
+    apresentacaoTitulo: "Presentación",
+    apresentacao: [
+      "Soy Zenaldo Pereira de Oliveira, de Cuiabá, MT, y estoy en transición de carrera hacia el desarrollo web.",
+      "Construyo interfaces con React, Next.js y JavaScript, con foco en el diseño adaptable y la organización de componentes.",
+      "También estudio herramientas de back-end, bases de datos e integración con APIs.",
+    ],
+    trajetoriaTitulo: "Trayectoria",
+    trajetoriaVazia: "Los detalles de mi trayectoria se publicarán pronto.",
+    verLinhaDoTempo: "Ver línea de tiempo →",
+    objetivoTitulo: "Objetivo profesional",
+    objetivo: "Estoy abierto a oportunidades como desarrollador Front-end Junior.",
+    localizacao: "Ubicación",
+    verProjetos: "Ver proyectos",
+    contato: "Contactar",
+    curriculo: "Abrir currículum",
+    novaAba: "se abre en una pestaña nueva",
+  },
+};
+/* ===== FIM: textos da página Sobre ===== */

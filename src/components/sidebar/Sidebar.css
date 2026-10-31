@@ -1,0 +1,346 @@
+/* ===== INÍCIO: topo e divisória ===== */
+.sidebar-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #3a3b46;
+}
+/* ===== FIM: topo e divisória ===== */
+/* ===== INÍCIO: painel lateral ===== */
+/* ===== INÍCIO: painel lateral ===== */
+.sidebar {
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  width: 260px;
+  height: 100dvh;
+  overflow-y: hidden;
+  padding: 20px 16px;
+  box-sizing: border-box;
+
+  background-color: var(--painel);
+  color: var(--texto);
+  border-right: 1px solid var(--borda);
+}
+
+/* ===== FIM: painel lateral ===== */
+/* ===== FIM: painel lateral ===== */
+/* ===== FIM: painel lateral ===== */
+
+/* ===== INÍCIO: controles do topo (configurações e recolher) ===== */
+/* Regra única para a engrenagem e a seta de recolher (antes havia dois
+   blocos sobrepostos com cores fixas) */
+.sidebar-controles {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.sidebar-controle {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+
+  background-color: transparent;
+  color: var(--texto-secundario);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sidebar-controle:hover,
+.sidebar-controle[data-popup-open] {
+  background-color: var(--hover);
+  color: var(--texto);
+}
+
+.sidebar-controle:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 2px;
+}
+
+/* Recolhida: logo oculta e os dois controles empilhados no centro */
+.sidebar.recolhida .sidebar-topo {
+  justify-content: center;
+}
+
+.sidebar.recolhida .sidebar-controles {
+  flex-direction: column;
+}
+/* ===== FIM: controles do topo ===== */
+
+/* ===== INÍCIO: logo ===== */
+.sidebar-logo {
+  margin: 0;
+  font-size: 18px;
+  color: var(--texto);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.sidebar-logo span {
+  color: #c1e4ee;
+}
+/* ===== FIM: logo ===== */
+
+/* ===== INÍCIO: foto flutuante em 3D ===== */
+.sidebar-logo img {
+  display: block;
+  width: 140px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  animation: flutuar-foto 5s ease-in-out infinite;
+}
+
+@keyframes flutuar-foto {
+  0%,
+  100% {
+    transform: perspective(600px) translateY(0) rotateY(-5deg);
+  }
+
+  50% {
+    transform: perspective(600px) translateY(-6px) rotateY(5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-logo img {
+    animation: none;
+  }
+}
+/* ===== FIM: foto flutuante em 3D ===== */
+
+/* ===== INÍCIO: organização da navegação ===== */
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 8px;
+}
+/* ===== FIM: organização da navegação ===== */
+
+/* ===== INÍCIO: links da navegação ===== */
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--texto);
+
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+/* ===== INÍCIO: destaque dos links ===== */
+.sidebar nav a:hover,
+.sidebar nav a:focus-visible {
+  background-color: #353640;
+  color: #ffffff;
+}
+/* ===== FIM: destaque dos links ===== */
+
+/* ===== INÍCIO: página atual ===== */
+.sidebar nav a[aria-current="page"] {
+  background-color: var(--hover);
+  color: var(--texto);
+  border-color: var(--borda);
+  box-shadow: inset 3px 0 0 var(--texto);
+  font-weight: 600;
+}
+/* ===== FIM: página atual ===== */
+
+/* ===== INÍCIO: item ainda sem página ===== */
+.sidebar nav a[aria-disabled="true"],
+.sidebar nav a[aria-disabled="true"]:hover {
+  background-color: transparent;
+  color: var(--texto);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+/* ===== FIM: item ainda sem página ===== */
+/* ===== FIM: links da navegação ===== */
+
+/* ===== INÍCIO: sidebar recolhida ===== */
+.sidebar.recolhida {
+  width: 72px;
+  padding: 20px 12px;
+}
+
+.sidebar.recolhida .sidebar-logo {
+  display: none;
+}
+
+.sidebar.recolhida .sidebar-texto {
+  display: none;
+}
+
+.sidebar.recolhida nav {
+  margin-top: 24px;
+}
+
+.sidebar.recolhida nav a {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.sidebar nav a svg {
+  flex-shrink: 0;
+}
+/* ===== FIM: sidebar recolhida ===== */
+
+/* ===== INÍCIO: controles exclusivos do celular ===== */
+.sidebar-abrir-mobile,
+.sidebar-fechar-mobile {
+  display: none;
+}
+/* ===== FIM: controles exclusivos do celular ===== */
+/* ===== INÍCIO: visibilidade do painel no celular ===== */
+/* ===== INÍCIO: sidebar no celular ===== */
+@media (max-width: 768px) {
+  /* Botões de abrir e fechar */
+  .sidebar-abrir-mobile,
+  .sidebar-fechar-mobile {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid #3a3b46;
+    border-radius: 8px;
+    background-color: #272832;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  /* Botão disponível mesmo com o painel fechado: centralizado na faixa de 56px
+     reservada no topo da área principal e alinhado ao padding de 12px */
+  .sidebar-abrir-mobile {
+    position: fixed;
+    top: 6px;
+    left: 12px;
+    z-index: 20;
+  }
+
+  /* Painel fechado e posicionado sobre a página */
+  .sidebar,
+  .sidebar.recolhida {
+    display: none;
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(300px, 85vw);
+    height: 100dvh;
+    padding: 16px;
+    z-index: 30;
+  }
+
+  /* Painel aberto pelo React */
+  .sidebar.aberta {
+    display: block;
+  }
+
+  .sidebar-fechar-mobile {
+    margin-bottom: 16px;
+  }
+
+  /* Recolhimento é exclusivo do computador; a engrenagem continua no topo */
+  .sidebar .sidebar-recolher {
+    display: none;
+  }
+
+  /* No celular, sempre mostramos os nomes */
+  .sidebar.recolhida .sidebar-logo {
+    display: block;
+  }
+
+  .sidebar.recolhida .sidebar-texto {
+    display: inline;
+  }
+
+  .sidebar.recolhida nav {
+    margin-top: 0;
+  }
+
+  .sidebar.recolhida nav a {
+    justify-content: flex-start;
+    padding: 12px 16px;
+  }
+
+  /* Logo e engrenagem lado a lado, mesmo se a sidebar ficou recolhida no desktop */
+  .sidebar.recolhida .sidebar-topo {
+    justify-content: space-between;
+  }
+
+  .sidebar.recolhida .sidebar-controles {
+    flex-direction: row;
+  }
+}
+/* ===== FIM: sidebar no celular ===== */
+/* ===== FIM: visibilidade do painel no celular ===== */
+
+/* ===== INÍCIO: sidebar integrada ao fundo ===== */
+aside.sidebar {
+  z-index: 30;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.sidebar .sidebar-topo {
+  border-bottom: none;
+}
+/* ===== FIM: sidebar integrada ao fundo ===== */
+
+/* ===== INÍCIO: painel sobreposto no celular ===== */
+@media (max-width: 768px) {
+  aside.sidebar,
+  aside.sidebar.recolhida {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 100;
+
+    width: min(300px, 85vw);
+    height: 100dvh;
+    padding: 16px;
+
+    background: var(--painel);
+    color: var(--texto);
+    border-right: 1px solid var(--borda);
+    box-shadow: 16px 0 48px rgba(0, 0, 0, 0.4);
+
+    overflow-y: auto;
+  }
+
+  aside.sidebar .sidebar-topo {
+    border-bottom: 1px solid var(--borda);
+  }
+
+  aside.sidebar nav a {
+    color: var(--texto);
+  }
+
+  aside.sidebar nav a:hover {
+    background: var(--hover);
+  }
+}
+/* ===== FIM: painel sobreposto no celular ===== */

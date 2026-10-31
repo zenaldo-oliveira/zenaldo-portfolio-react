@@ -1,0 +1,46 @@
+/* ===== INÍCIO: áreas de habilidades ===== */
+.habilidades-grupo {
+  height: 100%;
+}
+
+.habilidades-lista {
+  display: grid;
+  gap: 2px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.habilidades-lista li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.habilidades-lista li:last-child {
+  border-bottom: none;
+}
+
+.habilidades-nome {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.habilidades-uso {
+  color: var(--texto-secundario);
+  font-size: 13px;
+}
+
+.habilidades-uso a {
+  color: var(--texto);
+  text-underline-offset: 3px;
+}
+/* ===== FIM: áreas de habilidades ===== */
+
+.habilidades-praticas {
+  margin-top: 40px;
+}

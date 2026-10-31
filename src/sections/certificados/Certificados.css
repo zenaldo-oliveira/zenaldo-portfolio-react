@@ -1,0 +1,35 @@
+/* ===== INÍCIO: cartão de certificado ===== */
+.certificado-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.certificado-cartao .certificado-instituicao {
+  margin: 0;
+  font-size: 13px;
+}
+
+.certificado-dados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.certificado-dados dt {
+  color: var(--texto-secundario);
+  font-size: 12px;
+}
+
+.certificado-dados dd {
+  margin: 2px 0 0;
+}
+
+.certificado-link {
+  align-self: flex-start;
+  margin-top: auto;
+}
+/* ===== FIM: cartão de certificado ===== */

@@ -1,0 +1,33 @@
+/* ===== INÍCIO: fundo da página ===== */
+/* Janela inteira, atrás da sidebar e do conteúdo, parado durante a rolagem
+   (a rolagem acontece só no <main>). Sem imagem: apenas var(--fundo).
+   Não recebe cliques nem seleção (pointer-events: none). */
+.fundo-pagina {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--fundo);
+}
+
+/* Imagem: 12px maior que a janela em cada lado, para o parallax (até 10px,
+   em useParallaxFundo) nunca revelar as bordas */
+.fundo-pagina-imagem {
+  position: absolute;
+  inset: -12px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  will-change: transform;
+}
+
+/* Película: escura no tema escuro e clara no tema claro (--pelicula no
+   index.css), para o texto continuar legível sobre qualquer imagem */
+.fundo-pagina::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--pelicula);
+}
+/* ===== FIM: fundo da página ===== */

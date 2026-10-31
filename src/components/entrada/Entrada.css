@@ -1,0 +1,215 @@
+/* ===== INÍCIO: fundo e estrutura ===== */
+main.entrada {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  margin: 0;
+  padding: clamp(24px, 4vw, 64px);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  background: #080c14;
+  color: #ffffff;
+}
+
+/* Vídeo atrás de todo o conteúdo */
+.entrada-video {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Película escura para facilitar a leitura */
+.entrada::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background: linear-gradient(
+    90deg,
+    rgba(5, 10, 18, 0.9),
+    rgba(5, 10, 18, 0.5)
+  );
+}
+
+.entrada-conteudo {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  max-width: 800px;
+  margin-block: auto;
+}
+/* ===== FIM: fundo e estrutura ===== */
+
+/* ===== INÍCIO: textos ===== */
+.entrada h1 {
+  margin: 0;
+  font-size: clamp(36px, 5vw, 72px);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+}
+
+.entrada-subtitulo {
+  margin: 16px 0 0;
+  color: #d4d4d8;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.entrada-descricao {
+  max-width: 65ch;
+  margin-top: 36px;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.entrada-descricao p {
+  margin: 0 0 20px;
+}
+/* ===== FIM: textos ===== */
+
+/* ===== INÍCIO: redes sociais ===== */
+.entrada-redes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.entrada-redes a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+
+  background: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+/* ===== INÍCIO: efeitos das redes sociais ===== */
+.entrada-redes a {
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+.entrada-github img {
+  filter: brightness(0) invert(1);
+}
+
+/* Azul do LinkedIn */
+.entrada-redes .entrada-linkedin:hover,
+.entrada-redes .entrada-linkedin:focus-visible {
+  background-color: #0a66c2;
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(10, 102, 194, 0.4);
+  transform: translateY(-3px);
+}
+
+/* Grafite do GitHub */
+.entrada-redes .entrada-github:hover,
+.entrada-redes .entrada-github:focus-visible {
+  background-color: #24292f;
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrada-redes a {
+    transition: none;
+    transform: none;
+  }
+}
+/* ===== FIM: efeitos das redes sociais ===== */
+
+.entrada-redes img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+/* ===== FIM: redes sociais ===== */
+
+/* ===== INÍCIO: botão de entrada ===== */
+.entrada-botao {
+  display: block;
+  width: 100%;
+  max-width: 580px;
+  min-height: 48px;
+  margin-top: 36px;
+  padding: 12px 24px;
+
+  background: linear-gradient(100deg, #0891b2, #2563eb);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.entrada-botao:hover {
+  background: linear-gradient(100deg, #0e7490, #1d4ed8);
+}
+
+.entrada a:focus-visible,
+.entrada button:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: 4px;
+}
+/* ===== FIM: botão de entrada ===== */
+
+/* ===== INÍCIO: celular ===== */
+@media (max-width: 768px) {
+  .entrada-descricao {
+    margin-top: 24px;
+    font-size: 15px;
+  }
+
+  .entrada-subtitulo {
+    font-size: 16px;
+  }
+}
+/* ===== FIM: celular ===== */
+/* ===== INÍCIO: círculo entre os dedos ===== */
+.entrada-circulo {
+  position: absolute;
+  left: calc(50% - 30px);
+  top: calc(48% + 70px);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+
+  display: grid;
+  place-items: center;
+  width: 140px;
+  height: 140px;
+  margin: 0;
+
+  color: #67e8f9;
+  font-size: 16px;
+  pointer-events: none;
+  text-shadow: 0 0 12px rgba(103, 232, 249, 0.8);
+}
+
+@media (max-width: 768px) {
+  .entrada-circulo {
+    display: none;
+  }
+}
+/* ===== FIM: círculo entre os dedos ===== */
