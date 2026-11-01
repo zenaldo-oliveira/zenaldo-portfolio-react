@@ -1,7 +1,16 @@
 {
-  "name": "portfolio-pessoal",
+  "name": "zenaldo-portfolio-react",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Portfólio pessoal de Zenaldo Oliveira — Desenvolvedor Full Stack Júnior.",
+  "author": "Zenaldo Pereira de Oliveira",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zenaldo-oliveira/zenaldo-portfolio-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zenaldo-oliveira/zenaldo-portfolio-react/issues"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,6 +28,7 @@
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^1.59.0",
     "motion": "^14.3.0",
+    "qrcode.react": "^4.2.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "shadcn": "^4.22.0",

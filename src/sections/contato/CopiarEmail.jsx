@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 const TEMPO_AVISO_MS = 3000;
 
@@ -10,7 +10,7 @@ function CopiarEmail({ email, t }) {
 
   // Some com o aviso depois de alguns segundos
   useEffect(() => {
-    if (situacao === "parado") return;
+    if (situacao === "parado" || situacao === "copiando") return;
 
     const temporizador = window.setTimeout(
       () => setSituacao("parado"),
@@ -19,7 +19,10 @@ function CopiarEmail({ email, t }) {
     return () => window.clearTimeout(temporizador);
   }, [situacao]);
 
+  // "copiando": botão em carregamento até a área de transferência responder,
+  // o que impede cliques repetidos
   async function copiar() {
+    setSituacao("copiando");
     try {
       await navigator.clipboard.writeText(email);
       setSituacao("copiado");
@@ -28,15 +31,20 @@ function CopiarEmail({ email, t }) {
     }
   }
 
-  const aviso = { parado: "", copiado: t.copiado, erro: t.erroCopiar }[
+  const aviso = { parado: "", copiando: "", copiado: t.copiado, erro: t.erroCopiar }[
     situacao
   ];
 
   return (
     <div className="contato-copiar">
-      <Button variant="outline" size="lg" type="button" onClick={copiar}>
+      <ShimmerButton
+        variante="secundaria"
+        type="button"
+        carregando={situacao === "copiando"}
+        onClick={copiar}
+      >
         {t.copiar}
-      </Button>
+      </ShimmerButton>
       <p className="contato-aviso" role="status">
         {aviso}
       </p>

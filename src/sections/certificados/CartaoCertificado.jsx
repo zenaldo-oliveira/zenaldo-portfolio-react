@@ -1,5 +1,5 @@
 import { ItemAnimado } from "@/components/pagina/animacao";
-import { classeBotao, propsLinkBotao } from "@/components/pagina/botao";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import ListaEtiquetas from "@/components/pagina/ListaEtiquetas";
 import { nomesTecnologias } from "@/data/tecnologias";
 import { traduzir } from "@/i18n/traduzir";
@@ -55,19 +55,19 @@ function CartaoCertificado({ certificado, idioma, t }) {
         )}
 
         {certificado.url && (
-          <a
-            className={classeBotao("outline", "certificado-link")}
+          <ShimmerButton
+            variante="secundaria"
+            className="certificado-link"
             href={certificado.url}
             target="_blank"
             rel="noopener noreferrer"
-            {...propsLinkBotao}
           >
             {t.verCertificado}
             <span className="sr-only">
               {" "}
               — {nome} ({t.novaAba})
             </span>
-          </a>
+          </ShimmerButton>
         )}
       </article>
     </ItemAnimado>

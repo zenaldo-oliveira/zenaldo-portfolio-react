@@ -1,8 +1,17 @@
 import "./Entrada.css";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import { SpinningText } from "@/components/ui/spinning-text";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 function Entrada({ onEntrar }) {
+  // Atalhos: definem o hash antes de abrir o portfólio, que já lê o hash ao
+  // montar e abre direto na página escolhida (mesma navegação da sidebar).
+  function irPara(evento, pagina) {
+    evento.preventDefault();
+    window.location.hash = pagina;
+    onEntrar();
+  }
+
   return (
     <main className="entrada">
       {/* ===== INÍCIO: vídeo de fundo ===== */}
@@ -36,7 +45,8 @@ function Entrada({ onEntrar }) {
         </h1>
 
         <p className="entrada-subtitulo">
-          Desenvolvedor Front-end · React · Next.js · JavaScript
+          Desenvolvedor Full Stack Júnior · React · Next.js · JavaScript ·
+          Node.js
         </p>
 
         <div className="entrada-descricao">
@@ -44,14 +54,15 @@ function Entrada({ onEntrar }) {
 
           <p>
             Sou Zenaldo Oliveira, desenvolvedor em transição de carreira.
-            Construo interfaces web com React, Next.js e JavaScript, com foco em
-            responsividade e organização de componentes.
+            Desenvolvo interfaces e aplicações web com React, Next.js,
+            JavaScript e Node.js, com foco em organização, responsividade e
+            integração com APIs.
           </p>
 
           <p>
             Explore meus projetos, conheça as tecnologias que utilizo e
             acompanhe minha evolução no desenvolvimento web. Estou aberto a
-            oportunidades como desenvolvedor Front-end Júnior.
+            oportunidades como desenvolvedor Full Stack Júnior.
           </p>
         </div>
 
@@ -79,9 +90,28 @@ function Entrada({ onEntrar }) {
         </div>
         {/* ===== FIM: redes sociais ===== */}
 
-        <button className="entrada-botao" type="button" onClick={onEntrar}>
+        {/* Mesmo arredondamento em pílula de antes */}
+        <ShimmerButton
+          className="entrada-botao"
+          tamanho="grande"
+          borderRadius="999px"
+          type="button"
+          onClick={onEntrar}
+        >
           Entrar no portfólio →
-        </button>
+        </ShimmerButton>
+
+        {/* ===== INÍCIO: atalhos ===== */}
+        <nav className="entrada-atalhos" aria-label="Ir direto para">
+          <span aria-hidden="true">Ir direto para:</span>
+          <a href="#projetos" onClick={(evento) => irPara(evento, "projetos")}>
+            Projetos →
+          </a>
+          <a href="#contato" onClick={(evento) => irPara(evento, "contato")}>
+            Contato →
+          </a>
+        </nav>
+        {/* ===== FIM: atalhos ===== */}
       </div>
       {/* ===== FIM: conteúdo da entrada ===== */}
     </main>

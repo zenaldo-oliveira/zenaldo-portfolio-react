@@ -1,13 +1,23 @@
 /* ===== INÍCIO: projetos do portfólio ===== */
 // Cadastro único dos projetos. Cadastre apenas projetos reais; cada novo item
 // entra automaticamente na grade de Projetos. Textos aceitam { pt, en, es }.
+// A ordem do array é a ordem do carrossel e da grade.
+//
+// PENDENTE: "participacao" dos projetos ZTech ainda não foi informada; o
+// campo fica ausente (e a seção oculta) até ser confirmado.
 //
 // {
 //   id: "identificador-unico",
 //   categoria: "frontend" | "backend" | "fullstack",
 //   nome: { pt, en, es },
 //   descricao: { pt, en, es },              // curta: o cartão mostra até 2 linhas
-//   status: "desenvolvimento" | "concluido", // opcional: omita se não confirmado
+//   status: "desenvolvimento" | "concluido" | "publicado", // opcional: omita se não confirmado
+//                                            // "publicado": só com demonstração pública funcionando
+//   contexto: { pt, en, es },                // opcional: contexto e finalidade (diálogo)
+//   participacao: { pt, en, es },            // opcional: minha participação (diálogo)
+//   validadoEmProducao: [{ pt, en, es }],    // opcional: conferido no site publicado
+//   somenteNoCodigo: [{ pt, en, es }],       // opcional: encontrado no código, não validado em produção
+//   decisoes: [{ pt, en, es }],              // opcional: decisões técnicas (diálogo)
 //   icone: "monitor",                        // chave de ICONES_PROJETO (CartaoProjeto)
 //                                            // ou caminho de imagem em public/ ("/projetos/logo.svg")
 //   tecnologias: ["react", "css"],           // ids de src/data/tecnologias.js
@@ -22,10 +32,234 @@
 //     largura: 1280,
 //     altura: 800,
 //     alt: { pt, en, es },
+//     legenda: { pt, en, es },               // opcional: ex. "dados de demonstração"
 //   },
+//   imagemComplementar: { ... },             // opcional: mesma forma de "imagem" (diálogo)
 //   emDestaque: true,                        // usado pela seção "Em destaque" (fora da página)
 // }
 export const projetos = [
+  {
+    id: "ztech-platform",
+    // Conferido no código (apps/api, apps/web, apps/admin, prisma) e em execução
+    // local com banco descartável e dados fictícios (out/2026). Repositório não
+    // confirmado como público: sem link. Sem demonstração pública.
+    categoria: "fullstack",
+    nome: {
+      pt: "ZTech Platform",
+      en: "ZTech Platform",
+      es: "ZTech Platform",
+    },
+    descricao: {
+      pt: "Base multi-tenant para os produtos SaaS da ZTech Solutions, com API em Node.js e painéis em Next.js.",
+      en: "Multi-tenant foundation for ZTech Solutions' SaaS products, with a Node.js API and Next.js dashboards.",
+      es: "Base multitenant para los productos SaaS de ZTech Solutions, con API en Node.js y paneles en Next.js.",
+    },
+    status: "desenvolvimento",
+    emDestaque: true,
+    contexto: {
+      pt: "Plataforma para centralizar o que todo SaaS da ZTech precisa — autenticação, empresas (tenants), usuários e permissões — e evitar reconstruir essa base a cada novo produto. Módulos de negócio, assinaturas e pagamentos ainda não estão implementados.",
+      en: "A platform that centralizes what every ZTech SaaS needs — authentication, companies (tenants), users and permissions — so this foundation isn't rebuilt for each new product. Business modules, subscriptions and payments are not implemented yet.",
+      es: "Plataforma para centralizar lo que todo SaaS de ZTech necesita — autenticación, empresas (tenants), usuarios y permisos — y evitar reconstruir esa base en cada nuevo producto. Los módulos de negocio, suscripciones y pagos aún no están implementados.",
+    },
+    imagem: {
+      src: "/projetos/ztech-platform.webp",
+      largura: 1440,
+      altura: 840,
+      alt: {
+        pt: "Dashboard do painel administrativo da ZTech Platform com indicadores de tenants, papéis, permissões e latência da API e o gráfico de crescimento de tenants, preenchido com dados de demonstração.",
+        en: "ZTech Platform admin dashboard with tenant, role, permission and API latency indicators and a tenant growth chart, filled with demo data.",
+        es: "Dashboard del panel administrativo de ZTech Platform con indicadores de tenants, roles, permisos y latencia de la API y el gráfico de crecimiento de tenants, con datos de demostración.",
+      },
+      legenda: {
+        pt: "Ambiente local com dados de demonstração (fictícios).",
+        en: "Local environment with demo (fictitious) data.",
+        es: "Entorno local con datos de demostración (ficticios).",
+      },
+    },
+    imagemComplementar: {
+      src: "/projetos/ztech-platform-swagger.webp",
+      largura: 1440,
+      altura: 900,
+      alt: {
+        pt: "Documentação da API da ZTech Platform no Swagger UI, com a descrição da API e as rotas de autenticação.",
+        en: "ZTech Platform API documentation in Swagger UI, with the API description and authentication routes.",
+        es: "Documentación de la API de ZTech Platform en Swagger UI, con la descripción de la API y las rutas de autenticación.",
+      },
+      legenda: {
+        pt: "Documentação da API (Swagger UI) em ambiente local.",
+        en: "API documentation (Swagger UI) in a local environment.",
+        es: "Documentación de la API (Swagger UI) en entorno local.",
+      },
+    },
+    tecnologias: ["nodejs", "express", "typescript", "nextjs", "react", "prisma", "postgresql", "tailwindcss", "docker"],
+    links: {
+      repositorio: null,
+      demonstracao: null,
+      documentacao: null,
+    },
+    destaques: [
+      {
+        pt: "API REST em Express e TypeScript com login, logout e renovação de sessão por refresh token (JWT).",
+        en: "REST API in Express and TypeScript with login, logout and session renewal via refresh token (JWT).",
+        es: "API REST en Express y TypeScript con inicio y cierre de sesión y renovación por refresh token (JWT).",
+      },
+      {
+        pt: "Login com Google e GitHub (OAuth) na aplicação do cliente.",
+        en: "Google and GitHub sign-in (OAuth) in the client application.",
+        es: "Inicio de sesión con Google y GitHub (OAuth) en la aplicación del cliente.",
+      },
+      {
+        pt: "Controle de acesso por papéis e permissões (RBAC), verificado no back-end.",
+        en: "Role- and permission-based access control (RBAC), enforced on the back end.",
+        es: "Control de acceso por roles y permisos (RBAC), verificado en el back-end.",
+      },
+      {
+        pt: "Cadastro de empresas (tenants), organizações, usuários e produtos.",
+        en: "Management of companies (tenants), organizations, users and products.",
+        es: "Registro de empresas (tenants), organizaciones, usuarios y productos.",
+      },
+      {
+        pt: "Painel administrativo com indicadores de tenants, papéis, permissões e saúde da API.",
+        en: "Admin dashboard with tenant, role, permission and API health indicators.",
+        es: "Panel administrativo con indicadores de tenants, roles, permisos y salud de la API.",
+      },
+      {
+        pt: "Documentação da API em OpenAPI, com Swagger UI fora do ambiente de produção.",
+        en: "API documentation in OpenAPI, with Swagger UI outside the production environment.",
+        es: "Documentación de la API en OpenAPI, con Swagger UI fuera del entorno de producción.",
+      },
+      {
+        pt: "Proteções da API: Helmet, CORS, limite de requisições e validação de entrada com Zod.",
+        en: "API protections: Helmet, CORS, rate limiting and input validation with Zod.",
+        es: "Protecciones de la API: Helmet, CORS, límite de solicitudes y validación de entrada con Zod.",
+      },
+    ],
+    decisoes: [
+      {
+        pt: "Monorepo com npm workspaces e Turborepo: aplicações api, web e admin e pacotes database e ui.",
+        en: "Monorepo with npm workspaces and Turborepo: api, web and admin apps and database and ui packages.",
+        es: "Monorepo con npm workspaces y Turborepo: aplicaciones api, web y admin y paquetes database y ui.",
+      },
+      {
+        pt: "Prisma e PostgreSQL em um pacote compartilhado entre as aplicações.",
+        en: "Prisma and PostgreSQL in a package shared across the apps.",
+        es: "Prisma y PostgreSQL en un paquete compartido entre las aplicaciones.",
+      },
+      {
+        pt: "As aplicações Next.js chamam a API por um BFF no servidor; os tokens ficam em cookies httpOnly, fora do alcance do JavaScript da página.",
+        en: "The Next.js apps call the API through a server-side BFF; tokens live in httpOnly cookies, out of reach of page JavaScript.",
+        es: "Las aplicaciones Next.js llaman a la API mediante un BFF en el servidor; los tokens quedan en cookies httpOnly, fuera del alcance del JavaScript de la página.",
+      },
+      {
+        pt: "Usuários da plataforma separados dos usuários das empresas clientes.",
+        en: "Platform users kept separate from client-company users.",
+        es: "Usuarios de la plataforma separados de los usuarios de las empresas clientes.",
+      },
+      {
+        pt: "Testes automatizados da API com Vitest.",
+        en: "Automated API tests with Vitest.",
+        es: "Pruebas automatizadas de la API con Vitest.",
+      },
+    ],
+  },
+  {
+    id: "ztech-solutions",
+    // Site publicado (Vercel) em www.zenaldodev.com.br. "validadoEmProducao":
+    // conferido no site no ar em out/2026 (páginas respondendo e rota de
+    // contato rejeitando dados inválidos, sem enviar mensagens). O commit exato
+    // em produção não foi confirmado na Vercel. Front-end: a gravação dos
+    // contatos (back-end) não foi validada em produção.
+    categoria: "frontend",
+    nome: {
+      pt: "Site ZTech Solutions",
+      en: "ZTech Solutions website",
+      es: "Sitio ZTech Solutions",
+    },
+    descricao: {
+      pt: "Site comercial da ZTech Solutions, com serviços, planos, projetos e pedido de orçamento.",
+      en: "ZTech Solutions' business website, with services, plans, projects and quote requests.",
+      es: "Sitio comercial de ZTech Solutions, con servicios, planes, proyectos y solicitud de presupuesto.",
+    },
+    status: "publicado",
+    emDestaque: true,
+    contexto: {
+      pt: "Site da ZTech Solutions, empresa da qual sou fundador, para apresentar sites, sistemas e automações a pequenas e médias empresas e receber pedidos de orçamento.",
+      en: "Website of ZTech Solutions, the company I founded, presenting websites, systems and automations to small and medium businesses and receiving quote requests.",
+      es: "Sitio de ZTech Solutions, empresa que fundé, para presentar sitios, sistemas y automatizaciones a pequeñas y medianas empresas y recibir solicitudes de presupuesto.",
+    },
+    imagem: {
+      src: "/projetos/ztech-solutions.webp",
+      largura: 1440,
+      altura: 900,
+      alt: {
+        pt: "Página inicial publicada da ZTech Solutions, com o título “Sites para apresentar sua empresa. Sistemas para facilitar sua operação.”, os botões Solicitar proposta e Ver projetos reais e prévias de projetos.",
+        en: "Published ZTech Solutions home page, with the headline “Sites para apresentar sua empresa. Sistemas para facilitar sua operação.”, buttons to request a proposal and see projects, and project previews.",
+        es: "Página de inicio publicada de ZTech Solutions, con el título “Sites para apresentar sua empresa. Sistemas para facilitar sua operação.”, botones para solicitar propuesta y ver proyectos y vistas previas de proyectos.",
+      },
+    },
+    tecnologias: ["nextjs", "react", "typescript", "tailwindcss", "vercel"],
+    links: {
+      repositorio: "https://github.com/zenaldo-oliveira/ztech-solutions",
+      demonstracao: "https://www.zenaldodev.com.br/",
+      documentacao: null,
+    },
+    validadoEmProducao: [
+      {
+        pt: "Páginas de início, soluções, planos, como funciona, projetos, sobre e contato publicadas.",
+        en: "Home, solutions, plans, how it works, projects, about and contact pages are live.",
+        es: "Páginas de inicio, soluciones, planes, cómo funciona, proyectos, sobre y contacto publicadas.",
+      },
+      {
+        pt: "Página do configurador de pedido de orçamento (“Montar meu projeto”) publicada.",
+        en: "Quote request builder page (“Montar meu projeto”) is live.",
+        es: "Página del configurador de solicitud de presupuesto (“Montar meu projeto”) publicada.",
+      },
+      {
+        pt: "Rota de contato no servidor ativa: rejeita dados inválidos (conferido sem enviar mensagens).",
+        en: "Server-side contact route is active: it rejects invalid data (checked without sending messages).",
+        es: "Ruta de contacto en el servidor activa: rechaza datos inválidos (verificado sin enviar mensajes).",
+      },
+    ],
+    somenteNoCodigo: [
+      {
+        pt: "Registro dos contatos do formulário no Supabase, com limite de envios por IP.",
+        en: "Contact form submissions stored in Supabase, with per-IP rate limiting.",
+        es: "Registro de los contactos del formulario en Supabase, con límite de envíos por IP.",
+      },
+      {
+        pt: "Resumo do pedido de orçamento enviado pelo WhatsApp.",
+        en: "Quote request summary sent via WhatsApp.",
+        es: "Resumen de la solicitud de presupuesto enviado por WhatsApp.",
+      },
+      {
+        pt: "Conteúdo em português, inglês e espanhol e temas claro e escuro.",
+        en: "Content in Portuguese, English and Spanish and light and dark themes.",
+        es: "Contenido en portugués, inglés y español y temas claro y oscuro.",
+      },
+      {
+        pt: "Testes de ponta a ponta com Playwright.",
+        en: "End-to-end tests with Playwright.",
+        es: "Pruebas de extremo a extremo con Playwright.",
+      },
+    ],
+    decisoes: [
+      {
+        pt: "Catálogo comercial como fonte única de ofertas e preços; preço sem valor confirmado aparece como “Solicitar proposta”.",
+        en: "Business catalog as the single source of offers and prices; a price without a confirmed value shows as “Request a proposal”.",
+        es: "Catálogo comercial como fuente única de ofertas y precios; un precio sin valor confirmado aparece como “Solicitar propuesta”.",
+      },
+      {
+        pt: "Next.js com App Router, com canonical, sitemap e robots gerados pela própria aplicação.",
+        en: "Next.js with the App Router, with canonical, sitemap and robots generated by the app itself.",
+        es: "Next.js con App Router, con canonical, sitemap y robots generados por la propia aplicación.",
+      },
+      {
+        pt: "Publicação na Vercel.",
+        en: "Deployed on Vercel.",
+        es: "Publicación en Vercel.",
+      },
+    ],
+  },
   {
     id: "site-restaurante",
     // Tecnologias conferidas no código publicado (index.html, style.css e

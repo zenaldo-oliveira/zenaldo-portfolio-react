@@ -135,8 +135,9 @@ section.pagina {
   margin-top: 16px;
 }
 
-/* Botões do shadcn já trazem anel de foco; os demais links usam contorno */
-.pagina a:not([data-slot="button"]):focus-visible {
+/* Botões (shadcn e ShimmerButton) já trazem foco próprio; os demais links
+   usam contorno */
+.pagina a:not([data-slot="button"], [data-slot="shimmer-button"]):focus-visible {
   outline: 2px solid var(--texto);
   outline-offset: 3px;
 }

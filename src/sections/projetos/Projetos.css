@@ -287,12 +287,6 @@
   font-size: 12px;
 }
 
-.projeto-cartao .projeto-detalhes-compacto {
-  height: 28px;
-  padding: 0 10px;
-  font-size: 12px;
-}
-
 /* Links da grade (Ver site, GitHub, API) um pouco menores que no destaque */
 .projeto-cartao .projeto-links {
   gap: 4px 12px;
@@ -334,6 +328,18 @@
 
 .dialogo-imagem {
   margin-top: 16px;
+}
+
+/* Imagem com legenda (ex.: "dados de demonstração") */
+.projeto-figura {
+  margin: 0;
+}
+
+.projeto-legenda {
+  margin-top: 6px;
+  color: var(--texto-secundario);
+  font-size: 12px;
+  line-height: 1.5;
 }
 /* ===== FIM: imagem do projeto ===== */
 
@@ -416,6 +422,11 @@
 .dialogo-subtitulo {
   margin: 24px 0 12px;
   font-size: 15px;
+}
+
+/* Parágrafo logo abaixo de um subtítulo (seção "Contexto") */
+.dialogo-paragrafo {
+  margin-top: 0;
 }
 
 /* O reset do Tailwind remove os marcadores; aqui eles orientam a leitura */

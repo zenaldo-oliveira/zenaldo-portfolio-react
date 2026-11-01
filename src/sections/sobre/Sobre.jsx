@@ -1,48 +1,72 @@
 import { Revelar } from "@/components/pagina/animacao";
 import CabecalhoPagina from "@/components/pagina/CabecalhoPagina";
+import { Separator } from "@/components/ui/separator";
 import { perfil } from "@/data/perfil";
 
+import ExperienciaFormacao from "./ExperienciaFormacao";
+import GruposTecnologias from "./GruposTecnologias";
+import InteligenciaArtificial from "./InteligenciaArtificial";
 import ObjetivoProfissional from "./ObjetivoProfissional";
-import Trajetoria from "./Trajetoria";
 import { traducoesSobre } from "./traducoes";
 import "./Sobre.css";
+
+// Intervalo entre a entrada de um bloco e o seguinte (segundos)
+const INTERVALO_BLOCOS_S = 0.06;
+
+// Revelar só anima opacidade/posição: o conteúdo está no DOM desde o início
+// (leitores de tela e busca não dependem da animação).
+function Bloco({ indice, separador = true, children }) {
+  return (
+    <Revelar className="sobre-item" atraso={indice * INTERVALO_BLOCOS_S}>
+      {separador && <Separator className="sobre-separador" />}
+      {children}
+    </Revelar>
+  );
+}
 
 function Sobre({ idioma, curriculoDisponivel }) {
   const t = traducoesSobre[idioma];
 
+  // Dois grupos na ordem de leitura (DOM = ordem visual e do teclado):
+  // A) apresentação e experiência/formação; B) IA, tecnologias e objetivo.
+  // A partir de 1700px viram duas colunas; abaixo, o CSS desfaz os grupos
+  // (display: contents) e mantém o layout de antes.
   return (
     <section className="pagina sobre" aria-labelledby="sobre-titulo">
       <CabecalhoPagina id="sobre-titulo" apoio={t.apoio} titulo={t.titulo} />
 
       <div className="sobre-grade">
-        <Revelar atraso={0.05}>
-          {/* ===== INÍCIO: apresentação ===== */}
-          <section className="pagina-secao" aria-labelledby="sobre-apresentacao">
-            <h2 id="sobre-apresentacao">{t.apresentacaoTitulo}</h2>
-            {t.apresentacao.map((paragrafo) => (
-              <p className="sobre-texto" key={paragrafo}>
-                {paragrafo}
-              </p>
-            ))}
-          </section>
-          {/* ===== FIM: apresentação ===== */}
+        <div className="sobre-coluna sobre-coluna-a">
+          <Bloco indice={0} separador={false}>
+            <section className="sobre-bloco" aria-labelledby="sobre-apresentacao">
+              <h2 id="sobre-apresentacao">{t.apresentacaoTitulo}</h2>
+              {t.apresentacao.map((paragrafo) => (
+                <p className="sobre-texto" key={paragrafo}>
+                  {paragrafo}
+                </p>
+              ))}
+            </section>
+          </Bloco>
 
-          {/* ===== INÍCIO: trajetória ===== */}
-          <section className="pagina-secao" aria-labelledby="sobre-trajetoria">
-            <h2 id="sobre-trajetoria">{t.trajetoriaTitulo}</h2>
-            <Trajetoria
-              textoVazio={t.trajetoriaVazia}
-              textoLink={t.verLinhaDoTempo}
-            />
-          </section>
-          {/* ===== FIM: trajetória ===== */}
-        </Revelar>
+          <Bloco indice={1}>
+            <ExperienciaFormacao t={t} />
+          </Bloco>
+        </div>
 
-        <ObjetivoProfissional
-          t={t}
-          local={perfil.local}
-          curriculo={curriculoDisponivel ? perfil.curriculo : null}
-        />
+        <div className="sobre-coluna sobre-coluna-b">
+          <Bloco indice={2}>
+            <InteligenciaArtificial t={t} />
+          </Bloco>
+
+          <Bloco indice={3}>
+            <GruposTecnologias t={t} />
+          </Bloco>
+
+          <ObjetivoProfissional
+            t={t}
+            curriculo={curriculoDisponivel ? perfil.curriculo : null}
+          />
+        </div>
       </div>
     </section>
   );

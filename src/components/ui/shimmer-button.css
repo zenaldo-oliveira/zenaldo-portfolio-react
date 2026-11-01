@@ -1,0 +1,290 @@
+/* ===== INÍCIO: ShimmerButton ===== */
+/* Camadas (de baixo para cima), como no original do Magic UI:
+   fundo do botão → faísca girando (borrada) → fundo recortado (--cut) →
+   destaque interno → conteúdo. A faísca só aparece no anel de --cut entre a
+   borda e o fundo recortado: um brilho fino que percorre o contorno. */
+.shimmer-button {
+  --spread: 90deg;
+  --speed: 3s;
+  --cut: 1.5px;
+  --radius-botao: var(--radius);
+  --shimmer-color: var(--destaque);
+  --destaque-interno: color-mix(in srgb, var(--destaque) 22%, transparent);
+  --destaque-interno-forte: color-mix(in srgb, var(--destaque) 38%, transparent);
+  --bg: var(--texto);
+  --cor: var(--fundo);
+  --borda-botao: transparent;
+
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid var(--borda-botao);
+  border-radius: var(--radius-botao);
+  background: var(--bg);
+  color: var(--cor);
+  font: inherit;
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transform: translateZ(0);
+  transition:
+    transform 0.3s ease-in-out,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Contorno de foco: fica fora do botão, então o overflow: hidden (que contém
+   o brilho) não o corta */
+.shimmer-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.shimmer-button:active:not([data-inativo]) {
+  transform: translateZ(0) translateY(1px);
+}
+
+/* Camadas decorativas: nunca recebem clique */
+.shimmer-button-faiscas,
+.shimmer-button-fundo,
+.shimmer-button-destaque {
+  position: absolute;
+  pointer-events: none;
+}
+
+.shimmer-button-faiscas {
+  z-index: -30;
+  inset: 0;
+  overflow: visible;
+  container-type: size;
+  filter: blur(2px);
+}
+
+.shimmer-button-faisca {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100cqh;
+  aspect-ratio: 1;
+  animation: shimmer-slide var(--speed) ease-in-out infinite alternate;
+}
+
+.shimmer-button-faisca-giro {
+  position: absolute;
+  inset: -100%;
+  background: conic-gradient(
+    from calc(270deg - (var(--spread) * 0.5)),
+    transparent 0,
+    var(--shimmer-color) var(--spread),
+    transparent var(--spread)
+  );
+  animation: spin-around calc(var(--speed) * 2) infinite linear;
+}
+
+.shimmer-button-fundo {
+  z-index: -20;
+  inset: var(--cut);
+  border-radius: calc(var(--radius-botao) - var(--cut));
+  background: var(--bg);
+  transition: background-color 0.2s ease;
+}
+
+.shimmer-button-destaque {
+  z-index: -10;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 -8px 10px var(--destaque-interno);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.shimmer-button:hover:not([data-inativo]) .shimmer-button-destaque {
+  box-shadow: inset 0 -6px 10px var(--destaque-interno-forte);
+}
+
+.shimmer-button:active:not([data-inativo]) .shimmer-button-destaque {
+  box-shadow: inset 0 -10px 10px var(--destaque-interno-forte);
+}
+
+/* Texto e ícones acima de todas as camadas */
+.shimmer-button-conteudo {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-botao, 6px);
+  min-width: 0;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.shimmer-button-conteudo > svg:not([class*="size-"]) {
+  flex-shrink: 0;
+  width: var(--icone-botao, 1rem);
+  height: var(--icone-botao, 1rem);
+}
+/* ===== FIM: ShimmerButton ===== */
+
+/* ===== INÍCIO: variantes ===== */
+/* Principal: invertida em relação ao fundo (clara no tema escuro, escura no
+   claro), como o botão padrão anterior */
+.shimmer-button[data-variante="principal"]:hover:not([data-inativo]) {
+  --bg: color-mix(in srgb, var(--texto) 88%, var(--destaque));
+}
+
+/* Secundária: superfície do painel com borda; brilho mais suave */
+.shimmer-button[data-variante="secundaria"] {
+  --bg: var(--painel);
+  --cor: var(--texto);
+  --borda-botao: var(--borda);
+  --shimmer-color: color-mix(in srgb, var(--destaque) 75%, transparent);
+  --destaque-interno: color-mix(in srgb, var(--destaque) 12%, transparent);
+  --destaque-interno-forte: color-mix(in srgb, var(--destaque) 24%, transparent);
+}
+
+.shimmer-button[data-variante="secundaria"]:hover:not([data-inativo]) {
+  --bg: var(--hover);
+}
+
+/* Destrutiva: tom e brilho na cor de erro */
+.shimmer-button[data-variante="destrutiva"] {
+  --bg: color-mix(in srgb, var(--destructive) 14%, var(--painel));
+  --cor: var(--texto);
+  --borda-botao: color-mix(in srgb, var(--destructive) 45%, transparent);
+  --shimmer-color: var(--destructive);
+  --destaque-interno: color-mix(in srgb, var(--destructive) 16%, transparent);
+  --destaque-interno-forte: color-mix(in srgb, var(--destructive) 30%, transparent);
+}
+
+.shimmer-button[data-variante="destrutiva"]:hover:not([data-inativo]) {
+  --bg: color-mix(in srgb, var(--destructive) 24%, var(--painel));
+}
+/* ===== FIM: variantes ===== */
+
+/* ===== INÍCIO: tamanhos ===== */
+/* min-height (não height): rótulos longos podem quebrar linha sem vazar */
+.shimmer-button[data-tamanho="padrao"] {
+  min-height: 40px;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.shimmer-button[data-tamanho="pequeno"] {
+  --cut: 1px;
+  --gap-botao: 4px;
+  --icone-botao: 0.875rem;
+
+  min-height: 28px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.shimmer-button[data-tamanho="grande"] {
+  --gap-botao: 8px;
+
+  min-height: 48px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Ícone: quadrado fixo; o nome acessível vem de aria-label */
+.shimmer-button[data-tamanho="icone"],
+.shimmer-button[data-tamanho="icone-pequeno"] {
+  flex-shrink: 0;
+  padding: 0;
+  aspect-ratio: 1;
+}
+
+.shimmer-button[data-tamanho="icone"] {
+  width: 40px;
+  height: 40px;
+}
+
+.shimmer-button[data-tamanho="icone-pequeno"] {
+  --cut: 1px;
+  --icone-botao: 0.875rem;
+
+  width: 32px;
+  height: 32px;
+}
+/* ===== FIM: tamanhos ===== */
+
+/* ===== INÍCIO: desabilitado e carregando ===== */
+/* Brilho parado e oculto; sem hover, clique ou deslocamento */
+.shimmer-button[data-inativo] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.shimmer-button[aria-busy="true"] {
+  cursor: progress;
+}
+
+.shimmer-button[data-inativo] .shimmer-button-faiscas {
+  display: none;
+}
+
+.shimmer-button[data-inativo] .shimmer-button-faisca,
+.shimmer-button[data-inativo] .shimmer-button-faisca-giro {
+  animation: none;
+}
+/* ===== FIM: desabilitado e carregando ===== */
+
+/* ===== INÍCIO: movimento ===== */
+@keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+
+@keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+  }
+
+  15%,
+  35% {
+    transform: translateZ(0) rotate(90deg);
+  }
+
+  65%,
+  85% {
+    transform: translateZ(0) rotate(270deg);
+  }
+
+  100% {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+/* Sem brilho em movimento nem deslocamento ao clicar */
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-button-faiscas {
+    display: none;
+  }
+
+  .shimmer-button-faisca,
+  .shimmer-button-faisca-giro {
+    animation: none;
+  }
+
+  .shimmer-button,
+  .shimmer-button-destaque,
+  .shimmer-button-fundo {
+    transition: none;
+  }
+
+  .shimmer-button:active:not([data-inativo]) {
+    transform: translateZ(0);
+  }
+}
+/* ===== FIM: movimento ===== */

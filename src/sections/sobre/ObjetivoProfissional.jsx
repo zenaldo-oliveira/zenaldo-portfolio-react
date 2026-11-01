@@ -1,45 +1,54 @@
+import { MapPin } from "lucide-react";
+
 import { Revelar } from "@/components/pagina/animacao";
-import { classeBotao, propsLinkBotao } from "@/components/pagina/botao";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 /* ===== INÍCIO: objetivo e próximos passos ===== */
-function ObjetivoProfissional({ t, local, curriculo }) {
+// Links de navegação (Projetos, Contato, currículo) como <a> via ShimmerButton.
+function ObjetivoProfissional({ t, curriculo }) {
   return (
     <Revelar className="sobre-objetivo" atraso={0.1}>
-      <aside className="cartao" aria-labelledby="sobre-objetivo">
-        <h2 id="sobre-objetivo">{t.objetivoTitulo}</h2>
-        <p>{t.objetivo}</p>
+      <aside aria-labelledby="sobre-objetivo">
+        <Card className="sobre-card">
+          <CardHeader>
+            <CardTitle>
+              <h2 id="sobre-objetivo">{t.objetivoTitulo}</h2>
+            </CardTitle>
+          </CardHeader>
 
-        <dl className="sobre-local">
-          <dt>{t.localizacao}</dt>
-          <dd>{local}</dd>
-        </dl>
+          <CardContent className="sobre-card-conteudo">
+            <p>{t.objetivo}</p>
 
-        <div className="pagina-acoes">
-          <a className={classeBotao()} href="#projetos" {...propsLinkBotao}>
-            {t.verProjetos}
-          </a>
-          <a
-            className={classeBotao("outline")}
-            href="#contato"
-            {...propsLinkBotao}
-          >
-            {t.contato}
-          </a>
+            <dl className="sobre-local">
+              <dt>{t.localizacao}</dt>
+              <dd>
+                <MapPin size={16} aria-hidden="true" />
+                {t.local}
+              </dd>
+            </dl>
 
-          {/* Só aparece quando o PDF existe em public/ */}
-          {curriculo && (
-            <a
-              className={classeBotao("outline")}
-              href={curriculo}
-              target="_blank"
-              rel="noopener noreferrer"
-              {...propsLinkBotao}
-            >
-              {t.curriculo}
-              <span className="sr-only"> ({t.novaAba})</span>
-            </a>
-          )}
-        </div>
+            <div className="sobre-acoes">
+              <ShimmerButton href="#projetos">{t.verProjetos}</ShimmerButton>
+              <ShimmerButton variante="secundaria" href="#contato">
+                {t.contato}
+              </ShimmerButton>
+
+              {/* Só aparece quando o PDF existe em public/ */}
+              {curriculo && (
+                <ShimmerButton
+                  variante="secundaria"
+                  href={curriculo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t.curriculo}
+                  <span className="sr-only"> ({t.novaAba})</span>
+                </ShimmerButton>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </aside>
     </Revelar>
   );

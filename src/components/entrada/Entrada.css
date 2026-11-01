@@ -69,8 +69,10 @@ main.entrada {
   line-height: 1.6;
 }
 
+/* 36em ≈ 612px: a mesma largura de antes (65ch em Arial). Em ch a medida
+   muda com a fonte e, com a Geist, o texto avançava sobre o círculo. */
 .entrada-descricao {
-  max-width: 65ch;
+  max-width: 36em;
   margin-top: 36px;
   font-size: 17px;
   line-height: 1.8;
@@ -146,26 +148,14 @@ main.entrada {
 /* ===== FIM: redes sociais ===== */
 
 /* ===== INÍCIO: botão de entrada ===== */
-.entrada-botao {
-  display: block;
+/* Visual e estados vêm do ShimmerButton (principal, grande); aqui só a
+   largura e a posição na tela de entrada (seletor composto para vencer o
+   display do componente, carregado depois) */
+.entrada .entrada-botao {
+  display: flex;
   width: 100%;
   max-width: 580px;
-  min-height: 48px;
   margin-top: 36px;
-  padding: 12px 24px;
-
-  background: linear-gradient(100deg, #0891b2, #2563eb);
-  color: #ffffff;
-  border: none;
-  border-radius: 999px;
-
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.entrada-botao:hover {
-  background: linear-gradient(100deg, #0e7490, #1d4ed8);
 }
 
 .entrada a:focus-visible,
@@ -174,6 +164,36 @@ main.entrada {
   outline-offset: 4px;
 }
 /* ===== FIM: botão de entrada ===== */
+
+/* ===== INÍCIO: atalhos ===== */
+/* Links secundários abaixo do botão Entrar; 44px de altura para o toque */
+.entrada-atalhos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 20px;
+  margin-top: 12px;
+
+  color: #d4d4d8;
+  font-size: 15px;
+}
+
+.entrada-atalhos a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(103, 232, 249, 0.6);
+}
+
+.entrada-atalhos a:hover {
+  color: #67e8f9;
+}
+/* ===== FIM: atalhos ===== */
 
 /* ===== INÍCIO: celular ===== */
 @media (max-width: 768px) {
@@ -193,7 +213,8 @@ main.entrada {
   left: calc(50% - 30px);
   top: calc(48% + 70px);
   transform: translate(-50%, -50%);
-  z-index: 2;
+  /* Entre o fundo (-1) e o conteúdo (1): o texto fica sempre por cima */
+  z-index: 0;
 
   display: grid;
   place-items: center;
@@ -207,9 +228,20 @@ main.entrada {
   text-shadow: 0 0 12px rgba(103, 232, 249, 0.8);
 }
 
-@media (max-width: 768px) {
+/* O círculo acompanha o ponto entre os dedos, perto do centro da tela.
+   Abaixo de 1200px esse ponto fica embaixo do texto, então ele é ocultado.
+   A partir de 1200px a coluna de texto termina antes do anel: o anel
+   (≈236px) começa em 50vw − 148px; com 32px de folga e o padding lateral
+   (4vw), sobra 46vw − 180px. */
+@media (max-width: 1199px) {
   .entrada-circulo {
     display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .entrada-descricao {
+    max-width: min(36em, calc(46vw - 180px));
   }
 }
 /* ===== FIM: círculo entre os dedos ===== */

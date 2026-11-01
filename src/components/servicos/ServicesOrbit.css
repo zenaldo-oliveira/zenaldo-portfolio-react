@@ -1,0 +1,555 @@
+/* ===== INÍCIO: ServicesOrbit ===== */
+/* Mobile-first. Os breakpoints são da largura do próprio componente
+   (container query), não da janela: no desktop a sidebar ocupa 260px, então
+   1024px de janela deixam ~730px para a composição. */
+.servicos-orbita {
+  container: servicos / inline-size;
+  width: 100%;
+  min-width: 0;
+}
+
+.servicos-orbita-composicao {
+  --palco: 250px;
+  --cartao-max: 340px;
+
+  position: relative;
+  display: grid;
+  gap: 28px;
+}
+/* ===== FIM: ServicesOrbit ===== */
+
+/* ===== INÍCIO: conexões (só na composição radial) ===== */
+.servicos-orbita-conexoes {
+  display: none;
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.servicos-orbita-linha {
+  fill: none;
+  stroke: var(--destaque);
+  stroke-width: 1;
+  stroke-opacity: 0.35;
+  stroke-linecap: round;
+  transition:
+    stroke-opacity 0.25s ease,
+    stroke-width 0.25s ease;
+}
+
+.servicos-orbita-particula {
+  fill: var(--destaque);
+  filter: drop-shadow(0 0 3px var(--destaque));
+}
+/* ===== FIM: conexões ===== */
+
+/* ===== INÍCIO: palco (QR Code + órbitas) ===== */
+/* Centro: palco, legenda e (no celular) o link textual, empilhados */
+.servicos-orbita-centro {
+  display: grid;
+  justify-items: center;
+  justify-self: center;
+  width: var(--palco);
+}
+
+.servicos-orbita-palco {
+  position: relative;
+  width: var(--palco);
+  aspect-ratio: 1;
+}
+
+/* Brilho de fundo atrás do QR Code */
+.servicos-orbita-palco::before {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--destaque) 30%, transparent) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.servicos-orbita-aneis {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.anel {
+  fill: none;
+  stroke: var(--destaque);
+  vector-effect: non-scaling-stroke;
+}
+
+.anel-externo {
+  stroke-opacity: 0.45;
+  stroke-width: 1;
+}
+
+.anel-medio {
+  stroke-opacity: 0.3;
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+}
+
+.anel-interno {
+  stroke-opacity: 0.2;
+  stroke-width: 1;
+}
+
+.orbita {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.orbita-ponto {
+  fill: var(--destaque);
+}
+
+.orbita-brilho {
+  fill: var(--destaque);
+  opacity: 0.25;
+}
+
+.ponto-de-luz {
+  fill: var(--texto);
+  opacity: 0.35;
+}
+
+/* QR Code: link para o site, estático e frontal. Ocupa ~47% do palco e
+   arredonda para múltiplos de 33px (25 módulos + 4 de margem de cada lado),
+   para cada módulo ter um número inteiro de pixels e ficar nítido. A
+   meia-diagonal (47% / √2 ≈ 33% do palco, + a moldura) fica dentro do anel
+   interno (r = 35% do palco): anéis, pontos e partículas não tocam o código. */
+.servicos-orbita-qr {
+  --qr: calc(var(--palco) * 0.45);
+  --qr: round(down, calc(var(--palco) * 0.47), 33px);
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  /* Moldura branca de 2px além da margem de 4 módulos do próprio código:
+     a suavização da borda arredondada cai nela, nunca na margem do QR */
+  width: calc(var(--qr) + 4px);
+  aspect-ratio: 1;
+  padding: 2px;
+  /* Ajuste de subpixel calculado no JS (alinharQrAoPixel) */
+  translate: calc(-50% + var(--qr-ajuste-x, 0px))
+    calc(-50% + var(--qr-ajuste-y, 0px));
+  border-radius: 6px;
+  background-color: #ffffff;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--destaque) 40%, transparent),
+    0 10px 32px -10px color-mix(in srgb, var(--destaque) 70%, transparent);
+  transition: box-shadow 0.2s ease;
+}
+
+.servicos-orbita-qr svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.servicos-orbita-qr:hover {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--destaque) 75%, transparent),
+    0 10px 36px -8px color-mix(in srgb, var(--destaque) 85%, transparent);
+}
+
+/* Foco visível sem alcançar o anel interno: cor de destaque contrasta com o
+   branco do código e com o fundo da página */
+.servicos-orbita-qr:focus-visible {
+  outline: 3px solid var(--destaque);
+  outline-offset: 0;
+}
+
+/* Estreita (metade do palco): as conexões de baixo chegam ao anel externo
+   mais afastadas do centro, então a legenda fica livre entre elas */
+.servicos-orbita-qr-legenda {
+  max-width: min(22ch, calc(var(--palco) * 0.5));
+  margin: 6px auto 0;
+  color: var(--texto-secundario);
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Link textual: só no celular (composição empilhada) */
+.servicos-orbita-qr-texto {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-self: center;
+  margin-top: 6px;
+  padding: 6px 4px;
+  color: var(--texto);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--destaque) 70%, transparent);
+  text-underline-offset: 3px;
+}
+
+.servicos-orbita-qr-texto:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* ===== FIM: palco ===== */
+
+/* ===== INÍCIO: cartões dos serviços ===== */
+.servicos-orbita-lista {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Celular: linha vertical que liga o QR Code aos cartões, passando pelos ícones */
+.servicos-orbita-lista::before {
+  content: "";
+  position: absolute;
+  top: -28px;
+  bottom: 24px;
+  left: 33px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--destaque) 60%, transparent),
+    color-mix(in srgb, var(--destaque) 15%, transparent)
+  );
+  pointer-events: none;
+}
+
+.servico {
+  position: relative;
+  min-width: 0;
+}
+
+.servico-cartao {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  /* Cartão esticado até a altura da linha: conteúdo fica no topo */
+  align-content: start;
+  gap: 12px;
+  height: 100%;
+  padding: 14px 16px;
+  background-color: color-mix(in srgb, var(--painel) 92%, transparent);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  color: var(--texto);
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.servico-icone {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background-color: color-mix(in srgb, var(--destaque) 14%, var(--painel));
+  border: 1px solid color-mix(in srgb, var(--destaque) 35%, transparent);
+  color: var(--destaque);
+  transition: background-color 0.2s ease;
+}
+
+.servico-textos {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.servico-titulo {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.servico-descricao {
+  color: var(--texto-secundario);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.servico-destino {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  color: var(--texto);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--destaque) 70%, transparent);
+  text-underline-offset: 3px;
+}
+
+/* Destaque discreto: só cor, borda e brilho — o texto não se move */
+.servico-cartao:hover,
+.servico-cartao:focus-visible,
+.servico:focus-within .servico-cartao {
+  border-color: color-mix(in srgb, var(--destaque) 70%, var(--borda));
+  background-color: color-mix(in srgb, var(--hover) 92%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--destaque) 25%, transparent),
+    0 10px 30px -14px color-mix(in srgb, var(--destaque) 70%, transparent);
+}
+
+.servico-cartao:hover .servico-icone,
+.servico-cartao:focus-visible .servico-icone {
+  background-color: color-mix(in srgb, var(--destaque) 26%, var(--painel));
+}
+
+.servico-cartao:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 3px;
+}
+
+/* A conexão do cartão em destaque também acende */
+.servicos-orbita:has(.servico:nth-child(1):is(:hover, :focus-within)) .servicos-orbita-linha[data-indice="0"],
+.servicos-orbita:has(.servico:nth-child(2):is(:hover, :focus-within)) .servicos-orbita-linha[data-indice="1"],
+.servicos-orbita:has(.servico:nth-child(3):is(:hover, :focus-within)) .servicos-orbita-linha[data-indice="2"],
+.servicos-orbita:has(.servico:nth-child(4):is(:hover, :focus-within)) .servicos-orbita-linha[data-indice="3"],
+.servicos-orbita:has(.servico:nth-child(5):is(:hover, :focus-within)) .servicos-orbita-linha[data-indice="4"],
+.servicos-orbita:has(.servico:nth-child(6):is(:hover, :focus-within)) .servicos-orbita-linha[data-indice="5"] {
+  stroke-opacity: 0.9;
+  stroke-width: 1.5;
+}
+/* ===== FIM: cartões dos serviços ===== */
+
+/* ===== INÍCIO: celular largo — duas colunas ===== */
+@container servicos (min-width: 540px) {
+  .servicos-orbita-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Em duas colunas, a linha só liga o QR Code ao início da grade */
+  .servicos-orbita-lista::before {
+    left: 50%;
+    bottom: auto;
+    height: 28px;
+  }
+}
+/* ===== FIM: celular largo ===== */
+
+/* ===== INÍCIO: composição radial (tablet e desktop) ===== */
+@container servicos (min-width: 680px) {
+  /* Em janelas baixas (ex.: 1024x768), palco e vãos encolhem um pouco: os
+     cartões ganham largura e a descrição usa menos linhas */
+  .servicos-orbita-composicao {
+    --palco: clamp(216px, 100dvh - 570px, 220px);
+    --vao: clamp(28px, 100dvh - 740px, 40px);
+    --arco: 14px;
+
+    display: block;
+  }
+
+  .servicos-orbita-conexoes {
+    display: block;
+  }
+
+  /* Palco (anéis + QR Code) no centro exato da grade, com colunas laterais
+     simétricas; a legenda fica logo abaixo dos anéis, na coluna do meio */
+  .servicos-orbita-centro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% calc(var(--palco) / -2);
+  }
+
+  /* No desktop e no tablet o QR Code já é o link; o texto é só do celular */
+  .servicos-orbita-qr-texto {
+    display: none;
+  }
+
+  .servicos-orbita-lista {
+    grid-template-columns: minmax(0, 1fr) var(--palco) minmax(0, 1fr);
+    grid-template-rows: repeat(3, auto);
+    align-content: center;
+    column-gap: var(--vao);
+    row-gap: clamp(12px, 100dvh - 750px, 24px);
+    /* Palco + espaço da legenda abaixo dele, nas duas metades */
+    min-height: calc(var(--palco) + 2 * var(--legenda-espaco, 56px));
+  }
+
+  .servicos-orbita-lista::before {
+    display: none;
+  }
+
+  .servico {
+    width: min(100%, var(--cartao-max));
+  }
+
+  /* Três à esquerda (coluna 1), três à direita (coluna 3) */
+  .servico:nth-child(-n + 3) {
+    grid-column: 1;
+    justify-self: end;
+  }
+
+  .servico:nth-child(n + 4) {
+    grid-column: 3;
+    justify-self: start;
+  }
+
+  .servico:nth-child(3n + 1) {
+    grid-row: 1;
+  }
+
+  .servico:nth-child(3n + 2) {
+    grid-row: 2;
+  }
+
+  .servico:nth-child(3n) {
+    grid-row: 3;
+  }
+
+  /* Arco: os cartões do meio se afastam um pouco do centro */
+  .servico:nth-child(2) {
+    width: min(100% - var(--arco), var(--cartao-max));
+    margin-inline-end: var(--arco);
+  }
+
+  .servico:nth-child(5) {
+    width: min(100% - var(--arco), var(--cartao-max));
+    margin-inline-start: var(--arco);
+  }
+
+  /* Colunas estreitas: ícone na linha do título e descrição abaixo, com a
+     largura toda do cartão (cartões mais baixos) */
+  .servico-cartao {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 6px 10px;
+    padding: 12px 14px;
+  }
+
+  .servico-textos {
+    display: contents;
+  }
+
+  .servico-descricao,
+  .servico-destino {
+    grid-column: 1 / -1;
+  }
+
+  .servico-destino {
+    justify-self: start;
+    margin-top: 0;
+  }
+
+  .servico-icone {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Desktop: palco, espaçamentos e respiro dos cartões acompanham a altura da
+   janela, para a composição caber entre o cabeçalho e o rodapé (900px de
+   altura usa os valores máximos; ~768px, os mínimos). Os textos não mudam. */
+@container servicos (min-width: 940px) {
+  .servicos-orbita-composicao {
+    --palco: clamp(220px, 100dvh - 560px, 300px);
+    --vao: 72px;
+    --arco: 40px;
+  }
+
+  .servicos-orbita-lista {
+    row-gap: clamp(12px, 100dvh - 750px, 32px);
+    min-height: calc(var(--palco) + 2 * var(--legenda-espaco, 56px));
+  }
+
+  .servico-cartao {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    padding: clamp(11px, 1.8dvh, 16px) 18px;
+  }
+
+  /* Volta ao ícone à esquerda de um bloco de texto */
+  .servico-textos {
+    display: grid;
+  }
+
+  .servico-descricao,
+  .servico-destino {
+    grid-column: auto;
+  }
+
+  .servico-destino {
+    margin-top: 4px;
+  }
+
+  .servico-icone {
+    width: 40px;
+    height: 40px;
+  }
+}
+/* ===== FIM: composição radial ===== */
+
+/* ===== INÍCIO: movimento ===== */
+@keyframes servicos-girar {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes servicos-cintilar {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .orbita-externa {
+    animation: servicos-girar 48s linear infinite;
+  }
+
+  .orbita-media {
+    animation: servicos-girar 70s linear infinite reverse;
+  }
+
+  .orbita-interna {
+    animation: servicos-girar 32s linear infinite;
+  }
+
+  .anel-medio {
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+    animation: servicos-girar 120s linear infinite;
+  }
+
+  .ponto-de-luz {
+    animation: servicos-cintilar 4s ease-in-out infinite;
+  }
+}
+
+/* Fora da tela (ou com movimento reduzido), o JS marca data-pausado */
+.servicos-orbita[data-pausado] .servicos-orbita-aneis * {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .servicos-orbita-particula {
+    display: none;
+  }
+}
+/* ===== FIM: movimento ===== */

@@ -15,7 +15,7 @@ function ImagemProjeto({ imagem, idioma, prioridade, t }) {
     );
   }
 
-  return (
+  const conteudo = (
     <div className="projeto-imagem">
       <img
         src={imagem.src}
@@ -27,6 +27,18 @@ function ImagemProjeto({ imagem, idioma, prioridade, t }) {
         draggable={false}
       />
     </div>
+  );
+
+  // Legenda opcional (ex.: captura com dados de demonstração)
+  if (!imagem.legenda) return conteudo;
+
+  return (
+    <figure className="projeto-figura">
+      {conteudo}
+      <figcaption className="projeto-legenda">
+        {traduzir(imagem.legenda, idioma)}
+      </figcaption>
+    </figure>
   );
 }
 /* ===== FIM: imagem do projeto ===== */

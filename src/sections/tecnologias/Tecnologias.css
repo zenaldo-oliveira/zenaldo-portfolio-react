@@ -1,113 +1,131 @@
 /* ===== INÍCIO: estrutura da página ===== */
-/* O espaçamento externo vem do <main> (16px; 12px no celular), como nas
-   demais páginas; 80px no fim para o botão do WhatsApp não cobrir a faixa. */
+/* O espaçamento externo vem do <main> (--espaco-main). Coluna com a altura
+   da área de conteúdo: cabeçalho compacto e, abaixo, a composição de serviços
+   ocupando o restante. A faixa de tecnologias (.tecnologias-base) é fixa
+   sobre o fim do <main>; o padding-bottom reserva a altura dela + legenda,
+   para nada ficar escondido atrás. Se o conteúdo não couber (celular, telas
+   baixas), a página rola normalmente no <main>. */
 section.tecnologias {
+  --legenda-altura: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2dvh, 20px);
   width: 100%;
-  padding: 0 0 80px;
+  min-height: 100%;
+  padding: 0 0 calc(var(--faixa-altura) + var(--legenda-altura));
   color: var(--texto);
 }
+/* ===== FIM: estrutura da página ===== */
 
-/* Mesmo cabeçalho das demais páginas (.pagina-cabecalho) */
+/* ===== INÍCIO: cabeçalho do bloco de serviços ===== */
+/* Discreto: H1 em tamanho de seção, ação principal ao lado no desktop */
 .tecnologias-cabecalho {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid var(--destaque);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--borda);
 }
 
-.tecnologias-cabecalho p {
-  margin: 0 0 8px;
+/* Base de 320px: o botão fica ao lado do texto sempre que houver espaço e
+   só desce para a linha de baixo no celular */
+.tecnologias-cabecalho-textos {
+  flex: 1 1 320px;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* Texto neutro (contraste nos dois temas); o destaque fica no traço */
+.tecnologias-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
   color: var(--texto-secundario);
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tecnologias-marca::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background-color: var(--destaque);
 }
 
 .tecnologias-cabecalho h1 {
   margin: 0;
-  font-size: clamp(28px, 3vw, 40px);
+  font-size: clamp(22px, 2.2vw, 30px);
   line-height: 1.2;
-}
-/* ===== FIM: estrutura da página ===== */
-
-/* ===== INÍCIO: painel em duas colunas ===== */
-.tecnologias-painel {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  align-items: center;
-  gap: 24px;
-}
-
-.tecnologias-painel > * {
-  min-width: 0;
-}
-
-.tecnologias-conteudo h2 {
-  max-width: 25ch;
-  margin: 0 0 16px;
-  font-size: clamp(24px, 2.5vw, 34px);
-  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
 .tecnologias-descricao {
-  max-width: 60ch;
+  max-width: 62ch;
   margin: 0;
   color: var(--texto-secundario);
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.tecnologias-chamada {
+  flex-shrink: 0;
 }
 
 .tecnologias-legenda {
-  margin: 24px 0 -12px;
   color: var(--texto-secundario);
   font-size: 13px;
 }
-/* ===== FIM: painel em duas colunas ===== */
+/* ===== FIM: cabeçalho do bloco de serviços ===== */
 
-/* ===== INÍCIO: globo ===== */
-/* Sem altura mínima: o espaço é o do próprio canvas (até 560px de largura) */
-.tecnologias-globo {
-  display: grid;
-  place-items: center;
-  width: 100%;
+/* ===== INÍCIO: serviços ===== */
+/* Ocupa a altura que sobra e centraliza a composição nela */
+.tecnologias-servicos {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-height: 0;
 }
+/* ===== FIM: serviços ===== */
 
-.tecnologias-globo canvas {
-  display: block;
-  width: min(100%, 560px);
-  height: auto;
-}
-/* ===== FIM: globo ===== */
-
-/* ===== INÍCIO: telas menores ===== */
-@media (max-width: 1100px) {
-  .tecnologias-painel {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-  }
-}
-/* ===== FIM: telas menores ===== */
-
-
-/* ===== INÍCIO: flutuação do globo ===== */
-@keyframes flutuar-globo {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-16px);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .tecnologias-globo canvas {
-    animation: flutuar-globo 6s ease-in-out infinite;
-  }
-}
-/* ===== FIM: flutuação do globo ===== */
 /* ===== INÍCIO: carrossel de tecnologias ===== */
+/* Legenda + faixa no fim da página. Avança sobre o padding do <main> à
+   direita e embaixo: vai até a borda direita (por trás do WhatsApp) e encosta
+   no rodapé, sem rolagem horizontal. À esquerda segue o conteúdo (sidebar
+   intacta). */
+.tecnologias-base {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--rodape-altura, 40px);
+  z-index: 30;
+  min-width: 0;
+}
+
+.tecnologias-base .tecnologias-legenda {
+  margin: 0 0 4px;
+  padding-left: 270px;
+}
+
+@media (max-width: 768px) {
+  .tecnologias-base .tecnologias-legenda {
+    padding-left: 12px;
+  }
+}
+
+/* Altura fixa (--faixa-altura) para o WhatsApp ficar centralizado nela */
 .tecnologias-carrossel {
+  display: flex;
+  align-items: center;
   width: 100%;
   min-width: 0;
+  height: var(--faixa-altura);
   overflow: hidden;
   padding: 8px 0;
 }
@@ -117,12 +135,14 @@ section.tecnologias {
   gap: 12px;
   width: 100%;
   min-width: 0;
-  margin-top: 24px;
 }
 /* ===== FIM: organização das duas faixas ===== */
 
+/* flex-shrink: 0 — a trilha é item flexível do carrossel e não pode encolher:
+   o laço (translateX -50%) depende da largura real das duas cópias */
 .tecnologias-trilha {
   display: flex;
+  flex-shrink: 0;
   width: max-content;
 }
 
@@ -180,8 +200,12 @@ section.tecnologias {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Sem animação a faixa rola à mão; o espaço final deixa o último item
+     sair de trás do WhatsApp */
   .tecnologias-carrossel {
+    height: auto; /* a barra de rolagem não pode cortar os itens */
     overflow-x: auto;
+    padding-right: calc(var(--whatsapp-tamanho) + 2 * var(--whatsapp-margem));
   }
 
   .tecnologias-faixa[aria-hidden="true"] {

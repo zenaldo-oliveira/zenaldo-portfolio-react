@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ListaAnimada } from "@/components/pagina/animacao";
 import CabecalhoPagina from "@/components/pagina/CabecalhoPagina";
 import EstadoVazio from "@/components/pagina/EstadoVazio";
-import { Button } from "@/components/ui/button";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { projetos } from "@/data/projetos";
 import { traduzir } from "@/i18n/traduzir";
 
@@ -93,9 +93,9 @@ function Projetos({ idioma }) {
             {visiveis.length === 0 ? (
               <div className="projetos-sem-resultado">
                 <EstadoVazio>{t.semResultado}</EstadoVazio>
-                <Button variant="outline" size="lg" onClick={limpar}>
+                <ShimmerButton variante="secundaria" onClick={limpar}>
                   {t.limparFiltros}
-                </Button>
+                </ShimmerButton>
               </div>
             ) : (
               // A key reinicia a entrada dos cartões só ao trocar de filtro (não a cada tecla)

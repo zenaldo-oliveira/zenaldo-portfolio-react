@@ -32,6 +32,16 @@ function lerPaginaDoHash() {
   const pagina = window.location.hash.slice(1);
   return pagina in paginas ? pagina : null;
 }
+
+// Leva o foco ao título da página, para teclado e leitor de tela continuarem
+// a partir do conteúdo
+function focarTitulo(main) {
+  const titulo = main?.querySelector("h1");
+  if (!titulo) return;
+
+  titulo.setAttribute("tabindex", "-1");
+  titulo.focus({ preventScroll: true });
+}
 /* ===== FIM: páginas disponíveis ===== */
 
 function Portfolio() {
@@ -85,8 +95,13 @@ function Portfolio() {
     };
   }, []);
 
-  // Ao trocar de página: volta ao topo e leva o foco ao título da nova página,
-  // para teclado e leitor de tela continuarem a partir do conteúdo.
+  // Ao abrir o portfólio (botão Entrar ou atalhos da Entrada), o foco vai ao
+  // título da página aberta em vez de se perder no body.
+  useEffect(() => {
+    focarTitulo(mainRef.current);
+  }, []);
+
+  // Ao trocar de página: volta ao topo e leva o foco ao título da nova página.
   useEffect(() => {
     if (paginaAnteriorRef.current === paginaAtual) return;
     paginaAnteriorRef.current = paginaAtual;
@@ -95,16 +110,12 @@ function Portfolio() {
     if (!main) return;
 
     main.scrollTo(0, 0);
-
-    const titulo = main.querySelector("h1");
-    if (titulo) {
-      titulo.setAttribute("tabindex", "-1");
-      titulo.focus({ preventScroll: true });
-    }
+    focarTitulo(main);
   }, [paginaAtual]);
 
+  // Mesmo separador do título do index.html ("Zenaldo Oliveira | …")
   useEffect(() => {
-    document.title = `${textos[paginaAtual]} · Zenaldo Oliveira`;
+    document.title = `${textos[paginaAtual]} | Zenaldo Oliveira`;
   }, [paginaAtual, textos]);
 
   const PaginaAtual = paginas[paginaAtual];

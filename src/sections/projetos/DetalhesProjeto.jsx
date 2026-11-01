@@ -2,7 +2,7 @@ import { Dialog } from "@base-ui/react/dialog";
 import { X } from "lucide-react";
 
 import ListaEtiquetas from "@/components/pagina/ListaEtiquetas";
-import { classeBotao } from "@/components/pagina/botao";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Button } from "@/components/ui/button";
 import { nomesTecnologias } from "@/data/tecnologias";
 import { traduzir } from "@/i18n/traduzir";
@@ -10,19 +10,54 @@ import { traduzir } from "@/i18n/traduzir";
 import ImagemProjeto from "./ImagemProjeto";
 import LinksProjeto from "./LinksProjeto";
 
+/* ===== INÍCIO: seções opcionais do diálogo ===== */
+// Só aparecem quando o projeto tem o campo cadastrado (src/data/projetos.js).
+function SecaoTexto({ titulo, texto, idioma }) {
+  if (!texto) return null;
+
+  return (
+    <>
+      <h3 className="dialogo-subtitulo">{titulo}</h3>
+      <p className="dialogo-descricao dialogo-paragrafo">{traduzir(texto, idioma)}</p>
+    </>
+  );
+}
+
+function SecaoLista({ titulo, itens, idioma }) {
+  if (!itens?.length) return null;
+
+  return (
+    <>
+      <h3 className="dialogo-subtitulo">{titulo}</h3>
+      <ul className="dialogo-lista">
+        {itens.map((item) => (
+          <li key={traduzir(item, "pt")}>{traduzir(item, idioma)}</li>
+        ))}
+      </ul>
+    </>
+  );
+}
+/* ===== FIM: seções opcionais do diálogo ===== */
+
 /* ===== INÍCIO: detalhes do projeto em diálogo ===== */
 // Dialog do Base UI: prende o foco, fecha com Esc ou clique fora
 // e devolve o foco ao botão "Ver detalhes".
 // compacto: botão menor (mini cards da grade).
+// O gatilho renderiza o próprio ShimmerButton (um único <button>).
 // onAbrirFechar: avisa quem precisa reagir (ex.: pausar o carrossel).
 function DetalhesProjeto({ projeto, nome, idioma, compacto = false, onAbrirFechar, t }) {
-  const classeGatilho = compacto
-    ? classeBotao("outline", "projeto-detalhes-botao projeto-detalhes-compacto")
-    : classeBotao("outline", "projeto-detalhes-botao");
 
   return (
     <Dialog.Root onOpenChange={(aberto) => onAbrirFechar?.(aberto)}>
-      <Dialog.Trigger className={classeGatilho}>
+      <Dialog.Trigger
+        render={
+          <ShimmerButton
+            variante="secundaria"
+            tamanho={compacto ? "pequeno" : "padrao"}
+            className="projeto-detalhes-botao"
+          />
+        }
+      >
         {t.detalhes}
         <span className="sr-only"> — {nome}</span>
       </Dialog.Trigger>
@@ -59,17 +94,38 @@ function DetalhesProjeto({ projeto, nome, idioma, compacto = false, onAbrirFecha
             {traduzir(projeto.descricao, idioma)}
           </Dialog.Description>
 
-          {projeto.destaques?.length > 0 && (
-            <>
-              <h3 className="dialogo-subtitulo">{t.funcionalidades}</h3>
-              <ul className="dialogo-lista">
-                {projeto.destaques.map((destaque) => (
-                  <li key={traduzir(destaque, "pt")}>
-                    {traduzir(destaque, idioma)}
-                  </li>
-                ))}
-              </ul>
-            </>
+          <SecaoTexto titulo={t.contexto} texto={projeto.contexto} idioma={idioma} />
+          <SecaoTexto
+            titulo={t.participacao}
+            texto={projeto.participacao}
+            idioma={idioma}
+          />
+          <SecaoLista
+            titulo={t.funcionalidades}
+            itens={projeto.destaques}
+            idioma={idioma}
+          />
+          {/* Separação entre o que foi conferido no ar e o que só está no código */}
+          <SecaoLista
+            titulo={t.validadoEmProducao}
+            itens={projeto.validadoEmProducao}
+            idioma={idioma}
+          />
+          <SecaoLista
+            titulo={t.somenteNoCodigo}
+            itens={projeto.somenteNoCodigo}
+            idioma={idioma}
+          />
+          <SecaoLista titulo={t.decisoes} itens={projeto.decisoes} idioma={idioma} />
+
+          {projeto.imagemComplementar && (
+            <div className="dialogo-imagem">
+              <ImagemProjeto
+                imagem={projeto.imagemComplementar}
+                idioma={idioma}
+                t={t}
+              />
+            </div>
           )}
 
           <h3 className="dialogo-subtitulo">{t.tecnologias}</h3>

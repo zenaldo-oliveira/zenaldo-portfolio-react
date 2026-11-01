@@ -3,7 +3,7 @@ export const traducoesContato = {
   pt: {
     apoio: "Vamos conversar",
     titulo: "Contato",
-    introducao: "Estou aberto a oportunidades como desenvolvedor Front-end Júnior. Escolha o canal de sua preferência.",
+    introducao: "Estou aberto a oportunidades como desenvolvedor Full Stack Júnior. Escolha o canal de sua preferência.",
     canais: {
       email: "E-mail",
       linkedin: "LinkedIn",
@@ -20,7 +20,7 @@ export const traducoesContato = {
   en: {
     apoio: "Let's talk",
     titulo: "Contact",
-    introducao: "I'm open to opportunities as a Junior Front-end Developer. Choose the channel you prefer.",
+    introducao: "I'm open to opportunities as a Junior Full Stack Developer. Choose the channel you prefer.",
     canais: {
       email: "Email",
       linkedin: "LinkedIn",
@@ -37,7 +37,7 @@ export const traducoesContato = {
   es: {
     apoio: "Conversemos",
     titulo: "Contacto",
-    introducao: "Estoy abierto a oportunidades como desarrollador Front-end Junior. Elige el canal que prefieras.",
+    introducao: "Estoy abierto a oportunidades como desarrollador Full Stack Junior. Elige el canal que prefieras.",
     canais: {
       email: "Correo electrónico",
       linkedin: "LinkedIn",

@@ -3,16 +3,18 @@ import EstadoVazio from "@/components/pagina/EstadoVazio";
 import { trajetoria } from "@/data/trajetoria";
 
 import ItemTrajetoria from "./ItemTrajetoria";
-import { ordenarCronologicamente } from "./periodo";
+import { ordenarMarcos } from "./periodo";
 import { traducoesTrajetoria } from "./traducoes";
 import "./LinhaDoTempo.css";
 
 /* ===== INÍCIO: página Linha do Tempo ===== */
-// Somente trajetória profissional (src/data/trajetoria.js).
-// Desktop: linha central e cards alternados; celular: uma coluna com a linha à esquerda.
+// Estudos, formações e projetos (src/data/trajetoria.js), na "ordem"
+// informada em cada registro (marcos sem data mantêm o lugar). Desktop: linha
+// central e cards alternados (só visual: o HTML segue a sequência). Celular:
+// linha à esquerda, uma coluna.
 function LinhaDoTempo({ idioma }) {
   const t = traducoesTrajetoria[idioma];
-  const experiencias = ordenarCronologicamente(trajetoria);
+  const itens = ordenarMarcos(trajetoria);
 
   return (
     <section className="pagina trajetoria" aria-labelledby="trajetoria-titulo">
@@ -23,15 +25,15 @@ function LinhaDoTempo({ idioma }) {
         introducao={t.introducao}
       />
 
-      {experiencias.length === 0 ? (
+      {itens.length === 0 ? (
         <EstadoVazio>{t.vazio}</EstadoVazio>
       ) : (
         <div className="linha-tempo-container">
           <ol className="linha-tempo" aria-label={t.lista}>
-            {experiencias.map((experiencia, indice) => (
+            {itens.map((item, indice) => (
               <ItemTrajetoria
-                key={experiencia.id}
-                experiencia={experiencia}
+                key={item.id}
+                item={item}
                 lado={indice % 2 === 0 ? "esquerda" : "direita"}
                 idioma={idioma}
                 t={t}

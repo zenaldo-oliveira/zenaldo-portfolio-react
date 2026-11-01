@@ -1,6 +1,6 @@
 import { BookOpen, ExternalLink, FolderGit2 } from "lucide-react";
 
-import { classeBotao, propsLinkBotao } from "@/components/pagina/botao";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 /* ===== INÍCIO: links reais do projeto ===== */
 // Documentação da API só faz sentido em projetos com back-end
@@ -11,9 +11,9 @@ function linksDisponiveis(projeto, t) {
   const permiteApi = CATEGORIAS_COM_API.includes(projeto.categoria);
 
   return [
-    { url: repositorio, texto: t.repositorio, curto: t.curtoCodigo, Icone: FolderGit2, variante: "default" },
-    { url: demonstracao, texto: t.demonstracao, curto: t.curtoDemo, Icone: ExternalLink, variante: "outline" },
-    permiteApi && { url: documentacao, texto: t.documentacao, curto: t.curtoApi, Icone: BookOpen, variante: "outline" },
+    { url: repositorio, texto: t.repositorio, curto: t.curtoCodigo, Icone: FolderGit2, variante: "principal" },
+    { url: demonstracao, texto: t.demonstracao, curto: t.curtoDemo, Icone: ExternalLink, variante: "secundaria" },
+    permiteApi && { url: documentacao, texto: t.documentacao, curto: t.curtoApi, Icone: BookOpen, variante: "secundaria" },
   ].filter((link) => link && link.url);
 }
 
@@ -79,18 +79,17 @@ function LinksProjeto({
   return (
     <div className="pagina-acoes">
       {links.map(({ url, texto, Icone, variante }) => (
-        <a
+        <ShimmerButton
           key={url}
-          className={classeBotao(variante)}
+          variante={variante}
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          {...propsLinkBotao}
         >
           <Icone aria-hidden="true" />
           {texto}
           {contexto}
-        </a>
+        </ShimmerButton>
       ))}
     </div>
   );
