@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MotionConfig } from "motion/react";
+import ParticleNetworkBackground from "./components/fundo/ParticleNetworkBackground";
 
 import Tecnologias from "./sections/tecnologias/Tecnologias";
 import Sobre from "./sections/sobre/Sobre";
@@ -7,11 +8,13 @@ import LinhaDoTempo from "./sections/trajetoria/LinhaDoTempo";
 import Projetos from "./sections/projetos/Projetos";
 import Contato from "./sections/contato/Contato";
 import FundoPagina from "./components/fundo/FundoPagina";
+import InteractiveVideoBackground from "./components/fundo/InteractiveVideoBackground";
 import BarraSuperior from "./components/navegacao/BarraSuperior";
 import { useCelular } from "./components/navegacao/useCelular";
 import Sidebar from "./components/sidebar/Sidebar";
 import LogoLoop from "./components/ui/LogoLoop";
 
+import { videosPorPagina } from "./data/fundos";
 import { perfil } from "./data/perfil";
 import { useArquivoDisponivel } from "./hooks/useArquivoDisponivel";
 import { traducoes } from "./i18n/traducoes";
@@ -140,6 +143,7 @@ function Portfolio() {
   /* ===== FIM: estado da sidebar ===== */
 
   const PaginaAtual = paginas[paginaAtual];
+  const videoDaPagina = videosPorPagina[paginaAtual];
   // O currículo saiu do menu; a verificação do PDF segue para o botão em Sobre
   const paginasDisponiveis = Object.keys(paginas);
   /* ===== FIM: página atual ===== */
@@ -163,6 +167,20 @@ function Portfolio() {
         />
 
         <div className="area-principal" inert={fundoInerte}>
+          {/* Vídeo só da página atual (key: troca e recomeça a cada página;
+              nunca há dois vídeos carregando ao mesmo tempo) */}
+          {/* Fundo interativo exclusivo da página Tecnologias */}
+          {paginaAtual === "inicio" ? (
+            <ParticleNetworkBackground />
+          ) : (
+            videoDaPagina && (
+              <InteractiveVideoBackground
+                key={paginaAtual}
+                {...videoDaPagina}
+              />
+            )
+          )}
+
           <BarraSuperior
             textos={textos}
             idioma={idioma}

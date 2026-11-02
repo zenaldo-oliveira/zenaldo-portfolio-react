@@ -125,18 +125,20 @@ h1 {
 /* ===== INÍCIO: layout ===== */
 /* Sidebar | área principal. Uma única rolagem vertical: a do <main>.
    Acima da camada fixa de fundo (FundoPagina, z-index 0).
-   A coluna da sidebar tem largura FIXA (a da sidebar aberta): recolher só
-   estreita a sidebar dentro dessa coluna. Assim a área principal (barra
-   superior, menu de três pontinhos e conteúdo) não muda de posição nem de
-   tamanho — nada se desloca nem é recalculado ao recolher/expandir.
-   No celular a sidebar é um painel sobreposto (fora do fluxo): uma coluna. */
+   A coluna da sidebar (auto) tem a largura REAL da sidebar: aberta 260px,
+   recolhida 72px (Sidebar.css, classe .recolhida definida pelo único estado
+   em Portfolio.jsx). Ao recolher, a área principal (barra superior,
+   conteúdo e carrosséis) ocupa o espaço liberado, acompanhando a transição
+   de largura da sidebar quadro a quadro.
+   No celular a sidebar é um painel sobreposto (fora do fluxo): uma coluna,
+   sem largura reservada. */
 .layout {
   --largura-sidebar-aberta: 260px;
 
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: var(--largura-sidebar-aberta) minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
   width: 100%;
   height: var(--altura-tela, 100dvh);
@@ -149,8 +151,10 @@ h1 {
   }
 }
 
-/* Coluna do conteúdo, ao lado da coluna fixa da sidebar */
+/* Coluna do conteúdo, ao lado da coluna fixa da sidebar. position: relative
+   delimita o vídeo de fundo (InteractiveVideoBackground) a esta coluna. */
 .area-principal {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;

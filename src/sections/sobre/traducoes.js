@@ -7,14 +7,16 @@
 export const traducoesSobre = {
   pt: {
     apoio: "Quem sou",
-    titulo: "Sobre mim",
+    titulo: "Sobre Mim",
+    destaque: "Muito além do código.",
 
     apresentacaoTitulo: "Apresentação",
     apresentacao: [
-      "Sou Zenaldo Pereira de Oliveira, de Cuiabá, Mato Grosso. Estou em transição de carreira para o desenvolvimento web, trazendo uma trajetória em telecomunicações e manutenção técnica.",
-      "Minha experiência com diagnóstico de falhas, manutenção e operação de infraestrutura desenvolveu minha capacidade de investigar problemas, trabalhar com organização e buscar soluções práticas. Hoje, aplico essa mesma atenção na construção de interfaces e aplicações.",
-      "Desenvolvo projetos com React, Next.js, JavaScript e Node.js, com foco em responsividade, organização do código e integração com APIs.",
+      "Sou Zenaldo Oliveira, desenvolvedor Full Stack com formação em Análise e Desenvolvimento de Sistemas e experiência profissional nas áreas de tecnologia e telecomunicações.",
+      "Atuo no desenvolvimento de interfaces modernas, aplicações web e soluções digitais utilizando React, JavaScript, TypeScript e Node.js.",
+      "Por meio da ZTech Solutions, desenvolvo soluções digitais para empresas e profissionais, incluindo sites, sistemas web e automações.",
     ],
+    conhecaProjetos: "Conheça meus projetos",
 
     trajetoriaTitulo: "Experiência e formação",
     experienciaTitulo: "Experiência técnica",
@@ -64,14 +66,16 @@ export const traducoesSobre = {
 
   en: {
     apoio: "Who I am",
-    titulo: "About me",
+    titulo: "About Me",
+    destaque: "Far beyond code.",
 
     apresentacaoTitulo: "Introduction",
     apresentacao: [
-      "I'm Zenaldo Pereira de Oliveira, from Cuiabá, Mato Grosso, Brazil. I'm transitioning my career into web development, bringing a background in telecommunications and technical maintenance.",
-      "My experience with fault diagnosis, maintenance and infrastructure operation developed my ability to investigate problems, work in an organized way and look for practical solutions. Today, I bring that same attention to building interfaces and applications.",
-      "I build projects with React, Next.js, JavaScript and Node.js, focusing on responsiveness, code organization and API integration.",
+      "I'm Zenaldo Oliveira, a Full Stack developer with a degree in Systems Analysis and Development and professional experience in technology and telecommunications.",
+      "I build modern interfaces, web applications and digital solutions using React, JavaScript, TypeScript and Node.js.",
+      "Through ZTech Solutions, I create digital solutions for companies and professionals, including websites, web systems and automations.",
     ],
+    conhecaProjetos: "Explore my projects",
 
     trajetoriaTitulo: "Experience and education",
     experienciaTitulo: "Technical experience",
@@ -121,14 +125,16 @@ export const traducoesSobre = {
 
   es: {
     apoio: "Quién soy",
-    titulo: "Sobre mí",
+    titulo: "Sobre Mí",
+    destaque: "Mucho más allá del código.",
 
     apresentacaoTitulo: "Presentación",
     apresentacao: [
-      "Soy Zenaldo Pereira de Oliveira, de Cuiabá, Mato Grosso, Brasil. Estoy en transición de carrera hacia el desarrollo web, con una trayectoria en telecomunicaciones y mantenimiento técnico.",
-      "Mi experiencia en diagnóstico de fallas, mantenimiento y operación de infraestructura desarrolló mi capacidad para investigar problemas, trabajar con organización y buscar soluciones prácticas. Hoy aplico esa misma atención en la construcción de interfaces y aplicaciones.",
-      "Desarrollo proyectos con React, Next.js, JavaScript y Node.js, con foco en el diseño adaptable, la organización del código y la integración con APIs.",
+      "Soy Zenaldo Oliveira, desarrollador Full Stack con formación en Análisis y Desarrollo de Sistemas y experiencia profesional en las áreas de tecnología y telecomunicaciones.",
+      "Desarrollo interfaces modernas, aplicaciones web y soluciones digitales con React, JavaScript, TypeScript y Node.js.",
+      "A través de ZTech Solutions, desarrollo soluciones digitales para empresas y profesionales, incluidos sitios web, sistemas web y automatizaciones.",
     ],
+    conhecaProjetos: "Conoce mis proyectos",
 
     trajetoriaTitulo: "Experiencia y formación",
     experienciaTitulo: "Experiencia técnica",

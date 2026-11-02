@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
+import { useParallaxFundo } from "@/hooks/useParallaxFundo";
+
 import { caminhoConexao, RAIO_ANEL_EXTERNO } from "./geometria";
+import { useTextScramble } from "./useTextScramble";
 import "./ServicesOrbit.css";
 
 /* ===== INÍCIO: constantes da composição ===== */
@@ -17,6 +20,10 @@ const PARTICULA_DURACAO_S = 4.8;
 // Atraso entre as partículas das seis conexões, para não saírem juntas
 const PARTICULA_DEFASAGEM_S = 0.8;
 const CONSULTA_MOVIMENTO_REDUZIDO = "(prefers-reduced-motion: reduce)";
+// Fração visível que dispara a entrada (uma única vez)
+const LIMIAR_REVELACAO = 0.15;
+// Parallax dos pontos de luz: 0.4 x 10px = no máximo 4px, bem macio
+const PARALLAX_DECORACAO = { intensidade: 0.4, suavizacao: 0.05 };
 
 // Pontos de luz fixos entre o anel interno e o externo (viewBox 200x200),
 // sempre fora da área do QR Code
@@ -88,7 +95,12 @@ function ConteudoServico({ servico, idioma }) {
         <Icone size={20} strokeWidth={1.75} />
       </span>
       <span className="servico-textos">
-        <span className="servico-titulo">{servico.titulo[idioma]}</span>
+        {/* Título real (lido e medido) + camada do Text Scramble, vazia no
+            JSX e preenchida só durante o efeito (useTextScramble) */}
+        <span className="servico-titulo">
+          <span className="servico-titulo-texto">{servico.titulo[idioma]}</span>
+          <span className="servico-titulo-embaralhado" aria-hidden="true" />
+        </span>
         <span className="servico-descricao">{servico.descricao[idioma]}</span>
         {servico.destino && (
           <span className="servico-destino">
@@ -122,7 +134,13 @@ function ServicesOrbit({ servicos, idioma = "pt", qrCode, rotulo }) {
   const listaRef = useRef(null);
   const conexoesRef = useRef(null);
   const qrRef = useRef(null);
+  const decoracaoRef = useRef(null);
   const [geometria, setGeometria] = useState(null);
+  // Entrada (linhas, cartões e títulos): uma única vez, ao entrar na viewport
+  const [revelado, setRevelado] = useState(false);
+
+  useTextScramble(raizRef, revelado);
+  useParallaxFundo(decoracaoRef, true, PARALLAX_DECORACAO);
 
   /* ===== INÍCIO: recalcula as conexões quando o tamanho muda ===== */
   // O ResizeObserver dispara ao observar e a cada mudança de tamanho (inclusive
@@ -172,10 +190,14 @@ function ServicesOrbit({ servicos, idioma = "pt", qrCode, rotulo }) {
       else svg.unpauseAnimations();
     }
 
-    const observador = new IntersectionObserver(([registro]) => {
-      visivel = registro.isIntersecting;
-      sincronizar();
-    });
+    const observador = new IntersectionObserver(
+      ([registro]) => {
+        visivel = registro.isIntersecting;
+        if (visivel) setRevelado(true);
+        sincronizar();
+      },
+      { threshold: [0, LIMIAR_REVELACAO] },
+    );
 
     sincronizar();
     observador.observe(raiz);
@@ -188,11 +210,50 @@ function ServicesOrbit({ servicos, idioma = "pt", qrCode, rotulo }) {
   }, []);
   /* ===== FIM: pausa fora da tela e com movimento reduzido ===== */
 
+  /* ===== INÍCIO: spotlight dos cartões ===== */
+  // Um único listener na lista: a posição do mouse vira --spot-x/--spot-y
+  // no cartão sob o ponteiro, aplicada em requestAnimationFrame (sem setState)
+  useEffect(() => {
+    const lista = listaRef.current;
+    if (!lista) return undefined;
+
+    let quadro = 0;
+    let pendente = null;
+
+    const aplicar = () => {
+      quadro = 0;
+      if (!pendente) return;
+      const { cartao, x, y } = pendente;
+      cartao.style.setProperty("--spot-x", `${x}px`);
+      cartao.style.setProperty("--spot-y", `${y}px`);
+    };
+
+    const aoMover = (evento) => {
+      if (evento.pointerType !== "mouse") return;
+      const cartao = evento.target.closest?.(".servico-cartao");
+      if (!cartao) return;
+      const area = cartao.getBoundingClientRect();
+      pendente = { cartao, x: evento.clientX - area.left, y: evento.clientY - area.top };
+      if (!quadro) quadro = requestAnimationFrame(aplicar);
+    };
+
+    lista.addEventListener("pointermove", aoMover, { passive: true });
+    return () => {
+      cancelAnimationFrame(quadro);
+      lista.removeEventListener("pointermove", aoMover);
+    };
+  }, []);
+  /* ===== FIM: spotlight dos cartões ===== */
+
 
   const caminhos = geometria?.caminhos ?? [];
 
   return (
-    <div className="servicos-orbita" ref={raizRef}>
+    <div
+      className="servicos-orbita"
+      ref={raizRef}
+      data-revelado={revelado ? "sim" : "nao"}
+    >
       <div className="servicos-orbita-composicao">
         {/* ===== INÍCIO: conexões (decorativas) ===== */}
         <svg
@@ -210,9 +271,13 @@ function ServicesOrbit({ servicos, idioma = "pt", qrCode, rotulo }) {
               className="servicos-orbita-linha"
               data-indice={indice}
               d={d}
+              pathLength="1"
+              style={{ "--i": indice }}
             />
           ))}
 
+          {/* Partículas aparecem depois do desenho das linhas (CSS) */}
+          <g className="servicos-orbita-particulas">
           {caminhos.map((d, indice) => {
             const inicio = `-${(indice * PARTICULA_DEFASAGEM_S).toFixed(1)}s`;
             const duracao = `${PARTICULA_DURACAO_S}s`;
@@ -240,6 +305,7 @@ function ServicesOrbit({ servicos, idioma = "pt", qrCode, rotulo }) {
               </circle>
             );
           })}
+          </g>
         </svg>
         {/* ===== FIM: conexões (decorativas) ===== */}
 
@@ -271,17 +337,29 @@ function ServicesOrbit({ servicos, idioma = "pt", qrCode, rotulo }) {
                 <circle className="orbita-ponto" cx="100" cy="30" r="1.4" />
               </g>
 
-              {PONTOS_DE_LUZ.map(({ x, y, atraso }) => (
-                <circle
-                  key={`${x}-${y}`}
-                  className="ponto-de-luz"
-                  cx={x}
-                  cy={y}
-                  r="1"
-                  style={{ animationDelay: atraso }}
-                />
-              ))}
             </svg>
+
+            {/* Pontos de luz numa camada própria, a única com parallax (até
+                4px): anéis, linhas, cartões e QR Code ficam parados */}
+            <div className="servicos-orbita-decoracao" ref={decoracaoRef}>
+              <svg
+                className="servicos-orbita-aneis"
+                viewBox="0 0 200 200"
+                aria-hidden="true"
+                focusable="false"
+              >
+                {PONTOS_DE_LUZ.map(({ x, y, atraso }) => (
+                  <circle
+                    key={`${x}-${y}`}
+                    className="ponto-de-luz"
+                    cx={x}
+                    cy={y}
+                    r="1"
+                    style={{ animationDelay: atraso }}
+                  />
+                ))}
+              </svg>
+            </div>
 
             {/* Estático e frontal (sem inclinação), para não prejudicar a leitura */}
             <a
@@ -323,8 +401,8 @@ function ServicesOrbit({ servicos, idioma = "pt", qrCode, rotulo }) {
 
         {/* ===== INÍCIO: serviços ===== */}
         <ul className="servicos-orbita-lista" ref={listaRef} aria-label={rotulo}>
-          {servicos.map((servico) => (
-            <li className="servico" key={servico.id}>
+          {servicos.map((servico, indice) => (
+            <li className="servico" key={servico.id} style={{ "--i": indice }}>
               {servico.destino ? (
                 <a className="servico-cartao" href={servico.destino.href}>
                   <ConteudoServico servico={servico} idioma={idioma} />

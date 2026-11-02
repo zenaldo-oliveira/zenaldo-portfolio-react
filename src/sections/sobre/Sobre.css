@@ -81,6 +81,28 @@ section.pagina.sobre {
   margin-bottom: 0;
 }
 
+/* Destaque do cabeçalho ("Muito além do código."): frase curta em
+   evidência, logo abaixo do título (introducao do CabecalhoPagina) */
+.sobre .pagina-introducao {
+  color: var(--texto);
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* Ação ao fim da apresentação; o último parágrafo mantém o respiro */
+.sobre-apresentacao-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.sobre-texto:has(+ .sobre-apresentacao-acoes) {
+  margin-bottom: 0;
+}
+
 /* Links de texto em linha, para a seta acompanhar a última palavra quando
    o texto quebra. A área de toque de 44px vem do ::after, que estende a
    área clicável para cima e para baixo sem ocupar espaço no layout. */

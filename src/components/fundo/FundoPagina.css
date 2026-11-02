@@ -30,4 +30,44 @@
   inset: 0;
   background-color: var(--pelicula);
 }
+
+/* ===== Película "marinho" (página Sobre) ===== */
+/* Preto azul-marinho profundo com vinheta: centro na opacidade base (70%)
+   e bordas ~14 pontos mais escuras. O centro não é clareado porque a imagem
+   tem textos próprios ali, que não podem competir com o conteúdo.
+   Só no tema escuro; no claro continua --pelicula (texto escuro). */
+:root:not([data-tema="claro"])
+  .fundo-pagina[data-pelicula="marinho"][data-imagem="sim"]::after {
+  background-color: transparent;
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgb(2 5 14 / 0.25),
+      transparent 30%,
+      transparent 70%,
+      rgb(2 5 14 / 0.3)
+    ),
+    radial-gradient(
+      ellipse 80% 75% at 55% 45%,
+      rgb(5 12 30 / var(--fundo-pagina-opacidade, 0.7)) 0%,
+      rgb(3 8 22 / calc(var(--fundo-pagina-opacidade, 0.7) + 0.06)) 55%,
+      rgb(2 4 12 / calc(var(--fundo-pagina-opacidade, 0.7) + 0.14)) 100%
+    );
+}
+
+/* Com imagem carregada (FundoPagina), vídeo em tela cheia
+   (InteractiveVideoBackground telaCheia) ou a rede de partículas de
+   Tecnologias (ParticleNetworkBackground), a sidebar fica translúcida
+   (desktop) para o fundo aparecer atrás de toda a interface. Mesma cor do
+   painel, com desfoque para manter a leitura da navegação. No celular a
+   sidebar é um painel sobre o conteúdo e continua opaca. */
+@media (min-width: 769px) {
+  .fundo-pagina[data-imagem="sim"] ~ .layout .sidebar,
+  .layout:has(.video-fundo[data-tela-cheia="sim"]) .sidebar,
+  .layout:has(.particle-network-background) .sidebar {
+    background-color: color-mix(in srgb, var(--painel) 72%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    backdrop-filter: blur(14px) saturate(1.1);
+  }
+}
 /* ===== FIM: fundo da página ===== */

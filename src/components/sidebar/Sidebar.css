@@ -199,8 +199,8 @@
 .sidebar nav a svg {
   flex-shrink: 0;
 }
-/* Recolher/expandir com transição curta da largura: a área principal (flex)
-   acompanha sem salto. Durante a troca os rótulos não quebram linha e o
+/* Recolher/expandir com transição curta da largura: a coluna do grid
+   (.layout, auto) e a área principal acompanham sem salto. Durante a troca os rótulos não quebram linha e o
    excesso horizontal é recortado (só na animação). Sem animação com
    movimento reduzido. */
 .sidebar {
@@ -214,8 +214,8 @@
 @media (prefers-reduced-motion: no-preference) and (min-width: 769px) {
   .sidebar {
     transition:
-      width 0.25s ease,
-      padding 0.25s ease;
+      width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+      padding 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   }
 }
 /* ===== FIM: sidebar recolhida ===== */

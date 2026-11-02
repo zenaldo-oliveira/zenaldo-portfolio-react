@@ -564,3 +564,182 @@
   }
 }
 /* ===== FIM: movimento ===== */
+
+/* ===== INÍCIO: hub interativo (entrada, scramble, spotlight) ===== */
+/* Tudo em transform/opacity/stroke-dashoffset, disparado uma única vez por
+   data-revelado (IntersectionObserver em ServicesOrbit.jsx). Cartões, linhas,
+   anéis e QR Code não mudam de tamanho nem de posição final. */
+
+/* Camada dos pontos de luz: a única com parallax (até 4px, useParallaxFundo) */
+.servicos-orbita-decoracao {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Título real + camada do Text Scramble sobreposta (mesma caixa): o real
+   define largura, quebra e altura; durante o efeito só fica transparente */
+.servico-titulo {
+  position: relative;
+}
+
+.servico-titulo-embaralhado {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: color-mix(in srgb, var(--destaque) 55%, var(--texto));
+  pointer-events: none;
+}
+
+.servicos-orbita[data-embaralhando] .servico-titulo-texto {
+  color: transparent;
+}
+
+@keyframes servicos-desenhar {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes servicos-pulsar {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Linhas: desenho progressivo do cartão até o anel, uma após a outra */
+  .servicos-orbita-linha {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  .servicos-orbita[data-revelado="sim"] .servicos-orbita-linha {
+    animation: servicos-desenhar 1.1s cubic-bezier(0.22, 1, 0.36, 1)
+      calc(0.15s + var(--i, 0) * 0.09s) both;
+  }
+
+  /* Partículas só depois que as linhas estão desenhadas */
+  .servicos-orbita-particulas {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .servicos-orbita[data-revelado="sim"] .servicos-orbita-particulas {
+    opacity: 1;
+    transition-delay: 1.4s;
+  }
+
+  /* Anéis principais: pulsação discreta (só opacidade), fora de fase */
+  .anel-externo {
+    animation: servicos-pulsar 7s ease-in-out infinite alternate;
+  }
+
+  .anel-interno {
+    animation: servicos-pulsar 7s ease-in-out -3.5s infinite alternate;
+  }
+
+  /* Cartões: entrada em sequência (fade + 12px). Anima o cartão, não o
+     <li>: as conexões são medidas no <li> e nunca ficam deslocadas */
+  .servico-cartao {
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease,
+      opacity 0.6s ease calc(0.1s + var(--i, 0) * 0.07s),
+      translate 0.7s cubic-bezier(0.22, 1, 0.36, 1)
+        calc(0.1s + var(--i, 0) * 0.07s);
+  }
+
+  .servicos-orbita[data-revelado="nao"] .servico-cartao {
+    opacity: 0;
+    translate: 0 12px;
+  }
+
+  /* Foco pelo teclado antes da entrada: o cartão aparece na hora */
+  .servicos-orbita[data-revelado="nao"] .servico:focus-within .servico-cartao {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+/* Celular: só fade nos cartões (sem deslocamento) */
+@media (prefers-reduced-motion: no-preference) and (max-width: 768px) {
+  .servicos-orbita[data-revelado="nao"] .servico-cartao {
+    translate: none;
+  }
+}
+
+/* Spotlight e borda iluminada que acompanham o mouse (só com mouse; no
+   teclado, o foco acende os dois no centro do cartão). Os cartões não se
+   movem: só luz, para as conexões continuarem alinhadas. */
+@media (hover: hover) and (pointer: fine) {
+  .servico-cartao {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* Luz suave no interior, sob o conteúdo */
+  .servico-cartao::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      240px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      color-mix(in srgb, var(--destaque) 12%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  /* Brilho só na borda (máscara recorta o interior) */
+  .servico-cartao::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    padding: 1px;
+    border-radius: 15px;
+    background: radial-gradient(
+      160px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      color-mix(in srgb, var(--destaque) 85%, transparent),
+      transparent 70%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .servico-cartao:hover::before,
+  .servico-cartao:hover::after,
+  .servico-cartao:focus-visible::before,
+  .servico-cartao:focus-visible::after {
+    opacity: 1;
+  }
+}
+/* ===== FIM: hub interativo ===== */

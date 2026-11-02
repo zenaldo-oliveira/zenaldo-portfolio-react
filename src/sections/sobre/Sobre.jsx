@@ -1,6 +1,7 @@
 import { Revelar } from "@/components/pagina/animacao";
 import CabecalhoPagina from "@/components/pagina/CabecalhoPagina";
 import { Separator } from "@/components/ui/separator";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { perfil } from "@/data/perfil";
 
 import ExperienciaFormacao from "./ExperienciaFormacao";
@@ -34,7 +35,12 @@ function Sobre({ idioma, curriculoDisponivel }) {
   // (display: contents): conteúdo + objetivo, ou uma coluna.
   return (
     <section className="pagina sobre" aria-labelledby="sobre-titulo">
-      <CabecalhoPagina id="sobre-titulo" apoio={t.apoio} titulo={t.titulo} />
+      <CabecalhoPagina
+        id="sobre-titulo"
+        apoio={t.apoio}
+        titulo={t.titulo}
+        introducao={t.destaque}
+      />
 
       <div className="sobre-grade">
         <div className="sobre-coluna sobre-coluna-a">
@@ -46,6 +52,10 @@ function Sobre({ idioma, curriculoDisponivel }) {
                   {paragrafo}
                 </p>
               ))}
+              {/* Navegação existente: o hash troca a página (Portfolio) */}
+              <div className="sobre-apresentacao-acoes">
+                <ShimmerButton href="#projetos">{t.conhecaProjetos}</ShimmerButton>
+              </div>
             </section>
           </Bloco>
 

@@ -13,6 +13,21 @@ section.tecnologias {
   padding: 0;
   color: var(--texto);
 }
+
+/* Entrada discreta ao abrir a página: só opacidade (cards e faixa não se
+   movem). fill-mode backwards: ao terminar, nenhum estilo permanece. O fundo
+   (poster/vídeo) não participa, então não há flash escuro. */
+@media (prefers-reduced-motion: no-preference) {
+  section.tecnologias {
+    animation: tecnologias-entrada 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+}
+
+@keyframes tecnologias-entrada {
+  from {
+    opacity: 0;
+  }
+}
 /* ===== FIM: estrutura da página ===== */
 
 /* ===== INÍCIO: cabeçalho do bloco de serviços ===== */
@@ -127,15 +142,37 @@ section.tecnologias {
   }
 }
 
-/* Altura fixa (--faixa-altura) para o WhatsApp ficar centralizado nela */
+/* Altura fixa (--faixa-altura) para o WhatsApp ficar centralizado nela.
+   Viewport do carrossel (único elemento com overflow: hidden): começa
+   alinhado ao conteúdo (--espaco-main) e termina antes do WhatsApp (botão +
+   margens), para nenhum card ficar escondido sob ele. Como está no fluxo da
+   área principal, acompanha a sidebar aberta, recolhida ou em animação.
+   Fade nas pontas com mask-image (os cards somem suavemente, sem corte seco). */
 .tecnologias-carrossel {
+  --carrossel-fade: clamp(24px, 3vw, 56px);
+
   display: flex;
   align-items: center;
-  width: 100%;
   min-width: 0;
   height: var(--faixa-altura);
   overflow: hidden;
+  margin: 0 calc(var(--whatsapp-tamanho) + 2 * var(--whatsapp-margem)) 0
+    var(--espaco-main, 16px);
   padding: 8px 0;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--carrossel-fade),
+    #000 calc(100% - var(--carrossel-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--carrossel-fade),
+    #000 calc(100% - var(--carrossel-fade)),
+    transparent
+  );
 }
 /* ===== INÍCIO: organização das duas faixas ===== */
 .tecnologias-carrosseis {
@@ -209,12 +246,13 @@ section.tecnologias {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Sem animação a faixa rola à mão; o espaço final deixa o último item
-     sair de trás do WhatsApp */
+  /* Sem animação a faixa rola à mão (o espaço do WhatsApp já fica fora do
+     viewport); o recuo interno do tamanho do fade deixa o primeiro e o
+     último item chegarem à área nítida */
   .tecnologias-carrossel {
     height: auto; /* a barra de rolagem não pode cortar os itens */
     overflow-x: auto;
-    padding-right: calc(var(--whatsapp-tamanho) + 2 * var(--whatsapp-margem));
+    padding-inline: var(--carrossel-fade);
   }
 
   .tecnologias-faixa[aria-hidden="true"] {

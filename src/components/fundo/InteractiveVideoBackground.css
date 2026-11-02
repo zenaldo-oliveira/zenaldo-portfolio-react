@@ -1,0 +1,88 @@
+/* ===== INÍCIO: vídeo de fundo da área de conteúdo ===== */
+/* Preenche a .area-principal (position: relative). z-index -1 dentro do
+   contexto da .layout: abaixo da barra superior, do <main> e do rodapé, e
+   acima da camada fixa FundoPagina. Não recebe cliques nem rolagem. */
+.video-fundo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--fundo);
+}
+
+/* 12px maiores que a área em cada lado: o parallax (até 10px, em
+   useParallaxFundo) nunca revela as bordas. O poster é o fallback. */
+.video-fundo-camada {
+  position: absolute;
+  inset: -12px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  will-change: transform;
+  animation: video-fundo-entrada 0.6s ease-out both;
+}
+
+.video-fundo-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.video-fundo[data-estado="pronto"] .video-fundo-video {
+  opacity: 1;
+}
+
+/* Película: cor de fundo do tema (escura no escuro, clara no claro), com
+   opacidade ajustável por página (prop overlayOpacity) */
+.video-fundo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--fundo);
+  opacity: var(--video-fundo-opacidade, 0.7);
+}
+
+/* ===== Tela cheia (página Tecnologias) ===== */
+/* Fixo na janela: atrás também da sidebar. Continua com z-index -1 no
+   contexto da .layout, abaixo de toda a interface. */
+.video-fundo[data-tela-cheia="sim"] {
+  position: fixed;
+}
+
+/* ===== Variante "painel" (página Tecnologias) ===== */
+/* Máscara uniforme na cor dos cards (--painel): escura no tema escuro e
+   clara no claro, com a opacidade de overlayOpacity */
+.video-fundo[data-overlay="painel"]::after {
+  background-color: var(--painel);
+}
+
+/* Sem fade da camada: o poster aparece de imediato (sem flash de fundo) e
+   o vídeo surge por cima dele com easing suave */
+.video-fundo[data-overlay="painel"] .video-fundo-camada {
+  animation: none;
+}
+
+.video-fundo[data-overlay="painel"] .video-fundo-video {
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes video-fundo-entrada {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-fundo-camada {
+    animation: none;
+  }
+
+  .video-fundo-video {
+    transition: none;
+  }
+}
+/* ===== FIM: vídeo de fundo da área de conteúdo ===== */
