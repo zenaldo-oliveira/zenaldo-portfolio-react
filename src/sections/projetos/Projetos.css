@@ -1,260 +1,34 @@
-/* ===== INÍCIO: título da grade completa ===== */
-.projetos-todos-titulo {
-  margin: 0 0 16px;
-  font-size: 20px;
-  line-height: 1.3;
-}
-/* ===== FIM: título da grade completa ===== */
-
-/* ===== INÍCIO: barra de busca e filtros ===== */
-.projetos-barra {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 16px;
+/* ===== INÍCIO: página ===== */
+/* Cabeçalho compacto: a roda e os controles cabem sem rolagem no computador.
+   A reserva de 80px do fim da página (botão do WhatsApp) fica, no computador,
+   só para a barra de controles, centralizada e longe do botão. */
+/* margin-bottom: espaço de 24 a 48px entre o cabeçalho e a roda,
+   proporcional à altura da janela */
+.projetos .pagina-cabecalho {
+  margin-bottom: clamp(24px, 5dvh, 48px);
+  padding-bottom: 10px;
 }
 
-.projetos-busca {
-  position: relative;
-  flex: 1 1 260px;
-  max-width: 360px;
-}
 
-.projetos-busca-icone {
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  color: var(--texto-secundario);
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.projetos-busca input {
-  width: 100%;
-  height: 40px;
-  padding: 0 12px 0 36px;
-  color: var(--texto);
-  background-color: var(--painel);
-  border: 1px solid var(--borda);
-  border-radius: 8px;
-  font: inherit;
-  font-size: 14px;
-}
-
-.projetos-busca input::placeholder {
-  color: var(--texto-secundario);
-  opacity: 0.7;
-}
-
-.projetos-busca input:focus-visible {
-  outline: 2px solid var(--destaque);
-  outline-offset: 2px;
-}
-
-/* Categorias: controle segmentado */
-.filtro-categorias {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  padding: 3px;
-  background-color: var(--painel);
-  border: 1px solid var(--borda);
-  border-radius: 10px;
-}
-
-.categoria-opcao {
-  gap: 8px;
-  color: var(--texto-secundario);
-}
-
-/* Selecionada: fundo, contorno e peso da fonte (não depende só da cor) */
-.categoria-opcao[data-pressed] {
-  color: var(--texto);
-  background-color: var(--hover);
-  box-shadow: inset 0 0 0 1px var(--borda);
-  font-weight: 600;
-}
-
-.categoria-total {
-  min-width: 20px;
-  padding: 0 6px;
-  color: var(--texto-secundario);
-  background-color: var(--fundo);
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 20px;
-  text-align: center;
-}
-
-.projetos-barra-tecnologias {
-  margin-top: 12px;
-}
-
-.filtro-tecnologias {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-/* Opção selecionada usa as cores do tema, não só a cor de fundo */
-.filtro-opcao[data-pressed] {
-  background-color: var(--texto);
-  color: var(--fundo);
-  border-color: var(--texto);
-}
-
-.projetos .projetos-resultado {
-  margin: 12px 0 16px;
-  color: var(--texto-secundario);
-  font-size: 13px;
-}
-
-.projetos-sem-resultado {
-  display: grid;
-  justify-items: start;
-  gap: 16px;
-}
-
-@media (max-width: 768px) {
-  .projetos-busca {
-    flex-basis: 100%;
-    max-width: none;
-  }
-
-  /* Categorias em 2×2, ocupando a largura toda */
-  .filtro-categorias {
-    display: grid;
-    flex-basis: 100%;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .categoria-opcao {
-    justify-content: space-between;
+@media (min-width: 769px) {
+  section.pagina.projetos {
+    padding-bottom: 8px;
   }
 }
-/* ===== FIM: barra de busca e filtros ===== */
 
-/* ===== INÍCIO: grade ===== */
-/* auto-fill: quantas colunas de no mínimo 230px couberem na largura real
-   (na prática ~230–260px cada, mais colunas em telas largas ou com a sidebar
-   recolhida); cada projeto novo forma novas linhas. Uma coluna no celular.
-   A rolagem é só a do <main>. */
-.projetos-grade {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
-  gap: 12px;
-  /* Cada card com a altura do próprio conteúdo, alinhado ao topo da fileira
-     (sem igualar alturas, para não sobrar espaço vazio dentro dos cards) */
-  align-items: start;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+/* Um único projeto: cartão estático, centralizado */
+.projeto-unico {
+  width: min(100%, 380px);
+  margin-inline: auto;
 }
-/* ===== FIM: grade ===== */
+/* ===== FIM: página ===== */
 
-/* ===== INÍCIO: mini card de projeto ===== */
-/* Borda fina, cantos de 10px, padding de 12px e sem altura mínima */
-.cartao.projeto-cartao {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-/* Hover discreto: só a borda (sem elevação nem sombra) */
-.cartao.projeto-cartao:hover,
-.cartao.projeto-cartao:focus-within {
-  box-shadow: none;
-  transform: none;
-}
-
-/* Ícone | nome com categoria e status abaixo */
-.projeto-cabecalho {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
-  gap: 10px;
-}
-
-.projeto-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 8px;
-  margin-top: 2px;
-}
-
-/* Ícone de 28px ao lado do nome */
-.projeto-icone {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  color: var(--texto);
-  background-color: var(--fundo);
-  border: 1px solid var(--borda);
-  border-radius: 8px;
-}
-
-.projeto-icone img {
-  display: block;
-  object-fit: contain;
-}
-
-.projeto-cartao .projeto-identificacao h3 {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.3;
-  overflow-wrap: anywhere;
-}
-
-.projeto-cartao .projeto-categoria {
-  color: var(--texto-secundario);
-  font-size: 12px;
-}
-
+/* ===== INÍCIO: status e links do projeto ===== */
 .projeto-status {
   height: auto;
   padding: 3px 8px;
   font-size: 11px;
   font-weight: 600;
-}
-
-/* Descrição curta: no máximo duas linhas, sem barra de rolagem no cartão */
-.projeto-cartao .projeto-descricao {
-  display: -webkit-box;
-  overflow: hidden;
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.5;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-
-/* Tecnologias em etiquetas pequenas (até 3 + "+N") */
-.projeto-cartao .etiquetas {
-  gap: 6px;
-}
-
-.projeto-cartao .etiqueta {
-  padding: 1px 7px;
-  color: var(--texto-secundario);
-  font-size: 11px;
-}
-
-.projeto-cartao .etiqueta-restantes {
-  cursor: help;
-}
-
-/* Ações compactas numa linha: Detalhes e, quando cadastrados, Ver site/GitHub/API */
-.projeto-rodape {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 14px;
 }
 
 .projeto-links {
@@ -287,18 +61,10 @@
   font-size: 12px;
 }
 
-/* Links da grade (Ver site, GitHub, API) um pouco menores que no destaque */
-.projeto-cartao .projeto-links {
-  gap: 4px 12px;
-}
-
-.projeto-cartao .projeto-links a {
-  font-size: 12px;
-}
-/* ===== FIM: mini card de projeto ===== */
+/* ===== FIM: status e links do projeto ===== */
 
 /* ===== INÍCIO: imagem do projeto ===== */
-/* Usada no diálogo de detalhes (e na seção de destaque preservada) */
+/* Usada nos cartões do carrossel e no diálogo de detalhes */
 .projeto-imagem {
   overflow: hidden;
   aspect-ratio: 16 / 10;
@@ -314,6 +80,13 @@
   object-fit: cover;
   object-position: top left;
   user-select: none;
+}
+
+/* Mockups (ajuste "conter"): imagem inteira, centralizada, com respiro */
+.projeto-imagem[data-ajuste="conter"] img {
+  padding: 8px;
+  object-fit: contain;
+  object-position: center;
 }
 
 .projeto-imagem-vazia {

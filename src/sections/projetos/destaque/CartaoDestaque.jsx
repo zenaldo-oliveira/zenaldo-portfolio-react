@@ -9,7 +9,11 @@ import LinksProjeto from "../LinksProjeto";
 
 /* ===== INÍCIO: cartão do projeto em destaque ===== */
 // vertical: formato do carrossel (imagem em cima). Sem vertical: destaque estático.
-// Links aparecem só quando cadastrados (sem aviso de "não publicados").
+// Ações: "Ver detalhes" e, quando cadastrados, "Demo" e "GitHub".
+// No carrossel, as tecnologias mostram as primeiras e um "+N" (lista completa
+// no title, para leitores de tela e no diálogo de detalhes).
+const TECNOLOGIAS_NO_CARTAO = 5;
+
 function CartaoDestaque({
   projeto,
   idioma,
@@ -30,6 +34,8 @@ function CartaoDestaque({
         imagem={projeto.imagem}
         idioma={idioma}
         prioridade={prioridade}
+        palco={vertical}
+        dispositivos={projeto.dispositivos}
         t={t}
       />
 
@@ -52,21 +58,24 @@ function CartaoDestaque({
         <ListaEtiquetas
           itens={nomesTecnologias(projeto.tecnologias)}
           rotulo={t.tecnologias}
+          limite={TECNOLOGIAS_NO_CARTAO}
+          rotuloRestantes={t.maisTecnologias}
         />
 
         <div className="destaque-acoes">
-          <LinksProjeto
-            projeto={projeto}
-            nome={nome}
-            compacto
-            ocultarSemLinks
-            t={t}
-          />
           <DetalhesProjeto
             projeto={projeto}
             nome={nome}
             idioma={idioma}
             onAbrirFechar={onAbrirFechar}
+            t={t}
+          />
+          <LinksProjeto
+            projeto={projeto}
+            nome={nome}
+            compacto
+            carrossel
+            ocultarSemLinks
             t={t}
           />
         </div>

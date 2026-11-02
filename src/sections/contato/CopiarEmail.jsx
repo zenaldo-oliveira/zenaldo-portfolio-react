@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
+import { Check, Copy } from "lucide-react";
 
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 const TEMPO_AVISO_MS = 3000;
 
 /* ===== INÍCIO: copiar e-mail ===== */
+// Feedback no próprio botão ("E-mail copiado." por 3 s), sem deslocar o
+// layout; o mesmo texto é anunciado aos leitores de tela (role="status").
+// Se a cópia falhar, a orientação aparece como texto abaixo dos botões.
 function CopiarEmail({ email, t }) {
   const [situacao, setSituacao] = useState("parado");
 
-  // Some com o aviso depois de alguns segundos
   useEffect(() => {
     if (situacao === "parado" || situacao === "copiando") return;
 
@@ -31,24 +34,28 @@ function CopiarEmail({ email, t }) {
     }
   }
 
-  const aviso = { parado: "", copiando: "", copiado: t.copiado, erro: t.erroCopiar }[
-    situacao
-  ];
+  const copiado = situacao === "copiado";
+  const aviso = { copiado: t.copiado, erro: t.erroCopiar }[situacao] ?? "";
 
   return (
-    <div className="contato-copiar">
+    <>
       <ShimmerButton
         variante="secundaria"
         type="button"
         carregando={situacao === "copiando"}
         onClick={copiar}
       >
-        {t.copiar}
+        {copiado ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+        <span aria-hidden={copiado || undefined}>{copiado ? t.copiado : t.copiar}</span>
+        {copiado && <span className="sr-only">{t.copiar}</span>}
       </ShimmerButton>
-      <p className="contato-aviso" role="status">
+      <p
+        className={situacao === "erro" ? "contato-aviso" : "contato-aviso sr-only"}
+        role="status"
+      >
         {aviso}
       </p>
-    </div>
+    </>
   );
 }
 /* ===== FIM: copiar e-mail ===== */

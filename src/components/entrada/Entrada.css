@@ -1,4 +1,7 @@
-/* ===== INÍCIO: fundo e estrutura ===== */
+/* ==========================================
+   ENTRADA — ESTRUTURA PRINCIPAL
+   ========================================== */
+
 main.entrada {
   position: relative;
   isolation: isolate;
@@ -7,114 +10,157 @@ main.entrada {
   box-sizing: border-box;
   width: 100%;
   max-width: none;
-  height: 100dvh;
+  height: var(--altura-tela, 100dvh);
   margin: 0;
-  padding: clamp(24px, 4vw, 64px);
-  overflow-y: auto;
-  overflow-x: hidden;
 
-  background: #080c14;
+  padding: clamp(24px, min(4vw, 4dvh), 64px);
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  background: #030712;
   color: #ffffff;
 }
 
-/* Vídeo atrás de todo o conteúdo */
-.entrada-video {
+/* ==========================================
+   CAMADA 1 — IMAGEM HUMANO + IA
+   ========================================== */
+
+.entrada-imagem {
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: 0;
 
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  background-image: url("/encontro-ia-humano.png");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+
   pointer-events: none;
 }
 
-/* Película escura para facilitar a leitura */
-.entrada::before {
-  content: "";
+/* ==========================================
+   CAMADA 2 — HIPERESPAÇO ANIMADO
+   ========================================== */
+
+.entrada-fundo {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 1;
+
+  overflow: hidden;
   pointer-events: none;
+}
+
+.entrada-hyperspace {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0.75;
+}
+
+/* ==========================================
+   CAMADA 3 — MÁSCARA DE CONTRASTE
+   ========================================== */
+
+.entrada-mascara {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
 
   background: linear-gradient(
     90deg,
-    rgba(5, 10, 18, 0.9),
-    rgba(5, 10, 18, 0.5)
+    rgba(3, 7, 18, 0.82) 0%,
+    rgba(3, 7, 18, 0.55) 45%,
+    rgba(3, 7, 18, 0.12) 100%
   );
+
+  pointer-events: none;
 }
+
+/* ==========================================
+   CAMADA 4 — CONTEÚDO PRINCIPAL
+   ========================================== */
 
 .entrada-conteudo {
   position: relative;
-  z-index: 1;
+  z-index: 4;
 
   width: 100%;
   max-width: 800px;
   margin-block: auto;
 }
-/* ===== FIM: fundo e estrutura ===== */
 
-/* ===== INÍCIO: textos ===== */
+/* ==========================================
+   TEXTOS
+   ========================================== */
+
 .entrada h1 {
   margin: 0;
-  font-size: clamp(36px, 5vw, 72px);
+  font-size: clamp(36px, min(5vw, 7.5dvh), 72px);
   line-height: 1.1;
   letter-spacing: -1.5px;
 }
 
 .entrada-subtitulo {
-  margin: 16px 0 0;
+  margin: clamp(10px, 2dvh, 16px) 0 0;
   color: #d4d4d8;
   font-size: 18px;
   line-height: 1.6;
 }
 
-/* 36em ≈ 612px: a mesma largura de antes (65ch em Arial). Em ch a medida
-   muda com a fonte e, com a Geist, o texto avançava sobre o círculo. */
 .entrada-descricao {
   max-width: 36em;
-  margin-top: 36px;
-  font-size: 17px;
-  line-height: 1.8;
+  margin-top: clamp(20px, 4dvh, 36px);
+  font-size: clamp(16px, 2.4dvh, 17px);
+  line-height: 1.65;
 }
 
 .entrada-descricao p {
-  margin: 0 0 20px;
+  margin: 0 0 clamp(12px, 2.4dvh, 20px);
 }
-/* ===== FIM: textos ===== */
 
-/* ===== INÍCIO: redes sociais ===== */
+/* ==========================================
+   REDES SOCIAIS
+   ========================================== */
+
 .entrada-redes {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  margin-top: 32px;
+  margin-top: clamp(16px, 3dvh, 32px);
 }
 
 .entrada-redes a {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 20px;
 
+  padding: 12px 20px;
   background: rgba(0, 0, 0, 0.65);
   color: #ffffff;
+
   border-radius: 10px;
   text-decoration: none;
-}
 
-/* ===== INÍCIO: efeitos das redes sociais ===== */
-.entrada-redes a {
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease,
     transform 0.2s ease;
 }
+
+.entrada-redes img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
 .entrada-github img {
   filter: brightness(0) invert(1);
 }
 
-/* Azul do LinkedIn */
+/* LinkedIn */
+
 .entrada-redes .entrada-linkedin:hover,
 .entrada-redes .entrada-linkedin:focus-visible {
   background-color: #0a66c2;
@@ -123,7 +169,8 @@ main.entrada {
   transform: translateY(-3px);
 }
 
-/* Grafite do GitHub */
+/* GitHub */
+
 .entrada-redes .entrada-github:hover,
 .entrada-redes .entrada-github:focus-visible {
   background-color: #24292f;
@@ -132,30 +179,15 @@ main.entrada {
   transform: translateY(-3px);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .entrada-redes a {
-    transition: none;
-    transform: none;
-  }
-}
-/* ===== FIM: efeitos das redes sociais ===== */
+/* ==========================================
+   BOTÃO PRINCIPAL
+   ========================================== */
 
-.entrada-redes img {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-}
-/* ===== FIM: redes sociais ===== */
-
-/* ===== INÍCIO: botão de entrada ===== */
-/* Visual e estados vêm do ShimmerButton (principal, grande); aqui só a
-   largura e a posição na tela de entrada (seletor composto para vencer o
-   display do componente, carregado depois) */
 .entrada .entrada-botao {
   display: flex;
   width: 100%;
   max-width: 580px;
-  margin-top: 36px;
+  margin-top: clamp(20px, 3dvh, 36px);
 }
 
 .entrada a:focus-visible,
@@ -163,15 +195,17 @@ main.entrada {
   outline: 2px solid #67e8f9;
   outline-offset: 4px;
 }
-/* ===== FIM: botão de entrada ===== */
 
-/* ===== INÍCIO: atalhos ===== */
-/* Links secundários abaixo do botão Entrar; 44px de altura para o toque */
+/* ==========================================
+   ATALHOS
+   ========================================== */
+
 .entrada-atalhos {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   column-gap: 20px;
+
   margin-top: 12px;
 
   color: #d4d4d8;
@@ -193,46 +227,42 @@ main.entrada {
 .entrada-atalhos a:hover {
   color: #67e8f9;
 }
-/* ===== FIM: atalhos ===== */
 
-/* ===== INÍCIO: celular ===== */
-@media (max-width: 768px) {
-  .entrada-descricao {
-    margin-top: 24px;
-    font-size: 15px;
-  }
+/* ==========================================
+   CÍRCULO ANIMADO
+   ========================================== */
 
-  .entrada-subtitulo {
-    font-size: 16px;
-  }
-}
-/* ===== FIM: celular ===== */
-/* ===== INÍCIO: círculo entre os dedos ===== */
+/* ===== CÍRCULO NO ENCONTRO DOS DEDOS ===== */
+
 .entrada-circulo {
   position: absolute;
-  left: calc(50% - 30px);
-  top: calc(48% + 70px);
+
+  /* Movimentação */
+  left: 49%;
+  top: 40%;
+
   transform: translate(-50%, -50%);
-  /* Entre o fundo (-1) e o conteúdo (1): o texto fica sempre por cima */
-  z-index: 0;
+  z-index: 3;
 
   display: grid;
   place-items: center;
-  width: 140px;
-  height: 140px;
-  margin: 0;
+
+  /* Tamanho */
+  width: 260px;
+  height: 260px;
 
   color: #67e8f9;
-  font-size: 16px;
+  font-size: 20px;
   pointer-events: none;
-  text-shadow: 0 0 12px rgba(103, 232, 249, 0.8);
+
+  text-shadow: 0 0 15px rgba(103, 232, 249, 0.9);
 }
 
-/* O círculo acompanha o ponto entre os dedos, perto do centro da tela.
-   Abaixo de 1200px esse ponto fica embaixo do texto, então ele é ocultado.
-   A partir de 1200px a coluna de texto termina antes do anel: o anel
-   (≈236px) começa em 50vw − 148px; com 32px de folga e o padding lateral
-   (4vw), sobra 46vw − 180px. */
+/* ==========================================
+   RESPONSIVIDADE
+   ========================================== */
+
+/* Esconde o círculo em telas menores */
 @media (max-width: 1199px) {
   .entrada-circulo {
     display: none;
@@ -244,4 +274,83 @@ main.entrada {
     max-width: min(36em, calc(46vw - 180px));
   }
 }
-/* ===== FIM: círculo entre os dedos ===== */
+
+/* Celulares e tablets */
+@media (max-width: 768px) {
+  .entrada-imagem {
+    background-position: 58% center;
+  }
+
+  .entrada-mascara {
+    background: rgba(3, 7, 18, 0.72);
+  }
+
+  .entrada-hyperspace {
+    opacity: 0.5;
+  }
+
+  .entrada-descricao {
+    margin-top: 24px;
+    font-size: 15px;
+  }
+
+  .entrada-subtitulo {
+    font-size: 16px;
+  }
+}
+
+/* ==========================================
+   ACESSIBILIDADE
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .entrada-redes a {
+    transition: none;
+    transform: none;
+  }
+
+  .entrada-hyperspace {
+    opacity: 0.35;
+  }
+}
+
+/* ===== CORREÇÃO DA IMAGEM NO MOBILE ===== */
+
+@media (max-width: 768px) {
+  main.entrada {
+    min-height: 100dvh;
+    height: auto;
+    padding: 32px 20px;
+  }
+
+  .entrada-imagem {
+    background-size: contain;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-color: #030712;
+  }
+
+  .entrada-mascara {
+    background: linear-gradient(
+      180deg,
+      rgba(3, 7, 18, 0.12) 0%,
+      rgba(3, 7, 18, 0.65) 35%,
+      rgba(3, 7, 18, 0.9) 75%,
+      #030712 100%
+    );
+  }
+
+  .entrada-conteudo {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .entrada h1 {
+    font-size: clamp(32px, 9vw, 46px);
+    overflow-wrap: anywhere;
+  }
+
+  .entrada-circulo {
+    display: none;
+  }
+}

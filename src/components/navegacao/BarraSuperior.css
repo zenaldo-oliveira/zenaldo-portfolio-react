@@ -1,0 +1,221 @@
+/* ===== INÍCIO: barra superior da área principal ===== */
+/* Faixa reservada no topo da área principal: o conteúdo começa abaixo dela,
+   então títulos e controles nunca se sobrepõem. Os botões ficam na mesma
+   altura do botão da sidebar (topo a 8px). */
+.barra-superior {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: var(--barra-altura, 52px);
+  padding: 8px var(--espaco-barra, 16px) 0;
+}
+
+.barra-superior-acoes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+/* Celular: mesma faixa de 56px que antes era reservada para o botão fixo */
+@media (max-width: 768px) {
+  .barra-superior {
+    --espaco-barra: 12px;
+
+    min-height: 56px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+}
+/* ===== FIM: barra superior ===== */
+
+/* ===== INÍCIO: botões de ícone (barra e sidebar) ===== */
+/* Regra única: área de toque de 44 × 44 px e foco visível */
+.barra-controle,
+.botao-sidebar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background-color: transparent;
+  color: var(--texto-secundario);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.barra-controle:hover,
+.barra-controle[data-popup-open],
+.botao-sidebar:hover {
+  background-color: var(--hover);
+  color: var(--texto);
+}
+
+.barra-controle:focus-visible,
+.botao-sidebar:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 2px;
+}
+/* ===== FIM: botões de ícone ===== */
+
+/* ===== INÍCIO: menu de três pontinhos (Base UI Menu) ===== */
+/* Camada em portal acima de tudo (z-index 200), ancorada ao botão. Mesmas
+   cores do painel de Configurações; seções separadas por divisórias
+   suaves (--divisoria). Em telas pequenas, a largura e a altura se limitam
+   ao espaço disponível (com rolagem interna se a altura não couber). */
+.menu-opcoes-posicao {
+  z-index: 200;
+}
+
+.menu-opcoes {
+  box-sizing: border-box;
+  width: min(264px, calc(100vw - 24px));
+  max-height: var(--available-height, calc(100dvh - 80px));
+  overflow-y: auto;
+  padding: 6px;
+  background-color: var(--painel);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.12),
+    0 16px 40px -8px rgba(0, 0, 0, 0.35);
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+/* O contêiner recebe foco ao abrir pelo mouse; o realce fica nos itens */
+.menu-opcoes:focus,
+.menu-opcoes:focus-visible {
+  outline: none;
+}
+
+.menu-opcoes[data-starting-style],
+.menu-opcoes[data-ending-style] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .menu-opcoes[data-starting-style],
+  .menu-opcoes[data-ending-style] {
+    transform: scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-opcoes {
+    transition: none;
+  }
+}
+
+.menu-opcoes-grupo {
+  display: grid;
+  gap: 2px;
+}
+
+/* Rótulo da seção (Idioma, Aparência): discreto, não interativo */
+.menu-opcoes-rotulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 4px;
+  color: var(--texto-secundario);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.menu-opcoes-rotulo svg {
+  color: var(--destaque);
+}
+
+/* Item: área de toque de 44px; ícone/sigla | texto | marca de seleção */
+.menu-opcoes-item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 8px;
+  color: var(--texto);
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: background-color 0.12s ease;
+}
+
+.menu-opcoes-icone {
+  justify-self: center;
+  color: var(--texto-secundario);
+}
+
+/* Sigla do idioma no lugar do ícone (alinha com os outros itens) */
+.menu-opcoes-sigla {
+  justify-self: center;
+  min-width: 24px;
+  padding: 1px 0;
+  color: var(--texto-secundario);
+  border: 1px solid var(--borda);
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.menu-opcoes-texto {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.menu-opcoes-marca {
+  display: grid;
+  place-items: center;
+  color: var(--destaque);
+}
+
+/* Realce pelo mouse ou pelas setas do teclado */
+.menu-opcoes-item[data-highlighted] {
+  background-color: var(--hover);
+}
+
+.menu-opcoes-item[data-highlighted] .menu-opcoes-icone {
+  color: var(--texto);
+}
+
+/* Selecionado: peso maior e sigla/ícone na cor de destaque (além da marca) */
+.menu-opcoes-item[data-checked] {
+  font-weight: 600;
+}
+
+.menu-opcoes-item[data-checked] .menu-opcoes-sigla {
+  color: var(--destaque);
+  border-color: color-mix(in srgb, var(--destaque) 60%, var(--borda));
+}
+
+.menu-opcoes-item[data-checked] .menu-opcoes-icone {
+  color: var(--destaque);
+}
+
+.menu-opcoes-item:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: -2px;
+}
+
+.menu-opcoes-separador {
+  height: 1px;
+  margin: 6px 4px;
+  background-color: var(--divisoria);
+}
+/* ===== FIM: menu de três pontinhos ===== */

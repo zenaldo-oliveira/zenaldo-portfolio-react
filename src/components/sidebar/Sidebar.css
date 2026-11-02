@@ -11,18 +11,20 @@
 /* ===== FIM: topo e divisória ===== */
 /* ===== INÍCIO: painel lateral ===== */
 /* ===== INÍCIO: painel lateral ===== */
-/* Coluna: logo, navegação e o rodapé (três pontinhos) no fim. Rola só se a
-   altura não couber (ex.: zoom alto), para o rodapé nunca ficar inacessível. */
+/* Coluna: botão de recolher, logo e navegação. Rola só se a altura não
+   couber (ex.: zoom alto). Fica no início da coluna fixa do .layout
+   (index.css): ao recolher, só ela estreita; a área principal não se move. */
 .sidebar {
   position: sticky;
   top: 0;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 260px;
-  height: 100dvh;
+  justify-self: start;
+  width: var(--largura-sidebar-aberta, 260px);
+  height: var(--altura-tela, 100dvh);
   overflow-y: auto;
-  padding: 20px 16px;
+  padding: 8px 16px 20px;
   box-sizing: border-box;
 
   background-color: var(--painel);
@@ -34,122 +36,28 @@
 /* ===== FIM: painel lateral ===== */
 /* ===== FIM: painel lateral ===== */
 
-/* ===== INÍCIO: rodapé da sidebar (três pontinhos e expandir) ===== */
-.sidebar-rodape {
+/* ===== INÍCIO: cabeçalho da sidebar (botão de recolher/expandir) ===== */
+/* Canto superior esquerdo, na mesma altura dos três pontinhos da barra
+   superior (topo a 8px). Recolhida: o botão continua visível, centralizado
+   no trilho, para reabrir. Estilo do botão em navegacao/BarraSuperior.css. */
+.sidebar-cabecalho {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 4px;
-  margin-top: auto;
-  padding-top: 12px;
+  min-height: 44px;
+  /* Botão a 14px da borda esquerda nos dois estados (aberta: padding 16 −
+     2; recolhida: padding 12 + 2): ele não muda de lugar ao alternar */
+  margin: 0 0 12px -2px;
 }
 
-/* Recolhida: expandir em cima, três pontinhos embaixo, centralizados */
-.sidebar.recolhida .sidebar-rodape {
-  flex-direction: column;
+.sidebar.recolhida .sidebar-cabecalho {
+  margin-left: 2px;
 }
-
-/* Regra única para os botões de ícone da sidebar */
-.sidebar-controle {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-
-  background-color: transparent;
-  color: var(--texto-secundario);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.sidebar-controle:hover,
-.sidebar-controle[data-popup-open] {
-  background-color: var(--hover);
-  color: var(--texto);
-}
-
-.sidebar-controle:focus-visible {
-  outline: 2px solid var(--texto);
-  outline-offset: 2px;
-}
-
 /* Recolhida: sem logo, o topo não ocupa espaço */
 .sidebar.recolhida .sidebar-topo {
   display: none;
 }
-
-/* Menu dos três pontinhos (Base UI Menu) — mesmas cores do painel de
-   configurações; z-index acima da sidebar sobreposta do celular */
-.sidebar-menu-posicao {
-  z-index: 200;
-}
-
-.sidebar-menu {
-  min-width: 200px;
-  padding: 4px;
-
-  background-color: var(--painel);
-  color: var(--texto);
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
-  transform-origin: var(--transform-origin);
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
-}
-
-/* O contêiner recebe foco ao abrir pelo mouse; o realce fica nos itens */
-.sidebar-menu:focus,
-.sidebar-menu:focus-visible {
-  outline: none;
-}
-
-.sidebar-menu[data-starting-style],
-.sidebar-menu[data-ending-style] {
-  opacity: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .sidebar-menu[data-starting-style],
-  .sidebar-menu[data-ending-style] {
-    transform: scale(0.97);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sidebar-menu {
-    transition: none;
-  }
-}
-
-.sidebar-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 40px;
-  padding: 8px 12px;
-
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  outline: none;
-  user-select: none;
-}
-
-/* Item realçado pelo mouse ou pelas setas do teclado */
-.sidebar-menu-item[data-highlighted] {
-  background-color: var(--hover);
-}
-
-.sidebar-menu-item:focus-visible {
-  outline: 2px solid var(--texto);
-  outline-offset: -2px;
-}
-/* ===== FIM: rodapé da sidebar ===== */
+/* ===== FIM: cabeçalho da sidebar ===== */
 
 /* ===== INÍCIO: logo ===== */
 .sidebar-logo {
@@ -231,6 +139,17 @@
   background-color: #353640;
   color: #ffffff;
 }
+/* Foco pelo teclado (inclusive à distância, em TVs): contorno além da cor */
+.sidebar nav a:focus-visible,
+.sidebar-logo:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 2px;
+}
+
+.sidebar-logo {
+  display: inline-block;
+  border-radius: 16px;
+}
 /* ===== FIM: destaque dos links ===== */
 
 /* ===== INÍCIO: página atual ===== */
@@ -257,7 +176,7 @@
 /* ===== INÍCIO: sidebar recolhida ===== */
 .sidebar.recolhida {
   width: 72px;
-  padding: 20px 12px;
+  padding: 8px 12px 20px;
 }
 
 .sidebar.recolhida .sidebar-logo {
@@ -280,42 +199,31 @@
 .sidebar nav a svg {
   flex-shrink: 0;
 }
+/* Recolher/expandir com transição curta da largura: a área principal (flex)
+   acompanha sem salto. Durante a troca os rótulos não quebram linha e o
+   excesso horizontal é recortado (só na animação). Sem animação com
+   movimento reduzido. */
+.sidebar {
+  overflow-x: clip;
+}
+
+.sidebar nav a {
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 769px) {
+  .sidebar {
+    transition:
+      width 0.25s ease,
+      padding 0.25s ease;
+  }
+}
 /* ===== FIM: sidebar recolhida ===== */
 
-/* ===== INÍCIO: controles exclusivos do celular ===== */
-.sidebar-abrir-mobile,
-.sidebar-fechar-mobile {
-  display: none;
-}
-/* ===== FIM: controles exclusivos do celular ===== */
+
 /* ===== INÍCIO: visibilidade do painel no celular ===== */
 /* ===== INÍCIO: sidebar no celular ===== */
 @media (max-width: 768px) {
-  /* Botões de abrir e fechar */
-  .sidebar-abrir-mobile,
-  .sidebar-fechar-mobile {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: 1px solid #3a3b46;
-    border-radius: 8px;
-    background-color: #272832;
-    color: #ffffff;
-    font-size: 24px;
-    cursor: pointer;
-  }
-
-  /* Botão disponível mesmo com o painel fechado: centralizado na faixa de 56px
-     reservada no topo da área principal e alinhado ao padding de 12px */
-  .sidebar-abrir-mobile {
-    position: fixed;
-    top: 6px;
-    left: 12px;
-    z-index: 20;
-  }
-
   /* Painel fechado e posicionado sobre a página */
   .sidebar,
   .sidebar.recolhida {
@@ -323,7 +231,7 @@
     position: fixed;
     inset: 0 auto 0 0;
     width: min(300px, 85vw);
-    height: 100dvh;
+    height: var(--altura-tela, 100dvh);
     padding: 16px;
     z-index: 30;
   }
@@ -331,10 +239,6 @@
   /* Painel aberto pelo React (coluna, com o rodapé no fim) */
   .sidebar.aberta {
     display: flex;
-  }
-
-  .sidebar-fechar-mobile {
-    margin-bottom: 16px;
   }
 
   /* No celular, sempre mostramos os nomes (recolher é só do computador) */
@@ -360,9 +264,6 @@
     display: flex;
   }
 
-  .sidebar.recolhida .sidebar-rodape {
-    flex-direction: row;
-  }
 }
 /* ===== FIM: sidebar no celular ===== */
 /* ===== FIM: visibilidade do painel no celular ===== */
@@ -390,8 +291,10 @@ aside.sidebar {
     z-index: 100;
 
     width: min(300px, 85vw);
-    height: 100dvh;
-    padding: 16px;
+    height: var(--altura-tela, 100dvh);
+    /* topo 6px e esquerda 12px: o botão de fechar fica exatamente onde
+       estava o botão de abrir da barra superior */
+    padding: 6px 16px 16px;
 
     background: var(--painel);
     color: var(--texto);
@@ -412,5 +315,12 @@ aside.sidebar {
   aside.sidebar nav a:hover {
     background: var(--hover);
   }
+}
+/* Fundo escurecido: tocar fora do painel fecha o menu */
+.sidebar-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 /* ===== FIM: painel sobreposto no celular ===== */

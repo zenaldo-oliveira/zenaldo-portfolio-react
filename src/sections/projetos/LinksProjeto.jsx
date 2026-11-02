@@ -17,33 +17,33 @@ function linksDisponiveis(projeto, t) {
   ].filter((link) => link && link.url);
 }
 
-// Rodapé dos mini cards da grade: "Ver site", "GitHub" e, em back-end/full
-// stack com documentação, "API". "GitHub" só quando o repositório é do
-// github.com; outro endereço recebe o rótulo genérico de código.
-function linksDaGrade(projeto, t) {
-  const { repositorio, demonstracao, documentacao } = projeto.links ?? {};
-  const permiteApi = CATEGORIAS_COM_API.includes(projeto.categoria);
+// Ações do cartão no carrossel: "Demo" e "GitHub", só quando cadastrados.
+// "GitHub" só quando o repositório é do github.com; outro endereço recebe o
+// rótulo genérico de código. A documentação da API fica no diálogo de detalhes.
+function linksDoCarrossel(projeto, t) {
+  const { repositorio, demonstracao } = projeto.links ?? {};
   const ehGithub = /^https:\/\/github\.com\//.test(repositorio ?? "");
 
   return [
-    { url: demonstracao, texto: t.demonstracao, curto: t.verSite, Icone: ExternalLink },
+    { url: demonstracao, texto: t.demonstracao, curto: t.curtoDemo, Icone: ExternalLink },
     { url: repositorio, texto: t.repositorio, curto: ehGithub ? "GitHub" : t.curtoCodigo, Icone: FolderGit2 },
-    permiteApi && { url: documentacao, texto: t.documentacao, curto: t.curtoApi, Icone: BookOpen },
-  ].filter((link) => link && link.url);
+  ].filter((link) => link.url);
 }
 
 // compacto: links discretos no cartão; senão, botões (diálogo de detalhes)
 // ocultarSemLinks: não mostra o aviso de "não publicados" (usado no destaque)
-// grade: rótulos e ordem dos mini cards (Ver site, GitHub, API)
+// carrossel: rótulos e ordem do cartão do carrossel (Demo, GitHub)
 function LinksProjeto({
   projeto,
   nome,
   compacto = false,
   ocultarSemLinks = false,
-  grade = false,
+  carrossel = false,
   t,
 }) {
-  const links = grade ? linksDaGrade(projeto, t) : linksDisponiveis(projeto, t);
+  const links = carrossel
+    ? linksDoCarrossel(projeto, t)
+    : linksDisponiveis(projeto, t);
 
   if (links.length === 0) {
     if (ocultarSemLinks) return null;

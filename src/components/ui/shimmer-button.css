@@ -170,9 +170,10 @@
 /* ===== FIM: variantes ===== */
 
 /* ===== INÍCIO: tamanhos ===== */
-/* min-height (não height): rótulos longos podem quebrar linha sem vazar */
+/* min-height (não height): rótulos longos podem quebrar linha sem vazar.
+   Todos os tamanhos têm área de toque de pelo menos 44 × 44 px. */
 .shimmer-button[data-tamanho="padrao"] {
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 16px;
   font-size: 14px;
 }
@@ -182,8 +183,9 @@
   --gap-botao: 4px;
   --icone-botao: 0.875rem;
 
-  min-height: 28px;
-  padding: 4px 10px;
+  /* Visual compacto (fonte menor), mas com altura de toque de 44px */
+  min-height: 44px;
+  padding: 4px 12px;
   font-size: 12px;
 }
 
@@ -205,16 +207,16 @@
 }
 
 .shimmer-button[data-tamanho="icone"] {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
 }
 
 .shimmer-button[data-tamanho="icone-pequeno"] {
   --cut: 1px;
   --icone-botao: 0.875rem;
 
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
 }
 /* ===== FIM: tamanhos ===== */
 

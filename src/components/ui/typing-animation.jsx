@@ -56,12 +56,17 @@ export function TypingAnimation({
   const shouldStart = startOnView ? isInView : true
   const animationSourceKey = useMemo(() => (words ? words.join("\u0000") : (children ?? "")), [words, children])
 
-  useEffect(() => {
+  // Texto novo (words/children): recomeça a digitação do início. O ajuste é
+  // feito durante a renderização, comparando com a chave anterior (padrão do
+  // React para reiniciar estado quando uma prop muda), sem efeito extra.
+  const [chaveAnterior, setChaveAnterior] = useState(animationSourceKey)
+  if (chaveAnterior !== animationSourceKey) {
+    setChaveAnterior(animationSourceKey)
     setDisplayedText("")
     setCurrentWordIndex(0)
     setCurrentCharIndex(0)
     setPhase("typing")
-  }, [animationSourceKey])
+  }
 
   useEffect(() => {
     let timeout = null

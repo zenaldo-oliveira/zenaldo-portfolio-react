@@ -7,6 +7,21 @@
 /* ===== INÍCIO: tema escuro suave ===== */
 :root {
   color-scheme: dark;
+  /* Altura da barra superior (navegacao/BarraSuperior) e altura livre para o
+     conteúdo: o <main> começa logo abaixo da barra (padding-top 0). As
+     composições que se ajustam à altura usam --altura-livre, não 100dvh. */
+  --barra-altura: 52px;
+  /* Respiro entre a barra superior e o conteúdo (padding-top do <main>) */
+  --respiro-topo: 12px;
+  /* Altura visível da janela, num só lugar (layout, sidebar e entrada) */
+  --altura-tela: 100dvh;
+  /* Referência das composições que se ajustam à altura (mesma escala
+     usada antes da barra: 16px de padding-top do <main> descontados) */
+  --altura-livre: calc(
+    var(--altura-tela) - var(--barra-altura) - var(--respiro-topo) + 16px
+  );
+  /* Divisórias: branco suave no tema escuro (no claro, a cor da borda) */
+  --divisoria: rgba(255, 255, 255, 0.14);
   --fundo: #18181b;
   --painel: #202024;
   --texto: #f4f4f5;
@@ -58,6 +73,7 @@
 }
 /* ===== FIM: tema escuro suave ===== */
 
+
 /* ===== INÍCIO: tema claro suave ===== */
 :root[data-tema="claro"] {
   color-scheme: light;
@@ -67,6 +83,7 @@
   --texto-secundario: #27272a;
   --borda: #ccccd3;
   --hover: #dcdce2;
+  --divisoria: var(--borda);
   --pelicula: rgba(240, 240, 242, 0.88);
 }
 
@@ -106,22 +123,36 @@ h1 {
 /* ===== FIM: base ===== */
 
 /* ===== INÍCIO: layout ===== */
-/* Sidebar | área principal. Uma única rolagem vertical: a do <main>. */
-/* Acima da camada fixa de fundo (FundoPagina, z-index 0) */
+/* Sidebar | área principal. Uma única rolagem vertical: a do <main>.
+   Acima da camada fixa de fundo (FundoPagina, z-index 0).
+   A coluna da sidebar tem largura FIXA (a da sidebar aberta): recolher só
+   estreita a sidebar dentro dessa coluna. Assim a área principal (barra
+   superior, menu de três pontinhos e conteúdo) não muda de posição nem de
+   tamanho — nada se desloca nem é recalculado ao recolher/expandir.
+   No celular a sidebar é um painel sobreposto (fora do fluxo): uma coluna. */
 .layout {
+  --largura-sidebar-aberta: 260px;
+
   position: relative;
   z-index: 1;
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--largura-sidebar-aberta) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   width: 100%;
-  height: 100dvh;
+  height: var(--altura-tela, 100dvh);
   overflow: hidden;
 }
 
-/* Ocupa toda a largura ao lado da sidebar (aberta ou recolhida) */
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Coluna do conteúdo, ao lado da coluna fixa da sidebar */
 .area-principal {
   display: flex;
   flex-direction: column;
-  flex: 1;
   min-width: 0;
   min-height: 0;
 }
@@ -145,8 +176,22 @@ h1 {
   width: 100%;
   margin: 0;
   padding: var(--espaco-main);
+  /* Respiro fixo abaixo da barra superior (navegacao/BarraSuperior) */
+  padding-top: var(--respiro-topo);
+  /* Ao navegar com Tab, o item focado para acima do botão fixo do WhatsApp
+     (que não muda de lugar) em vez de ficar escondido sob ele */
+  scroll-padding-bottom: calc(
+    var(--whatsapp-tamanho) + 2 * var(--whatsapp-margem)
+  );
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+/* O próprio <main> pode receber foco pelo Tab (área rolável sem itens
+   focáveis visíveis, comportamento do navegador): foco visível */
+.area-principal > main:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: -2px;
 }
 
 .area-principal > .footer {
@@ -266,12 +311,6 @@ section.apresentacao {
 
 /* ===== INÍCIO: celular ===== */
 @media (max-width: 768px) {
-  /* Sem Topbar: 56px no topo para o botão fixo de abrir o menu
-     (o conteúdo começa na mesma posição de antes) */
-  .area-principal {
-    padding-top: 56px;
-  }
-
   .area-principal > main {
     --espaco-main: 12px;
   }

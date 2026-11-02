@@ -1,0 +1,235 @@
+/* ===== INÍCIO: roda 3D de projetos ===== */
+/* Geometria (tudo em CSS, a partir destas variáveis):
+   --total / --posicao: vêm do componente (quantidade e giro atual).
+   --cartao: largura do card, limitada pela largura útil (container).
+             Em janelas baixas quem cede é a altura da imagem (não a largura,
+             que faria o texto quebrar em mais linhas).
+   --passo:  ângulo entre dois cards (360° / total).
+   --raio:   distância do centro da roda até cada card, calculada pela
+             quantidade de projetos: a borda interna do vizinho (girado
+             --passo) fica a --folga do card da frente, nunca por cima dele.
+             borda = raio·sen(passo) − (cartao/2)·cos(passo) ≥ cartao/2 + folga
+             Com 2 ou 3 projetos o passo usado no cálculo é limitado a 120°.
+   O anel recua --raio (o card da frente fica no plano da tela, sem ampliação)
+   e gira --passo a cada projeto. */
+.roda {
+  container-type: inline-size;
+}
+
+.roda-palco {
+  --cartao: min(86cqi, 460px);
+  --folga: 32px;
+  --passo: calc(360deg / var(--total));
+  --passo-raio: min(var(--passo), 120deg);
+  --raio: calc(
+    (var(--cartao) / 2 * (1 + cos(var(--passo-raio))) + var(--folga)) /
+      sin(var(--passo-raio))
+  );
+
+  /* A roda pode passar da largura útil: corta só na horizontal, sem criar
+     rolagem; na vertical nada é cortado */
+  overflow-x: clip;
+  overflow-y: visible;
+  padding-block: 4px;
+  /* Profundidade proporcional ao tamanho da roda */
+  perspective: calc(var(--raio) * 2.2 + var(--cartao) * 1.6);
+  perspective-origin: 50% 40%;
+  /* Arraste horizontal gira a roda; a rolagem vertical da página continua */
+  touch-action: pan-y;
+  cursor: grab;
+  border-radius: 14px;
+}
+
+.roda-palco:active {
+  cursor: grabbing;
+}
+
+.roda-palco:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 2px;
+}
+
+/* Todos os cards na mesma célula do grid: a altura do palco é a do card
+   mais alto, e os cards têm a mesma altura */
+.roda-anel {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--raio) * -1))
+    rotateY(calc(var(--posicao) * var(--passo) * -1));
+}
+
+/* align-self: start: cada card com a altura do próprio conteúdo (sem
+   espaço vazio entre os botões e o fim do card) */
+.roda-item {
+  display: grid;
+  grid-area: 1 / 1;
+  align-self: start;
+  justify-self: center;
+  width: var(--cartao);
+  transform-style: preserve-3d;
+  transform: rotateY(calc(var(--indice) * var(--passo))) translateZ(var(--raio));
+}
+
+.roda-item:not([data-ativo]) {
+  cursor: pointer;
+}
+
+/* Frente (o card) e verso (painel liso) ocupam o mesmo lugar; cada um some
+   quando está de costas para a tela */
+.roda-face,
+.roda-verso {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+}
+
+.roda-face .destaque-cartao {
+  height: auto;
+}
+
+/* Altura do palco da imagem: metade da largura útil do card quando há
+   altura; em janelas baixas encolhe até 130px (a imagem continua inteira,
+   só menor) para tudo caber. A largura segue a proporção da imagem. */
+.roda-face .destaque-cartao-vertical {
+  /* ~55% do card: composição com proporção 1,77 na largura do card; em
+     janelas baixas cede para tudo caber (mínimo 150px) */
+  --palco-altura: min(
+    calc(var(--cartao) / 1.72),
+    max(150px, calc(var(--altura-livre, 100dvh) - 530px))
+  );
+}
+
+.roda-verso {
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--destaque) 18%, transparent),
+      transparent 60%
+    ),
+    var(--painel);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  opacity: 0.35;
+  transform: rotateY(180deg);
+}
+
+/* Profundidade: vizinhos esmaecidos conforme a distância; do terceiro em
+   diante só o verso aparece (o card da frente com borda e sombra) */
+.roda-item[data-distancia="1"] .roda-face {
+  opacity: 0.8;
+}
+
+.roda-item[data-distancia="2"] .roda-face {
+  opacity: 0.45;
+}
+
+.roda-item:not([data-distancia="0"], [data-distancia="1"], [data-distancia="2"])
+  .roda-face {
+  opacity: 0;
+}
+
+.roda-item:is([data-distancia="1"], [data-distancia="2"]):hover .roda-face {
+  opacity: 0.92;
+}
+
+.roda-item[data-ativo] .destaque-cartao {
+  border-color: color-mix(in srgb, var(--destaque) 70%, var(--borda));
+  /* Sombra suave e ampla: o card central se destaca sem escurecer o resto */
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    0 18px 36px -8px rgba(0, 0, 0, 0.3);
+}
+
+/* Giro suave; com movimento reduzido, a troca é imediata */
+@media (prefers-reduced-motion: no-preference) {
+  .roda-anel {
+    transition: transform 0.8s cubic-bezier(0.22, 0.8, 0.24, 1);
+  }
+
+  .roda-face,
+  .roda-verso {
+    transition: opacity 0.5s ease;
+  }
+}
+
+.roda[data-movimento="reduzido"] .roda-anel,
+.roda[data-movimento="reduzido"] .roda-face,
+.roda[data-movimento="reduzido"] .roda-verso {
+  transition: none;
+}
+/* ===== FIM: roda 3D de projetos ===== */
+
+/* ===== INÍCIO: controles ===== */
+.carrossel-controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+
+/* Áreas estreitas: botões numa linha e indicadores na de baixo. Os
+   indicadores (44px cada) deixam livre, dos dois lados, a faixa do botão
+   fixo do WhatsApp: quebram em duas linhas em vez de passar sob ele no fim
+   da rolagem, e continuam centralizados. */
+@container (max-width: 779px) {
+  .carrossel-indicadores {
+    order: 3;
+    flex-basis: 100%;
+    max-width: calc(100% - 2 * (var(--whatsapp-tamanho, 60px) + var(--whatsapp-margem, 20px)));
+    margin-inline: auto;
+  }
+}
+
+.carrossel-indicadores {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Ponto de 8px com área de toque de 44 × 44 px (encostadas, sem vão) */
+.carrossel-indicador {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.carrossel-indicador span {
+  width: 8px;
+  height: 8px;
+  background-color: var(--borda);
+  border-radius: 999px;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.carrossel-indicador:hover span {
+  background-color: var(--texto-secundario);
+}
+
+.carrossel-indicador[aria-current="true"] span {
+  background-color: var(--destaque);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .carrossel-indicador[aria-current="true"] span {
+    transform: scale(1.3);
+  }
+}
+
+.carrossel-indicador:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 2px;
+}
+/* ===== FIM: controles ===== */

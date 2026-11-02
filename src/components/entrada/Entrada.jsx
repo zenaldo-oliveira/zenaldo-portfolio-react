@@ -1,42 +1,32 @@
-import "./Entrada.css";
+﻿import "./Entrada.css";
+
+import HyperspaceBackground from "./HyperspaceBackground";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import { SpinningText } from "@/components/ui/spinning-text";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 function Entrada({ onEntrar }) {
-  // Atalhos: definem o hash antes de abrir o portfólio, que já lê o hash ao
-  // montar e abre direto na página escolhida (mesma navegação da sidebar).
-  function irPara(evento, pagina) {
-    evento.preventDefault();
-    window.location.hash = pagina;
-    onEntrar();
-  }
-
   return (
     <main className="entrada">
-      {/* ===== INÍCIO: vídeo de fundo ===== */}
-      <video
-        className="entrada-video"
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster="/fundo-tecnologia.jpg"
-        aria-hidden="true"
-      >
-        <source src="/fundo-entrada.mp4" type="video/mp4" />
-      </video>
-      {/* ===== FIM: vídeo de fundo ===== */}
+      {/* ===== IMAGEM HUMANO + IA ===== */}
+      <div className="entrada-imagem" aria-hidden="true" />
 
-      {/* ===== INÍCIO: círculo entre os dedos ===== */}
+      {/* ===== FUNDO ESPACIAL INTERATIVO ===== */}
+      <div className="entrada-fundo" aria-hidden="true">
+        <HyperspaceBackground />
+      </div>
+
+      {/* ===== MÁSCARA DE CONTRASTE ===== */}
+      <div className="entrada-mascara" aria-hidden="true" />
+
+      {/* ===== CÍRCULO ANIMADO ===== */}
       <div className="entrada-circulo" aria-hidden="true">
-        <SpinningText duration={20} radius={10}>
+        <SpinningText duration={20} radius={15}>
           React • JavaScript • Next.js •
         </SpinningText>
       </div>
-      {/* ===== FIM: círculo entre os dedos ===== */}
 
-      {/* ===== INÍCIO: conteúdo da entrada ===== */}
+      {/* ===== CONTEÚDO PRINCIPAL ===== */}
       <div className="entrada-conteudo">
         <h1>
           <TypingAnimation className="entrada-nome" typeSpeed={90} loop={false}>
@@ -45,8 +35,7 @@ function Entrada({ onEntrar }) {
         </h1>
 
         <p className="entrada-subtitulo">
-          Desenvolvedor Full Stack Júnior · React · Next.js · JavaScript ·
-          Node.js
+          Desenvolvedor Full Stack · React · Next.js · JavaScript · Node.js
         </p>
 
         <div className="entrada-descricao">
@@ -62,11 +51,11 @@ function Entrada({ onEntrar }) {
           <p>
             Explore meus projetos, conheça as tecnologias que utilizo e
             acompanhe minha evolução no desenvolvimento web. Estou aberto a
-            oportunidades como desenvolvedor Full Stack Júnior.
+            oportunidades profissionais e projetos de desenvolvimento.
           </p>
         </div>
 
-        {/* ===== INÍCIO: redes sociais ===== */}
+        {/* ===== REDES SOCIAIS ===== */}
         <div className="entrada-redes">
           <a
             className="entrada-linkedin"
@@ -88,9 +77,8 @@ function Entrada({ onEntrar }) {
             GitHub
           </a>
         </div>
-        {/* ===== FIM: redes sociais ===== */}
 
-        {/* Mesmo arredondamento em pílula de antes */}
+        {/* ===== BOTÃO PRINCIPAL ===== */}
         <ShimmerButton
           className="entrada-botao"
           tamanho="grande"
@@ -98,22 +86,9 @@ function Entrada({ onEntrar }) {
           type="button"
           onClick={onEntrar}
         >
-          Entrar no portfólio →
+          Entrar no portfólio
         </ShimmerButton>
-
-        {/* ===== INÍCIO: atalhos ===== */}
-        <nav className="entrada-atalhos" aria-label="Ir direto para">
-          <span aria-hidden="true">Ir direto para:</span>
-          <a href="#projetos" onClick={(evento) => irPara(evento, "projetos")}>
-            Projetos →
-          </a>
-          <a href="#contato" onClick={(evento) => irPara(evento, "contato")}>
-            Contato →
-          </a>
-        </nav>
-        {/* ===== FIM: atalhos ===== */}
       </div>
-      {/* ===== FIM: conteúdo da entrada ===== */}
     </main>
   );
 }

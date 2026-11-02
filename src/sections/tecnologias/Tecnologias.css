@@ -1,19 +1,16 @@
 /* ===== INÍCIO: estrutura da página ===== */
 /* O espaçamento externo vem do <main> (--espaco-main). Coluna com a altura
-   da área de conteúdo: cabeçalho compacto e, abaixo, a composição de serviços
-   ocupando o restante. A faixa de tecnologias (.tecnologias-base) é fixa
-   sobre o fim do <main>; o padding-bottom reserva a altura dela + legenda,
-   para nada ficar escondido atrás. Se o conteúdo não couber (celular, telas
-   baixas), a página rola normalmente no <main>. */
+   da área de conteúdo: cabeçalho compacto, a composição de serviços ocupando
+   o restante e, por último, a faixa de tecnologias (no fluxo, grudada na
+   base). Se o conteúdo não couber (telas baixas), a página rola no <main> e
+   a faixa continua visível na base. */
 section.tecnologias {
-  --legenda-altura: 24px;
-
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 2dvh, 20px);
+  gap: clamp(10px, 1.6dvh, 20px);
   width: 100%;
   min-height: 100%;
-  padding: 0 0 calc(var(--faixa-altura) + var(--legenda-altura));
+  padding: 0;
   color: var(--texto);
 }
 /* ===== FIM: estrutura da página ===== */
@@ -27,7 +24,7 @@ section.tecnologias {
   justify-content: space-between;
   gap: 12px 24px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--borda);
+  border-bottom: 1px solid var(--divisoria);
 }
 
 /* Base de 320px: o botão fica ao lado do texto sempre que houver espaço e
@@ -66,8 +63,10 @@ section.tecnologias {
   letter-spacing: -0.01em;
 }
 
+/* Uma linha quando houver largura (economiza altura no notebook); o limite
+   de 80ch mantém a leitura confortável em telas grandes */
 .tecnologias-descricao {
-  max-width: 62ch;
+  max-width: 80ch;
   margin: 0;
   color: var(--texto-secundario);
   font-size: 15px;
@@ -95,27 +94,36 @@ section.tecnologias {
 /* ===== FIM: serviços ===== */
 
 /* ===== INÍCIO: carrossel de tecnologias ===== */
-/* Legenda + faixa no fim da página. Avança sobre o padding do <main> à
-   direita e embaixo: vai até a borda direita (por trás do WhatsApp) e encosta
-   no rodapé, sem rolagem horizontal. À esquerda segue o conteúdo (sidebar
-   intacta). */
+/* Legenda + faixa no fim da página, DENTRO do fluxo do <main> (sticky): a
+   largura é a da área principal, então acompanha a sidebar aberta, recolhida
+   ou em animação e nunca passa por baixo dela. As margens negativas avançam
+   sobre o padding do <main> para ir até a borda direita (por trás do
+   WhatsApp) e encostar no rodapé. */
 .tecnologias-base {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: var(--rodape-altura, 40px);
+  position: sticky;
+  /* O sticky mede a partir da borda interna do padding do <main>: o
+     deslocamento negativo deixa a faixa encostar no rodapé (como antes) */
+  bottom: calc(-1 * var(--espaco-main, 16px));
   z-index: 30;
   min-width: 0;
+  margin: auto calc(-1 * var(--espaco-main, 16px)) calc(-1 * var(--espaco-main, 16px));
 }
 
 .tecnologias-base .tecnologias-legenda {
   margin: 0 0 4px;
-  padding-left: 270px;
+  /* Alinhada ao conteúdo da página */
+  padding-left: var(--espaco-main, 16px);
 }
 
+/* Celular: a faixa de tecnologias fica oculta (ocuparia a tela e cobriria
+   os cartões); a página reserva só o espaço do WhatsApp no fim */
 @media (max-width: 768px) {
-  .tecnologias-base .tecnologias-legenda {
-    padding-left: 12px;
+  .tecnologias-base {
+    display: none;
+  }
+
+  section.tecnologias {
+    padding-bottom: 80px;
   }
 }
 
@@ -176,9 +184,10 @@ section.tecnologias {
   object-fit: contain;
 }
 
-.tecnologias-carrossel:focus-visible {
+/* O elemento focável (tabindex=0) é o grupo .tecnologias-carrosseis */
+.tecnologias-carrosseis:focus-visible {
   outline: 2px solid var(--texto);
-  outline-offset: 4px;
+  outline-offset: -2px;
 }
 
 @keyframes deslizar-tecnologias {

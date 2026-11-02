@@ -1,38 +1,54 @@
-import { Mail } from "lucide-react";
+import { ExternalLink, Mail } from "lucide-react";
 
 import { ItemAnimado } from "@/components/pagina/animacao";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 import CopiarEmail from "./CopiarEmail";
 
 /* ===== INÍCIO: cartão de um canal de contato ===== */
+// Ícone, título, descrição curta, endereço real e ação explícita.
+// A ação é o próprio ShimmerButton renderizado como <a> (sem botão dentro de
+// link). No e-mail, "Enviar e-mail" e "Copiar e-mail" ficam lado a lado.
 function CartaoContato({ contato, t }) {
-  const nomeCanal = t.canais[contato.id];
+  const canal = t.canais[contato.id];
+  const idTitulo = `contato-${contato.id}`;
 
   return (
     <ItemAnimado className="cartao cartao-interativo contato-cartao">
-      <a
-        className="contato-link"
-        href={contato.url}
-        target={contato.externo ? "_blank" : undefined}
-        rel={contato.externo ? "noopener noreferrer" : undefined}
-      >
-        <span className="contato-icone" aria-hidden="true">
-          {contato.icone ? (
-            <img src={contato.icone} alt="" width="28" height="28" />
-          ) : (
-            <Mail size={28} />
-          )}
-        </span>
+      <article className="contato-corpo" aria-labelledby={idTitulo}>
+        <div className="contato-topo">
+          <span className="contato-icone" aria-hidden="true">
+            {contato.icone ? (
+              <img src={contato.icone} alt="" width="24" height="24" />
+            ) : (
+              <Mail size={24} />
+            )}
+          </span>
+          <div className="contato-textos">
+            <h2 id={idTitulo} className="contato-canal">
+              {canal.titulo}
+            </h2>
+            <p className="contato-valor">{contato.valor}</p>
+          </div>
+        </div>
 
-        <span className="contato-textos">
-          <span className="contato-canal">{nomeCanal}</span>
-          <span className="contato-valor">{contato.valor}</span>
-        </span>
+        <p className="contato-descricao">{canal.descricao}</p>
 
-        {contato.externo && <span className="sr-only"> ({t.novaAba})</span>}
-      </a>
+        <div className="contato-acoes">
+          <ShimmerButton
+            variante={contato.id === "email" ? "principal" : "secundaria"}
+            href={contato.url}
+            target={contato.externo ? "_blank" : undefined}
+            rel={contato.externo ? "noopener noreferrer" : undefined}
+          >
+            {contato.externo && <ExternalLink aria-hidden="true" />}
+            {canal.acao}
+            {contato.externo && <span className="sr-only"> ({t.novaAba})</span>}
+          </ShimmerButton>
 
-      {contato.id === "email" && <CopiarEmail email={contato.valor} t={t} />}
+          {contato.id === "email" && <CopiarEmail email={contato.valor} t={t} />}
+        </div>
+      </article>
     </ItemAnimado>
   );
 }

@@ -1,34 +1,32 @@
-import { useEffect, useState } from "react";
 import { Popover } from "@base-ui/react/popover";
 
 import "./Configuracoes.css";
 
 /* ===== INÍCIO: configurações de idioma e tema ===== */
-// Painel aberto pelo item "Configurações" do menu de três pontinhos no rodapé
-// da sidebar (sem gatilho próprio). Popover do Base UI controlado pela
+// Painel aberto pelo item "Configurações" do menu de três pontinhos no canto
+// superior direito (navegacao/MenuOpcoes), sem gatilho próprio. Popover do Base UI controlado pela
 // sidebar: fecha com Esc ou clique fora, devolve o foco ao botão do menu
 // (ancora) e reposiciona o painel para não ser cortado.
-// Fica sempre montado: o tema é aplicado ao <html> já ao carregar a página.
 // Idioma: estado no Portfolio (salvo em localStorage "idioma").
-// Tema: estado aqui (salvo em localStorage "tema" e aplicado em <html data-tema>).
-function Configuracoes({ idioma, setIdioma, textos, aberto, onAbertoChange, ancoraRef }) {
-  const [tema, setTema] = useState(() => {
-    return localStorage.getItem("tema") || "escuro";
-  });
-
-  useEffect(() => {
-    document.documentElement.dataset.tema = tema;
-    localStorage.setItem("tema", tema);
-  }, [tema]);
-
+// Tema: estado em useTema (compartilhado com o menu de três pontinhos).
+function Configuracoes({
+  idioma,
+  setIdioma,
+  tema,
+  setTema,
+  textos,
+  aberto,
+  onAbertoChange,
+  ancoraRef,
+}) {
   return (
     <Popover.Root open={aberto} onOpenChange={(abrir) => onAbertoChange(abrir)}>
       <Popover.Portal>
         <Popover.Positioner
           className="config-posicao"
           anchor={ancoraRef}
-          side="top"
-          align="start"
+          side="bottom"
+          align="end"
           sideOffset={8}
           collisionPadding={12}
         >

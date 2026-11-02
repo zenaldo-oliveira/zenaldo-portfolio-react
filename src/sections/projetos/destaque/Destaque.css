@@ -1,14 +1,6 @@
-/* ===== INÍCIO: seção em destaque ===== */
-/* container-type: os layouts abaixo seguem a largura real ao lado da
-   sidebar (aberta ou recolhida), e não a largura da janela */
-.destaque {
-  margin-bottom: 24px;
-  container-type: inline-size;
-}
-/* ===== FIM: seção em destaque ===== */
-
 /* ===== INÍCIO: cartão em destaque ===== */
-/* Estático (um único destaque): imagem à esquerda e texto à direita */
+/* Base do cartão; na roda (e com um único projeto) ele usa o formato
+   vertical: imagem em cima, conteúdo abaixo */
 .destaque-cartao {
   display: grid;
   /* Imagem até 560px: não estica em telas grandes */
@@ -17,14 +9,16 @@
   gap: 24px;
 }
 
-/* No carrossel: imagem em cima, conteúdo abaixo, mesma altura entre slides */
+/* Vertical (roda): imagem de ponta a ponta no topo do card, sem moldura
+   interna, e o conteúdo logo abaixo. Sem overflow no card: dentro da roda
+   3D ele atrapalharia o mouse sobre a imagem; quem acompanha os cantos
+   arredondados é o próprio palco (raio do card menos a borda). */
 .destaque-cartao.destaque-cartao-vertical {
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
-  align-items: stretch;
-  gap: 16px;
-  height: 100%;
-  padding: 16px;
+  grid-template-rows: auto auto;
+  align-items: start;
+  gap: 0;
+  padding: 0;
 }
 
 .destaque-conteudo {
@@ -50,6 +44,11 @@
   line-height: 1.25;
 }
 
+.destaque-cartao-vertical .destaque-conteudo {
+  gap: 8px;
+  padding: 12px 16px 14px;
+}
+
 .destaque-cartao-vertical .destaque-conteudo h3 {
   font-size: 17px;
 }
@@ -59,15 +58,14 @@
   margin: 0;
 }
 
-/* Descrição curta no carrossel, sem rolagem dentro do cartão */
+/* Descrição curta: texto completo, sem corte nem rolagem */
 .destaque-cartao-vertical .destaque-conteudo .destaque-descricao {
-  display: -webkit-box;
-  overflow: hidden;
   font-size: 14px;
-  line-height: 1.55;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  line-height: 1.5;
+}
+
+.destaque-cartao-vertical .etiquetas {
+  gap: 6px;
 }
 
 .destaque-cartao-vertical .etiqueta {
@@ -75,15 +73,15 @@
   font-size: 12px;
 }
 
-/* Ações no rodapé do cartão, alinhadas entre os slides visíveis */
+/* Ações no rodapé do cartão: Ver detalhes, Demo e GitHub */
 .destaque-acoes {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px 12px;
+  justify-content: flex-start;
+  gap: 10px 16px;
   width: 100%;
-  margin-top: auto;
+  /* Logo abaixo das tecnologias (sem empurrar para o rodapé do card) */
   padding-top: 4px;
 }
 
@@ -95,110 +93,185 @@
 }
 /* ===== FIM: cartão em destaque ===== */
 
-/* Imagem: estilos compartilhados em ../Projetos.css (.projeto-imagem) */
-
-/* ===== INÍCIO: carrossel (shadcn/ui Carousel + Embla) ===== */
-/* Cards por vez pela largura disponível: 1 (celular), 2 (tablet), 3 (computador).
-   Sobrescreve o basis-full do CarouselItem. */
-.destaque-item {
-  flex-basis: 100%;
+/* Imagem: estilos compartilhados em ../Projetos.css (.projeto-imagem).
+   No card, 16:9 deixa mais altura para o texto (no diálogo segue 16:10). */
+.destaque-cartao-vertical .projeto-imagem {
+  aspect-ratio: 2 / 1;
 }
 
-@container (min-width: 560px) {
-  .destaque-item {
-    flex-basis: 50%;
-  }
-}
+/* Palco: altura comum (--palco-altura, definida pela roda, ~55% do card) e
+   largura toda do card. A composição monitor + celular fica centralizada,
+   inteira e sem deformar, com 10px de respiro. */
+.destaque-cartao-vertical .projeto-palco {
+  --respiro: 10px;
 
-/* Mesmo limite da grade de projetos (840px), para os dois mudarem juntos */
-@container (min-width: 840px) {
-  .destaque-item {
-    flex-basis: calc(100% / 3);
-  }
-}
-
-/* Telas muito largas: mais cards por vez, para as imagens não passarem
-   de ~560px (até 1920px de janela continuam 3) */
-@container (min-width: 1700px) {
-  .destaque-item {
-    flex-basis: 25%;
-  }
-}
-
-@container (min-width: 2100px) {
-  .destaque-item {
-    flex-basis: 20%;
-  }
-}
-
-/* Arrastar com o mouse; no toque, a rolagem vertical da página continua livre */
-.destaque-carrossel [data-slot="carousel-content"] {
-  cursor: grab;
-}
-
-.destaque-carrossel [data-slot="carousel-content"]:active {
-  cursor: grabbing;
-}
-
-.destaque-carrossel [data-slot="carousel-content"] :is(a, button) {
-  cursor: pointer;
-}
-
-/* Setas e indicadores numa barra própria, dentro da largura da seção */
-.carrossel-controles {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 12px;
-}
-
-.carrossel-indicadores {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
-}
-
-/* Ponto de 8px com área de toque de 24px */
-.carrossel-indicador {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  background: transparent;
+  /* relative: âncora da legenda; margin 0: quando o palco é um <figure>.
+     Largura toda do card e sem borda/cantos próprios: nenhuma moldura
+     retangular em volta da composição. */
+  position: relative;
+  width: 100%;
+  height: var(--palco-altura, auto);
+  margin: 0;
+  aspect-ratio: auto;
   border: 0;
-  border-radius: 999px;
-  cursor: pointer;
+  border-radius: 11px 11px 0 0;
 }
 
-.carrossel-indicador span {
-  width: 8px;
-  height: 8px;
-  background-color: var(--borda);
-  border-radius: 999px;
-  transition:
-    background-color 0.2s ease,
-    transform 0.2s ease;
+/* Fora da roda (um único projeto), o palco segue a proporção 2:1 */
+.projeto-unico .destaque-cartao-vertical .projeto-palco {
+  aspect-ratio: 2 / 1;
 }
 
-.carrossel-indicador:hover span {
-  background-color: var(--texto-secundario);
+/* ===== INÍCIO: palco do mockup ===== */
+/* Mesmo fundo do card (--painel, definido nos temas claro e escuro), sem
+   gradiente nem borda interna: card e mockups formam uma superfície única.
+   Só os dispositivos têm moldura e sombra. */
+.projeto-palco {
+  display: grid;
+  background: var(--painel);
+  border: 0;
 }
 
-.carrossel-indicador[aria-current="true"] span {
-  background-color: var(--destaque);
+/* Camada que inclina: --ix/--iy (de -1 a 1) vêm de useInclinacao.js.
+   Até 4° em cada eixo (profundidade discreta); volta suave ao sair (0,6s) e
+   acompanha rápido o mouse enquanto ele se move (data-inclinando). */
+.projeto-palco-camada {
+  display: grid;
+  min-height: 0;
+  /* Camada só visual: o mouse é lido pelo palco (plano). Dentro da roda 3D,
+     cards com ângulo próximo de 180° (ex.: Fujii) faziam o navegador tratar
+     esta camada como "de costas" na detecção do mouse e o efeito não
+     disparava. */
+  pointer-events: none;
+  padding: var(--respiro, 8px);
+  /* A perspectiva fica na própria transformação (e não no palco), para o
+     palco seguir sendo um elemento plano na detecção do mouse */
+  transform: perspective(900px) rotateX(calc(var(--iy, 0) * -4deg))
+    rotateY(calc(var(--ix, 0) * 4deg));
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .carrossel-indicador[aria-current="true"] span {
-    transform: scale(1.3);
+.projeto-palco .projeto-palco-camada img {
+  min-height: 0;
+  object-fit: contain;
+  object-position: center;
+  /* Sombra acompanha a inclinação (segue o contorno nos mockups sem fundo) */
+  filter: drop-shadow(
+    calc(var(--ix, 0) * -8px) calc(10px + var(--iy, 0) * -6px) 14px rgba(0, 0, 0, 0.45)
+  );
+  transition: filter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.projeto-palco[data-inclinando] .projeto-palco-camada,
+.projeto-palco[data-inclinando] .projeto-palco-camada img {
+  transition-duration: 0.12s;
+}
+
+/* Toque e movimento reduzido: sem inclinação (o JS também não a aplica) */
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .projeto-palco-camada,
+  .projeto-palco .projeto-palco-camada img {
+    transform: none;
+    transition: none;
   }
 }
-
-.carrossel-indicador:focus-visible {
-  outline: 2px solid var(--texto);
-  outline-offset: 2px;
+/* ===== INÍCIO: composição monitor + celular ===== */
+/* Mesmo enquadramento em todos os projetos (modelo Fujii): monitor inteiro à
+   esquerda ocupando a altura toda, celular à direita com 75% da altura,
+   apoiado perto da base. Proporção da composição: 978 × 554 (monitor 748 +
+   espaço 28 + celular ~202). O palco já tem essa proporção (--proporcao),
+   então os dispositivos preenchem a área sem recorte nem sobra. */
+.projeto-palco[data-composicao] .projeto-palco-camada {
+  transform-style: preserve-3d;
 }
-/* ===== FIM: carrossel ===== */
+
+.projeto-composicao {
+  position: relative;
+  justify-self: center;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 978 / 554;
+  transform-style: preserve-3d;
+}
+
+.projeto-palco .projeto-palco-camada .projeto-dispositivo {
+  position: absolute;
+  display: block;
+  max-width: none;
+  object-fit: contain;
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Monitor: plano de trás */
+.projeto-palco .projeto-palco-camada .projeto-dispositivo-monitor {
+  bottom: 0;
+  left: 0;
+  width: calc(748 / 978 * 100%);
+  height: auto;
+  transform: translateZ(0);
+  filter: drop-shadow(
+    calc(var(--ix, 0) * -6px) calc(8px + var(--iy, 0) * -4px) 12px rgba(0, 0, 0, 0.45)
+  );
+}
+
+/* Celular: à frente (translateZ) e com deslocamento próprio ao inclinar */
+.projeto-palco .projeto-palco-camada .projeto-dispositivo-celular {
+  right: 0;
+  bottom: 6%;
+  width: auto;
+  height: 75%;
+  transform: translate3d(calc(var(--ix, 0) * 8px), calc(var(--iy, 0) * 4px), 20px);
+  filter: drop-shadow(
+    calc(var(--ix, 0) * -10px) calc(12px + var(--iy, 0) * -6px) 14px rgba(0, 0, 0, 0.5)
+  );
+}
+
+.projeto-palco[data-inclinando] .projeto-dispositivo {
+  transition-duration: 0.12s;
+}
+
+/* Legenda (ex.: dados fictícios) no canto superior, sem cobrir o celular
+   nem a base do monitor */
+.projeto-palco[data-composicao] .projeto-legenda {
+  top: 8px;
+  right: auto;
+  bottom: auto;
+  left: 10px;
+  max-width: 62%;
+  font-size: 11px;
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .projeto-palco .projeto-palco-camada .projeto-dispositivo-celular {
+    transform: translateZ(20px);
+  }
+
+  .projeto-palco .projeto-palco-camada .projeto-dispositivo {
+    transition: none;
+  }
+}
+/* ===== FIM: composição monitor + celular ===== */
+
+/* ===== FIM: palco do mockup ===== */
+
+/* Legenda (ex.: "dados de demonstração") sobre a base da imagem, legível nos
+   dois temas; no diálogo ela continua abaixo da imagem */
+.destaque-cartao-vertical .projeto-figura {
+  position: relative;
+}
+
+.destaque-cartao-vertical .projeto-legenda {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  left: 8px;
+  margin: 0;
+  padding: 4px 8px;
+  color: var(--texto);
+  background-color: color-mix(in srgb, var(--painel) 90%, transparent);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  line-height: 1.4;
+}

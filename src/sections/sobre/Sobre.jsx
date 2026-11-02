@@ -29,8 +29,9 @@ function Sobre({ idioma, curriculoDisponivel }) {
 
   // Dois grupos na ordem de leitura (DOM = ordem visual e do teclado):
   // A) apresentação e experiência/formação; B) IA, tecnologias e objetivo.
-  // A partir de 1700px viram duas colunas; abaixo, o CSS desfaz os grupos
-  // (display: contents) e mantém o layout de antes.
+  // Com 1240px ou mais de conteúdo (largura real, sidebar aberta ou
+  // recolhida) viram duas colunas; abaixo, o CSS desfaz os grupos
+  // (display: contents): conteúdo + objetivo, ou uma coluna.
   return (
     <section className="pagina sobre" aria-labelledby="sobre-titulo">
       <CabecalhoPagina id="sobre-titulo" apoio={t.apoio} titulo={t.titulo} />

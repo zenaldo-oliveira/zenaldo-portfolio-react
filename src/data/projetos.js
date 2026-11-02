@@ -1,7 +1,7 @@
 /* ===== INÍCIO: projetos do portfólio ===== */
 // Cadastro único dos projetos. Cadastre apenas projetos reais; cada novo item
-// entra automaticamente na grade de Projetos. Textos aceitam { pt, en, es }.
-// A ordem do array é a ordem do carrossel e da grade.
+// entra automaticamente no carrossel de Projetos. Textos aceitam { pt, en, es }.
+// A ordem do array é a ordem do carrossel.
 //
 // PENDENTE: "participacao" dos projetos ZTech ainda não foi informada; o
 // campo fica ausente (e a seção oculta) até ser confirmado.
@@ -10,7 +10,7 @@
 //   id: "identificador-unico",
 //   categoria: "frontend" | "backend" | "fullstack",
 //   nome: { pt, en, es },
-//   descricao: { pt, en, es },              // curta: o cartão mostra até 2 linhas
+//   descricao: { pt, en, es },              // curta: aparece inteira no cartão do carrossel
 //   status: "desenvolvimento" | "concluido" | "publicado", // opcional: omita se não confirmado
 //                                            // "publicado": só com demonstração pública funcionando
 //   contexto: { pt, en, es },                // opcional: contexto e finalidade (diálogo)
@@ -21,6 +21,7 @@
 //   icone: "monitor",                        // chave de ICONES_PROJETO (CartaoProjeto)
 //                                            // ou caminho de imagem em public/ ("/projetos/logo.svg")
 //   tecnologias: ["react", "css"],           // ids de src/data/tecnologias.js
+//                                            // (tecnologias ou tecnologiasSoEmProjetos)
 //   links: {                                 // null enquanto não houver
 //     repositorio: "https://github.com/...",
 //     demonstracao: "https://...",
@@ -33,8 +34,15 @@
 //     altura: 800,
 //     alt: { pt, en, es },
 //     legenda: { pt, en, es },               // opcional: ex. "dados de demonstração"
+//     ajuste: "conter",                      // opcional: mostra a imagem inteira (mockups);
+//                                            // sem ele, a captura é recortada pelo topo
 //   },
 //   imagemComplementar: { ... },             // opcional: mesma forma de "imagem" (diálogo)
+//   dispositivos: {                          // opcional: composição do card (monitor à
+//     monitor: "/projetos/dispositivos/x-monitor.webp", // esquerda, celular à direita),
+//     celular: "/projetos/dispositivos/x-celular.webp", // capturas reais com transparência
+//     alt: { pt, en, es },                   // descrição da composição
+//   },                                       // sem ele, o card usa "imagem"
 //   emDestaque: true,                        // usado pela seção "Em destaque" (fora da página)
 // }
 export const projetos = [
@@ -56,6 +64,16 @@ export const projetos = [
     },
     status: "desenvolvimento",
     emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): monitor: painel com dados fictícios (captura local já usada); celular: login do admin (build local, campos vazios)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/ztech-platform-monitor.webp",
+      celular: "/projetos/dispositivos/ztech-platform-celular.webp",
+      alt: {
+        pt: "ZTech Platform: painel administrativo com dados fictícios no computador e tela de login do admin no celular.",
+        en: "ZTech Platform: admin dashboard with fictitious data on the computer and the admin login screen on the phone.",
+        es: "ZTech Platform: panel administrativo con datos ficticios en la computadora y pantalla de inicio de sesión del admin en el celular.",
+      },
+    },
     contexto: {
       pt: "Plataforma para centralizar o que todo SaaS da ZTech precisa — autenticação, empresas (tenants), usuários e permissões — e evitar reconstruir essa base a cada novo produto. Módulos de negócio, assinaturas e pagamentos ainda não estão implementados.",
       en: "A platform that centralizes what every ZTech SaaS needs — authentication, companies (tenants), users and permissions — so this foundation isn't rebuilt for each new product. Business modules, subscriptions and payments are not implemented yet.",
@@ -182,6 +200,16 @@ export const projetos = [
     },
     status: "publicado",
     emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): site publicado (zenaldodev.com.br)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/ztech-solutions-monitor.webp",
+      celular: "/projetos/dispositivos/ztech-solutions-celular.webp",
+      alt: {
+        pt: "Site da ZTech Solutions, página inicial no computador e no celular.",
+        en: "ZTech Solutions website, home page on the computer and on the phone.",
+        es: "Sitio de ZTech Solutions, página de inicio en la computadora y en el celular.",
+      },
+    },
     contexto: {
       pt: "Site da ZTech Solutions, empresa da qual sou fundador, para apresentar sites, sistemas e automações a pequenas e médias empresas e receber pedidos de orçamento.",
       en: "Website of ZTech Solutions, the company I founded, presenting websites, systems and automations to small and medium businesses and receiving quote requests.",
@@ -261,6 +289,53 @@ export const projetos = [
     ],
   },
   {
+    id: "ztech-oficina",
+    // Repositório público github.com/zenaldo-oliveira/ztech-mecanica (o README
+    // usa o nome provisório "AutoForge ERP"; a interface exibe "ZTECH OFICINA").
+    // Tecnologias conferidas nos package.json de apps/frontend e apps/backend.
+    // Captura: tela de login do build local (o painel exige autenticação).
+    // Sem demonstração publicada.
+    categoria: "fullstack",
+    nome: {
+      pt: "ZTech Oficina",
+      en: "ZTech Oficina",
+      es: "ZTech Oficina",
+    },
+    descricao: {
+      pt: "Plataforma SaaS em desenvolvimento para gestão de oficinas mecânicas, com CRM, checklists, orçamentos e ordens de serviço.",
+      en: "SaaS platform in development for auto repair shop management, with CRM, checklists, quotes and work orders.",
+      es: "Plataforma SaaS en desarrollo para la gestión de talleres mecánicos, con CRM, checklists, presupuestos y órdenes de servicio.",
+    },
+    status: "desenvolvimento",
+    emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): build local; tela de login (o painel exige autenticação)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/ztech-oficina-monitor.webp",
+      celular: "/projetos/dispositivos/ztech-oficina-celular.webp",
+      alt: {
+        pt: "ZTech Oficina, tela de login no computador e no celular.",
+        en: "ZTech Oficina, login screen on the computer and on the phone.",
+        es: "ZTech Oficina, pantalla de inicio de sesión en la computadora y en el celular.",
+      },
+    },
+    imagem: {
+      src: "/projetos/ztech-oficina.webp",
+      largura: 1920,
+      altura: 900,
+      alt: {
+        pt: "Tela de login da ZTech Oficina, com o formulário de e-mail e senha sobre a imagem de um motor.",
+        en: "ZTech Oficina login screen, with the email and password form over an image of an engine.",
+        es: "Pantalla de inicio de sesión de ZTech Oficina, con el formulario de correo y contraseña sobre la imagen de un motor.",
+      },
+    },
+    tecnologias: ["nextjs", "react", "typescript", "tailwindcss", "nodejs", "fastify", "prisma", "postgresql"],
+    links: {
+      repositorio: "https://github.com/zenaldo-oliveira/ztech-mecanica",
+      demonstracao: null,
+      documentacao: null,
+    },
+  },
+  {
     id: "site-restaurante",
     // Tecnologias conferidas no código publicado (index.html, style.css e
     // script.js em zenaldo.netlify.app). Repositório não identificado: nenhum
@@ -277,6 +352,16 @@ export const projetos = [
       es: "Página de presentación de restaurante, con menú y canales de contacto.",
     },
     emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): site publicado (zenaldo.netlify.app)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/site-restaurante-monitor.webp",
+      celular: "/projetos/dispositivos/site-restaurante-celular.webp",
+      alt: {
+        pt: "Site de restaurante, página inicial com o título “O sabor que vai até você” no computador e no celular.",
+        en: "Restaurant website, home page with the heading “O sabor que vai até você” on the computer and on the phone.",
+        es: "Sitio de restaurante, página de inicio con el título “O sabor que vai até você” en la computadora y en el celular.",
+      },
+    },
     imagem: {
       src: "/projetos/restaurante.webp",
       largura: 1902,
@@ -325,6 +410,16 @@ export const projetos = [
       es: "Página de presentación de barbería, con servicios y llamada para reservar.",
     },
     emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): site publicado (barbearia-edenilson.netlify.app)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/barbearia-edenilson-monitor.webp",
+      celular: "/projetos/dispositivos/barbearia-edenilson-celular.webp",
+      alt: {
+        pt: "Barbearia Edenilson, página inicial com o logotipo Barber no computador e no celular.",
+        en: "Barbearia Edenilson, home page with the Barber logo on the computer and on the phone.",
+        es: "Barbearia Edenilson, página de inicio con el logotipo Barber en la computadora y en el celular.",
+      },
+    },
     imagem: {
       src: "/projetos/barbearia-edenilson.webp",
       largura: 1895,
@@ -356,6 +451,233 @@ export const projetos = [
     ],
   },
   {
+    id: "fujii-advocacia",
+    // Site publicado na Vercel; dados (descrição, tecnologias e links)
+    // informados pelo autor. Imagem: mockup real do site (computador e celular),
+    // de C:/projetos/Fujiiadvogados/src/assets/fujii-mockup-v2.png.
+    // Status e funcionalidades não informados: campos ausentes.
+    categoria: "frontend",
+    nome: {
+      pt: "Fujii Advocacia & Consultoria Jurídica",
+      en: "Fujii Advocacia & Consultoria Jurídica",
+      es: "Fujii Advocacia & Consultoria Jurídica",
+    },
+    descricao: {
+      pt: "Site institucional com áreas de atuação, navegação responsiva e canais de contato.",
+      en: "Institutional website with practice areas, responsive navigation and contact channels.",
+      es: "Sitio institucional con áreas de actuación, navegación adaptable y canales de contacto.",
+    },
+    emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): site publicado (fujiiadvogados.vercel.app)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/fujii-advocacia-monitor.webp",
+      celular: "/projetos/dispositivos/fujii-advocacia-celular.webp",
+      alt: {
+        pt: "Fujii Advocacia, página inicial com o título “Advocacia e consultoria jurídica” no computador e no celular.",
+        en: "Fujii Advocacia, home page with the heading “Advocacia e consultoria jurídica” on the computer and on the phone.",
+        es: "Fujii Advocacia, página de inicio con el título “Advocacia e consultoria jurídica” en la computadora y en el celular.",
+      },
+    },
+    imagem: {
+      src: "/projetos/fujii-advocacia.webp",
+      largura: 1729,
+      altura: 814,
+      ajuste: "conter",
+      alt: {
+        pt: "Mockup do site Fujii Advocacia em um monitor e em um celular, com o logotipo, o título “Advocacia e consultoria jurídica” e os botões “Conheça nossas áreas de atuação” e “Entre em contato”.",
+        en: "Mockup of the Fujii Advocacia website on a monitor and a phone, with the logo, the heading “Advocacia e consultoria jurídica” and the buttons “Conheça nossas áreas de atuação” and “Entre em contato”.",
+        es: "Mockup del sitio Fujii Advocacia en un monitor y en un celular, con el logotipo, el título “Advocacia e consultoria jurídica” y los botones “Conheça nossas áreas de atuação” y “Entre em contato”.",
+      },
+    },
+    tecnologias: ["react", "typescript", "tanstack-start", "tailwindcss"],
+    links: {
+      repositorio: "https://github.com/zenaldo-oliveira/fujii-advocacia",
+      demonstracao: "https://fujiiadvogados.vercel.app/",
+      documentacao: null,
+    },
+  },
+  {
+    id: "ideal-tecnica",
+    // Repositório público github.com/zenaldo-oliveira/AXION-ENGENHARIA-SOLU-ES
+    // (o README fala em AXION; a versão final, commit "release: Ideal Tecnica
+    // MVP", exibe a marca Ideal Técnica). Tecnologias do README e do package.json.
+    // A demonstração cadastrada no GitHub (ideal-tecnica.vercel.app) está fora
+    // do ar (DEPLOYMENT_NOT_FOUND): sem link de Demo. Captura: build local (dist).
+    categoria: "frontend",
+    nome: {
+      pt: "Ideal Técnica",
+      en: "Ideal Técnica",
+      es: "Ideal Técnica",
+    },
+    descricao: {
+      pt: "Landing page de serviços de elétrica, automação, ar-condicionado e reformas, com pedidos de orçamento pelo WhatsApp.",
+      en: "Landing page for electrical, automation, air conditioning and renovation services, with quote requests via WhatsApp.",
+      es: "Landing page de servicios de electricidad, automatización, aire acondicionado y reformas, con solicitudes de presupuesto por WhatsApp.",
+    },
+    emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): build local (dist)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/ideal-tecnica-monitor.webp",
+      celular: "/projetos/dispositivos/ideal-tecnica-celular.webp",
+      alt: {
+        pt: "Ideal Técnica, página inicial com o título “Serviços para sua casa, empresa ou comércio” no computador e no celular.",
+        en: "Ideal Técnica, home page with the heading “Serviços para sua casa, empresa ou comércio” on the computer and on the phone.",
+        es: "Ideal Técnica, página de inicio con el título “Serviços para sua casa, empresa ou comércio” en la computadora y en el celular.",
+      },
+    },
+    imagem: {
+      src: "/projetos/ideal-tecnica.webp",
+      largura: 1920,
+      altura: 900,
+      alt: {
+        pt: "Página inicial da Ideal Técnica, com o título “Serviços para sua casa, empresa ou comércio” sobre a foto de um painel elétrico e o botão de orçamento pelo WhatsApp.",
+        en: "Ideal Técnica home page, with the heading “Serviços para sua casa, empresa ou comércio” over a photo of an electrical panel and the WhatsApp quote button.",
+        es: "Página de inicio de Ideal Técnica, con el título “Serviços para sua casa, empresa ou comércio” sobre la foto de un tablero eléctrico y el botón de presupuesto por WhatsApp.",
+      },
+    },
+    tecnologias: ["react", "typescript", "vite", "tailwindcss", "framer-motion"],
+    links: {
+      repositorio: "https://github.com/zenaldo-oliveira/AXION-ENGENHARIA-SOLU-ES",
+      demonstracao: null,
+      documentacao: null,
+    },
+  },
+  {
+    id: "clinic-beauty",
+    // Repositório público github.com/zenaldo-oliveira/clinic-beauty; descrição
+    // do próprio repositório no GitHub. Tecnologias do package.json (apps/web).
+    // A demonstração cadastrada (clinic-beauty-web.vercel.app) está fora do ar.
+    // Captura: build local (dist/apps/web).
+    categoria: "frontend",
+    nome: {
+      pt: "Clinic Beauty",
+      en: "Clinic Beauty",
+      es: "Clinic Beauty",
+    },
+    descricao: {
+      pt: "Site institucional de clínica de estética, com procedimentos, resultados e agendamento de avaliação.",
+      en: "Institutional website for an aesthetics clinic, with procedures, results and appointment booking.",
+      es: "Sitio institucional de clínica de estética, con procedimientos, resultados y agendamiento de evaluación.",
+    },
+    emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): build local (dist/apps/web)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/clinic-beauty-monitor.webp",
+      celular: "/projetos/dispositivos/clinic-beauty-celular.webp",
+      alt: {
+        pt: "Clinic Beauty, página inicial com o título “Realce sua beleza com naturalidade e cuidado” no computador e no celular.",
+        en: "Clinic Beauty, home page with the heading “Realce sua beleza com naturalidade e cuidado” on the computer and on the phone.",
+        es: "Clinic Beauty, página de inicio con el título “Realce sua beleza com naturalidade e cuidado” en la computadora y en el celular.",
+      },
+    },
+    imagem: {
+      src: "/projetos/clinic-beauty.webp",
+      largura: 1920,
+      altura: 900,
+      alt: {
+        pt: "Página inicial da Clinic Beauty, com o título “Realce sua beleza com naturalidade e cuidado”, o botão “Agendar Avaliação” e a foto da Dra. Wanessa Pirota Hof.",
+        en: "Clinic Beauty home page, with the heading “Realce sua beleza com naturalidade e cuidado”, the “Agendar Avaliação” button and a photo of Dr. Wanessa Pirota Hof.",
+        es: "Página de inicio de Clinic Beauty, con el título “Realce sua beleza com naturalidade e cuidado”, el botón “Agendar Avaliação” y la foto de la Dra. Wanessa Pirota Hof.",
+      },
+    },
+    tecnologias: ["react", "javascript", "vite", "tailwindcss"],
+    links: {
+      repositorio: "https://github.com/zenaldo-oliveira/clinic-beauty",
+      demonstracao: null,
+      documentacao: null,
+    },
+  },
+  {
+    id: "studio-blessed",
+    // Repositório público github.com/zenaldo-oliveira/ztech-salon-site (projeto
+    // "ZTech Salon"; a marca exibida no site é Studio Blessed). Descrição do
+    // GitHub e do README; tecnologias do package.json (apps/web).
+    // Sem demonstração publicada. Captura: servidor local (Vite).
+    categoria: "frontend",
+    nome: {
+      pt: "Studio Blessed",
+      en: "Studio Blessed",
+      es: "Studio Blessed",
+    },
+    descricao: {
+      pt: "Site institucional de salão de beleza, com serviços, galeria, perguntas frequentes e agendamento pelo WhatsApp.",
+      en: "Institutional website for a beauty salon, with services, gallery, FAQ and booking via WhatsApp.",
+      es: "Sitio institucional de salón de belleza, con servicios, galería, preguntas frecuentes y reservas por WhatsApp.",
+    },
+    emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): servidor local (Vite)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/studio-blessed-monitor.webp",
+      celular: "/projetos/dispositivos/studio-blessed-celular.webp",
+      alt: {
+        pt: "Studio Blessed, página inicial com o título “Seu Momento de Beleza, Cuidado e Autoestima” no computador e no celular.",
+        en: "Studio Blessed, home page with the heading “Seu Momento de Beleza, Cuidado e Autoestima” on the computer and on the phone.",
+        es: "Studio Blessed, página de inicio con el título “Seu Momento de Beleza, Cuidado e Autoestima” en la computadora y en el celular.",
+      },
+    },
+    imagem: {
+      src: "/projetos/studio-blessed.webp",
+      largura: 1920,
+      altura: 900,
+      alt: {
+        pt: "Página inicial do Studio Blessed, com o título “Seu Momento de Beleza, Cuidado e Autoestima” sobre a foto do salão e os botões “Agendar Agora” e “Conhecer Serviços”.",
+        en: "Studio Blessed home page, with the heading “Seu Momento de Beleza, Cuidado e Autoestima” over a photo of the salon and the “Agendar Agora” and “Conhecer Serviços” buttons.",
+        es: "Página de inicio de Studio Blessed, con el título “Seu Momento de Beleza, Cuidado e Autoestima” sobre la foto del salón y los botones “Agendar Agora” y “Conhecer Serviços”.",
+      },
+    },
+    tecnologias: ["react", "javascript", "vite", "tailwindcss"],
+    links: {
+      repositorio: "https://github.com/zenaldo-oliveira/ztech-salon-site",
+      demonstracao: null,
+      documentacao: null,
+    },
+  },
+  {
+    id: "climatech",
+    // Repositório público github.com/zenaldo-oliveira/climatech-fullstack.
+    // O site é HTML, CSS e JavaScript (a pasta backend/ está vazia), por isso
+    // categoria front-end. A demonstração cadastrada
+    // (climatech-fullstack.vercel.app) está fora do ar. Captura: servidor local.
+    categoria: "frontend",
+    nome: {
+      pt: "Climatech",
+      en: "Climatech",
+      es: "Climatech",
+    },
+    descricao: {
+      pt: "Site de empresa de climatização residencial e comercial, com serviços, depoimentos e contato pelo WhatsApp.",
+      en: "Website for a residential and commercial air conditioning company, with services, testimonials and WhatsApp contact.",
+      es: "Sitio de empresa de climatización residencial y comercial, con servicios, testimonios y contacto por WhatsApp.",
+    },
+    emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): servidor local
+    dispositivos: {
+      monitor: "/projetos/dispositivos/climatech-monitor.webp",
+      celular: "/projetos/dispositivos/climatech-celular.webp",
+      alt: {
+        pt: "Climatech, página inicial com o título “Climatização Residencial e Comercial com Atendimento Profissional” no computador e no celular.",
+        en: "Climatech, home page with the heading “Climatização Residencial e Comercial com Atendimento Profissional” on the computer and on the phone.",
+        es: "Climatech, página de inicio con el título “Climatização Residencial e Comercial com Atendimento Profissional” en la computadora y en el celular.",
+      },
+    },
+    imagem: {
+      src: "/projetos/climatech.webp",
+      largura: 1920,
+      altura: 900,
+      alt: {
+        pt: "Página inicial da Climatech, com o título “Climatização Residencial e Comercial com Atendimento Profissional” e os botões “Solicitar orçamento” e “WhatsApp”.",
+        en: "Climatech home page, with the heading “Climatização Residencial e Comercial com Atendimento Profissional” and the “Solicitar orçamento” and “WhatsApp” buttons.",
+        es: "Página de inicio de Climatech, con el título “Climatização Residencial e Comercial com Atendimento Profissional” y los botones “Solicitar orçamento” y “WhatsApp”.",
+      },
+    },
+    tecnologias: ["html", "css", "javascript"],
+    links: {
+      repositorio: "https://github.com/zenaldo-oliveira/climatech-fullstack",
+      demonstracao: null,
+      documentacao: null,
+    },
+  },
+  {
     id: "portfolio-pessoal",
     // Aplicação React sem back-end próprio
     categoria: "frontend",
@@ -372,6 +694,16 @@ export const projetos = [
     },
     status: "desenvolvimento",
     emDestaque: true,
+    // Capturas reais em monitor e celular (arquivos separados): site publicado (zenaldo-portfolio-react.vercel.app)
+    dispositivos: {
+      monitor: "/projetos/dispositivos/portfolio-pessoal-monitor.webp",
+      celular: "/projetos/dispositivos/portfolio-pessoal-celular.webp",
+      alt: {
+        pt: "Portfólio pessoal, tela de entrada com o nome Zenaldo Oliveira no computador e no celular.",
+        en: "Personal portfolio, entry screen with the name Zenaldo Oliveira on the computer and on the phone.",
+        es: "Portafolio personal, pantalla de entrada con el nombre Zenaldo Oliveira en la computadora y en el celular.",
+      },
+    },
     // Captura real da tela de entrada deste portfólio
     imagem: {
       src: "/projetos/portfolio-pessoal.webp",
@@ -385,8 +717,8 @@ export const projetos = [
     },
     tecnologias: ["react", "javascript", "css", "tailwindcss", "vite"],
     links: {
-      repositorio: null,
-      demonstracao: null,
+      repositorio: "https://github.com/zenaldo-oliveira/zenaldo-portfolio-react",
+      demonstracao: "https://zenaldo-portfolio-react.vercel.app/",
       documentacao: null,
     },
     // Funcionalidades presentes no código deste repositório

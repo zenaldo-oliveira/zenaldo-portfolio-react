@@ -188,8 +188,9 @@
   align-items: center;
   gap: 4px;
   justify-self: center;
-  margin-top: 6px;
-  padding: 6px 4px;
+  min-height: 44px;
+  margin-top: 2px;
+  padding: 0 8px;
   color: var(--texto);
   font-size: 14px;
   font-weight: 500;
@@ -351,8 +352,8 @@
   /* Em janelas baixas (ex.: 1024x768), palco e vãos encolhem um pouco: os
      cartões ganham largura e a descrição usa menos linhas */
   .servicos-orbita-composicao {
-    --palco: clamp(216px, 100dvh - 570px, 220px);
-    --vao: clamp(28px, 100dvh - 740px, 40px);
+    --palco: clamp(216px, var(--altura-livre, 100dvh) - 570px, 220px);
+    --vao: clamp(28px, var(--altura-livre, 100dvh) - 740px, 40px);
     --arco: 14px;
 
     display: block;
@@ -381,7 +382,7 @@
     grid-template-rows: repeat(3, auto);
     align-content: center;
     column-gap: var(--vao);
-    row-gap: clamp(12px, 100dvh - 750px, 24px);
+    row-gap: clamp(12px, var(--altura-livre, 100dvh) - 750px, 24px);
     /* Palco + espaço da legenda abaixo dele, nas duas metades */
     min-height: calc(var(--palco) + 2 * var(--legenda-espaco, 56px));
   }
@@ -462,24 +463,34 @@
    altura usa os valores máximos; ~768px, os mínimos). Os textos não mudam. */
 @container servicos (min-width: 940px) {
   .servicos-orbita-composicao {
-    --palco: clamp(220px, 100dvh - 560px, 300px);
-    --vao: 72px;
+    --palco: clamp(220px, var(--altura-livre, 100dvh) - 560px, 300px);
+    /* Vão entre cartões e QR Code proporcional à largura: em notebooks os
+       cartões ganham largura (descrições com menos linhas) */
+    --vao: clamp(36px, 5cqi, 72px);
     --arco: 40px;
   }
 
   .servicos-orbita-lista {
-    row-gap: clamp(12px, 100dvh - 750px, 32px);
+    row-gap: clamp(12px, var(--altura-livre, 100dvh) - 750px, 32px);
     min-height: calc(var(--palco) + 2 * var(--legenda-espaco, 56px));
   }
 
   .servico-cartao {
+    padding: clamp(11px, 1.8dvh, 16px) 18px;
+  }
+}
+
+/* Cartões largos (a partir de 1100px de composição): ícone à esquerda de um
+   bloco de texto. Abaixo disso (ex.: notebook de 1280px com a sidebar), a
+   descrição usa a largura toda do cartão, sob o ícone: menos linhas e a
+   composição cabe na altura sem rolagem. */
+@container servicos (min-width: 1100px) {
+  .servico-cartao {
     grid-template-columns: auto minmax(0, 1fr);
     gap: 14px;
     align-items: start;
-    padding: clamp(11px, 1.8dvh, 16px) 18px;
   }
 
-  /* Volta ao ícone à esquerda de um bloco de texto */
   .servico-textos {
     display: grid;
   }

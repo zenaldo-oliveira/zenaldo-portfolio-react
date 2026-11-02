@@ -1,17 +1,7 @@
-import {
-  Ellipsis,
-  Folder,
-  House,
-  Mail,
-  Milestone,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Settings,
-  User,
-} from "lucide-react";
-import { Menu } from "@base-ui/react/menu";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import Configuracoes from "../configuracoes/Configuracoes";
+import { Folder, House, Mail, Milestone, User } from "lucide-react";
+import { useEffect, useRef } from "react";
+
+import BotaoSidebar from "../navegacao/BotaoSidebar";
 import "./Sidebar.css";
 
 /* ===== Itens da navegação ===== */
@@ -25,109 +15,75 @@ const itensMenu = [
   { nome: "contato", destino: "#contato", icone: Mail },
 ];
 
-/* ===== Celular (mesmo limite do Sidebar.css) ===== */
-// No celular a sidebar é um painel sobreposto e não recolhe: o menu de três
-// pontinhos mostra só "Configurações".
-const CONSULTA_CELULAR = "(max-width: 768px)";
+/* ===== INÍCIO: sidebar ===== */
+// aberta — computador: expandida (false = recolhida em trilho de ícones);
+//          celular: painel sobreposto visível.
+// O botão de recolher/expandir fica no canto superior esquerdo da própria
+// sidebar. No celular, o mesmo botão (na barra superior) abre o painel, e o
+// painel fecha pelo botão, pela tecla Esc ou tocando fora.
+function Sidebar({ textos, paginaAtual, paginasDisponiveis, celular, aberta, alternar, fechar }) {
+  const botaoRef = useRef(null);
+  const painelAberto = celular && aberta;
 
-function assinarCelular(avisar) {
-  const consulta = window.matchMedia(CONSULTA_CELULAR);
-  consulta.addEventListener("change", avisar);
-  return () => consulta.removeEventListener("change", avisar);
-}
-
-function ehCelular() {
-  return window.matchMedia(CONSULTA_CELULAR).matches;
-}
-
-function Sidebar({ textos, paginaAtual, paginasDisponiveis, idioma, setIdioma }) {
-  const [recolhida, setRecolhida] = useState(false);
-  const [menuAberto, setMenuAberto] = useState(false);
-  const [configAberta, setConfigAberta] = useState(false);
-  const celular = useSyncExternalStore(assinarCelular, ehCelular);
-
-  /* ===== INÍCIO: foco entre menu, configurações e recolher ===== */
-  // O botão de três pontinhos é a âncora do painel de configurações e recebe
-  // o foco de volta quando ele fecha. Ao recolher pelo menu, o foco vai para
-  // o botão de expandir; ao expandir, volta para os três pontinhos.
-  const botaoMenuRef = useRef(null);
-  const botaoExpandirRef = useRef(null);
-  // Item escolhido no menu ("configuracoes" | "recolher"); limpo ao reabrir
-  const acaoMenu = useRef(null);
-  const focarMenuAoExpandir = useRef(false);
-
+  /* ===== INÍCIO: painel do celular (foco e Esc) ===== */
+  // Ao abrir, o foco vai para o botão de fechar; ao fechar, volta ao botão
+  // que abriu (barra superior), se o foco estava dentro do painel.
   useEffect(() => {
-    if (!recolhida && focarMenuAoExpandir.current) {
-      focarMenuAoExpandir.current = false;
-      botaoMenuRef.current?.focus();
+    if (!painelAberto) return;
+
+    botaoRef.current?.focus();
+
+    function aoTeclar(evento) {
+      if (evento.key === "Escape") fechar();
     }
-  }, [recolhida]);
+    document.addEventListener("keydown", aoTeclar);
 
-  function recolher() {
-    acaoMenu.current = "recolher";
-    setRecolhida(true);
-  }
+    return () => {
+      document.removeEventListener("keydown", aoTeclar);
+      const ativo = document.activeElement;
+      const focoPerdido =
+        !ativo ||
+        ativo === document.body ||
+        document.getElementById("sidebar-principal")?.contains(ativo);
+      if (focoPerdido) document.getElementById("botao-abrir-sidebar")?.focus();
+    };
+  }, [painelAberto, fechar]);
+  /* ===== FIM: painel do celular ===== */
 
-  // O botão de expandir some ao expandir: o foco segue para os três pontinhos
-  function expandir() {
-    focarMenuAoExpandir.current = true;
-    setRecolhida(false);
-  }
-
-  function aoMudarMenu(aberto) {
-    if (aberto) acaoMenu.current = null;
-  }
-
-  // As configurações abrem depois que o menu termina de fechar, para o
-  // retorno de foco do menu não competir com o painel.
-  function aoTerminarMenu(aberto) {
-    if (!aberto && acaoMenu.current === "configuracoes") {
-      setConfigAberta(true);
-    }
-  }
-
-  // Destino do foco quando o menu fecha: o botão de expandir (após recolher),
-  // nenhum (o painel de configurações vai recebê-lo) ou o próprio gatilho.
-  function focoAoFecharMenu() {
-    if (acaoMenu.current === "recolher") return botaoExpandirRef.current ?? true;
-    if (acaoMenu.current === "configuracoes") return false;
-    return true;
-  }
-  /* ===== FIM: foco entre menu, configurações e recolher ===== */
+  const classes = [
+    "sidebar",
+    !celular && !aberta ? "recolhida" : "",
+    painelAberto ? "aberta" : "",
+  ].join(" ");
 
   return (
     <>
-      <button
-        className="sidebar-abrir-mobile"
-        type="button"
-        onClick={() => setMenuAberto(true)}
-        aria-label={textos.abrirMenu}
-        aria-controls="sidebar-principal"
-        aria-expanded={menuAberto}
-      >
-        ☰
-      </button>
+      {/* Toque fora do painel (celular) fecha o menu */}
+      {painelAberto && <div className="sidebar-fundo" aria-hidden="true" onClick={fechar} />}
 
       <aside
         id="sidebar-principal"
-        className={`sidebar ${recolhida ? "recolhida" : ""} ${menuAberto ? "aberta" : ""}`}
+        className={classes}
+        // Celular com o painel fechado: fora da leitura e do Tab
+        inert={celular && !aberta ? true : undefined}
       >
-        <button
-          className="sidebar-fechar-mobile"
-          type="button"
-          onClick={() => setMenuAberto(false)}
-          aria-label={textos.fecharMenu}
-        >
-          ✕
-        </button>
+        {/* ===== Início: topo (botão + logo) ===== */}
+        <div className="sidebar-cabecalho">
+          <BotaoSidebar
+            ref={botaoRef}
+            aberta={aberta}
+            celular={celular}
+            textos={textos}
+            onClick={alternar}
+          />
+        </div>
 
-        {/* ===== Início: logo ===== */}
         <div className="sidebar-topo">
-          <a className="sidebar-logo" href="#inicio">
+          <a className="sidebar-logo" href="#inicio" onClick={celular ? fechar : undefined}>
             <img src="/logo.png" alt="Zenaldo Oliveira — início" />
           </a>
         </div>
-        {/* ===== Fim: logo ===== */}
+        {/* ===== Fim: topo ===== */}
 
         {/* ===== Início: navegação ===== */}
         <nav aria-label={textos.navegacaoPrincipal}>
@@ -162,10 +118,8 @@ function Sidebar({ textos, paginaAtual, paginasDisponiveis, idioma, setIdioma })
                 href={item.destino}
                 aria-label={texto}
                 aria-current={ativo ? "page" : undefined}
-                title={recolhida ? texto : undefined}
-                target={item.externo ? "_blank" : undefined}
-                rel={item.externo ? "noopener noreferrer" : undefined}
-                onClick={() => setMenuAberto(false)}
+                title={!celular && !aberta ? texto : undefined}
+                onClick={celular ? fechar : undefined}
               >
                 <Icone size={20} aria-hidden="true" />
                 <span className="sidebar-texto">{texto}</span>
@@ -174,77 +128,10 @@ function Sidebar({ textos, paginaAtual, paginasDisponiveis, idioma, setIdioma })
           })}
         </nav>
         {/* ===== Fim: navegação ===== */}
-
-        {/* ===== Início: rodapé da sidebar ===== */}
-        {/* Três pontinhos: "Configurações" e, no computador com a sidebar
-            aberta, "Recolher menu". Recolhida: botão visível para expandir. */}
-        <div className="sidebar-rodape">
-          {recolhida && !celular && (
-            <button
-              ref={botaoExpandirRef}
-              className="sidebar-controle sidebar-expandir"
-              type="button"
-              onClick={expandir}
-              aria-label={textos.expandirMenu}
-              title={textos.expandirMenu}
-            >
-              <PanelLeftOpen size={20} aria-hidden="true" />
-            </button>
-          )}
-
-          <Menu.Root onOpenChange={aoMudarMenu} onOpenChangeComplete={aoTerminarMenu}>
-            <Menu.Trigger
-              ref={botaoMenuRef}
-              className="sidebar-controle sidebar-mais"
-              aria-label={textos.maisOpcoes}
-              title={textos.maisOpcoes}
-            >
-              <Ellipsis size={20} aria-hidden="true" />
-            </Menu.Trigger>
-
-            <Menu.Portal>
-              <Menu.Positioner
-                className="sidebar-menu-posicao"
-                side="top"
-                align="start"
-                sideOffset={8}
-                collisionPadding={12}
-              >
-                <Menu.Popup className="sidebar-menu" finalFocus={focoAoFecharMenu}>
-                  <Menu.Item
-                    className="sidebar-menu-item"
-                    onClick={() => {
-                      acaoMenu.current = "configuracoes";
-                    }}
-                  >
-                    <Settings size={18} aria-hidden="true" />
-                    {textos.configuracoes}
-                  </Menu.Item>
-
-                  {!recolhida && !celular && (
-                    <Menu.Item className="sidebar-menu-item" onClick={recolher}>
-                      <PanelLeftClose size={18} aria-hidden="true" />
-                      {textos.recolherMenu}
-                    </Menu.Item>
-                  )}
-                </Menu.Popup>
-              </Menu.Positioner>
-            </Menu.Portal>
-          </Menu.Root>
-
-          <Configuracoes
-            idioma={idioma}
-            setIdioma={setIdioma}
-            textos={textos}
-            aberto={configAberta}
-            onAbertoChange={setConfigAberta}
-            ancoraRef={botaoMenuRef}
-          />
-        </div>
-        {/* ===== Fim: rodapé da sidebar ===== */}
       </aside>
     </>
   );
 }
+/* ===== FIM: sidebar ===== */
 
 export default Sidebar;

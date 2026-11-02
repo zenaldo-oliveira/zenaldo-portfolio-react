@@ -31,6 +31,14 @@ export const tecnologias = [
   { id: "mysql", nome: "MySQL", icone: "mysql", categoria: "dados" },
 ];
 
+// Tecnologias citadas só em projetos: dão nome às etiquetas e aos filtros da
+// página Projetos, sem entrar nas páginas de Tecnologias e Habilidades.
+export const tecnologiasSoEmProjetos = [
+  { id: "tanstack-start", nome: "TanStack Start", categoria: "frontend" },
+  { id: "framer-motion", nome: "Framer Motion", categoria: "frontend" },
+  { id: "fastify", nome: "Fastify", categoria: "backend" },
+];
+
 // Ordem de exibição das áreas na página de Habilidades
 export const categoriasTecnologia = [
   "frontend",
@@ -40,7 +48,9 @@ export const categoriasTecnologia = [
   "ferramentas",
 ];
 
-const tecnologiasPorId = new Map(tecnologias.map((item) => [item.id, item]));
+const tecnologiasPorId = new Map(
+  [...tecnologias, ...tecnologiasSoEmProjetos].map((item) => [item.id, item]),
+);
 
 // Converte ids (de projetos e certificados) nos nomes exibidos
 export function nomesTecnologias(ids) {

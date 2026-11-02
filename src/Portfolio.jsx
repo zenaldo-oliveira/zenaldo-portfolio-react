@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MotionConfig } from "motion/react";
 
 import Tecnologias from "./sections/tecnologias/Tecnologias";
@@ -7,6 +7,8 @@ import LinhaDoTempo from "./sections/trajetoria/LinhaDoTempo";
 import Projetos from "./sections/projetos/Projetos";
 import Contato from "./sections/contato/Contato";
 import FundoPagina from "./components/fundo/FundoPagina";
+import BarraSuperior from "./components/navegacao/BarraSuperior";
+import { useCelular } from "./components/navegacao/useCelular";
 import Sidebar from "./components/sidebar/Sidebar";
 import LogoLoop from "./components/ui/LogoLoop";
 
@@ -118,6 +120,25 @@ function Portfolio() {
     document.title = `${textos[paginaAtual]} | Zenaldo Oliveira`;
   }, [paginaAtual, textos]);
 
+  /* ===== INÍCIO: estado da sidebar ===== */
+  // Computador: expandida ou recolhida. Celular: painel aberto ou fechado
+  // (sempre começa fechado; ao voltar para o computador, a preferência de
+  // expandida/recolhida continua a mesma).
+  const celular = useCelular();
+  const [recolhida, setRecolhida] = useState(false);
+  const [painelAberto, setPainelAberto] = useState(false);
+  const sidebarAberta = celular ? painelAberto : !recolhida;
+
+  const alternarSidebar = useCallback(() => {
+    if (celular) setPainelAberto((aberto) => !aberto);
+    else setRecolhida((valor) => !valor);
+  }, [celular]);
+  const fecharPainel = useCallback(() => setPainelAberto(false), []);
+  // Com o painel aberto no celular, o resto da página fica inerte (foco preso
+  // no painel, sem leitura do conteúdo por trás)
+  const fundoInerte = celular && painelAberto ? true : undefined;
+  /* ===== FIM: estado da sidebar ===== */
+
   const PaginaAtual = paginas[paginaAtual];
   // O currículo saiu do menu; a verificação do PDF segue para o botão em Sobre
   const paginasDisponiveis = Object.keys(paginas);
@@ -135,11 +156,22 @@ function Portfolio() {
           textos={textos}
           paginaAtual={paginaAtual}
           paginasDisponiveis={paginasDisponiveis}
-          idioma={idioma}
-          setIdioma={setIdioma}
+          celular={celular}
+          aberta={sidebarAberta}
+          alternar={alternarSidebar}
+          fechar={fecharPainel}
         />
 
-        <div className="area-principal">
+        <div className="area-principal" inert={fundoInerte}>
+          <BarraSuperior
+            textos={textos}
+            idioma={idioma}
+            setIdioma={setIdioma}
+            celular={celular}
+            sidebarAberta={sidebarAberta}
+            alternarSidebar={alternarSidebar}
+          />
+
           {/* ===== INÍCIO: conteúdo da página ===== */}
           <main ref={mainRef}>
             <PaginaAtual
@@ -162,6 +194,7 @@ function Portfolio() {
         {/* ===== INÍCIO: WhatsApp flutuante ===== */}
         <a
           className="whatsapp-fixo"
+          inert={fundoInerte}
           href="https://wa.me/5565974009820"
           target="_blank"
           rel="noopener noreferrer"
