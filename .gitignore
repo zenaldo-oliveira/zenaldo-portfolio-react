@@ -28,3 +28,6 @@ dist-ssr
 .env.*
 !.env.example
 backup-src*/
+
+# Mídia original preservada fora de public/ (não vai para o build nem para o Git)
+/midia-original/
