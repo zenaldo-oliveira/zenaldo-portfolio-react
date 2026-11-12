@@ -8,6 +8,12 @@ export const traducoesTrajetoria = {
       "Estudos, formações e projetos que marcam meu caminho no desenvolvimento.",
     vazio: "Os marcos da minha evolução serão publicados em breve.",
     lista: "Marcos da minha evolução, na ordem em que aconteceram",
+    // Navegação entre grupos de etapas (LinhaDoTempo.jsx)
+    navegacao: "Navegação da linha do tempo",
+    anteriores: "Etapas anteriores",
+    proximas: "Próximas etapas",
+    grupo: (inicio, fim, total) =>
+      inicio === fim ? `Etapa ${inicio} de ${total}` : `Etapas ${inicio}–${fim} de ${total}`,
     categorias: {
       curso: "Curso",
       formacao: "Formação",
@@ -35,6 +41,11 @@ export const traducoesTrajetoria = {
       "Studies, programs and projects that mark my path in development.",
     vazio: "The milestones of my journey will be published soon.",
     lista: "Milestones of my journey, in the order they happened",
+    navegacao: "Timeline navigation",
+    anteriores: "Previous milestones",
+    proximas: "Next milestones",
+    grupo: (inicio, fim, total) =>
+      inicio === fim ? `Milestone ${inicio} of ${total}` : `Milestones ${inicio}–${fim} of ${total}`,
     categorias: {
       curso: "Course",
       formacao: "Education",
@@ -62,6 +73,11 @@ export const traducoesTrajetoria = {
       "Estudios, formaciones y proyectos que marcan mi camino en el desarrollo.",
     vazio: "Los hitos de mi evolución se publicarán pronto.",
     lista: "Hitos de mi evolución, en el orden en que ocurrieron",
+    navegacao: "Navegación de la línea de tiempo",
+    anteriores: "Etapas anteriores",
+    proximas: "Próximas etapas",
+    grupo: (inicio, fim, total) =>
+      inicio === fim ? `Etapa ${inicio} de ${total}` : `Etapas ${inicio}–${fim} de ${total}`,
     categorias: {
       curso: "Curso",
       formacao: "Formación",

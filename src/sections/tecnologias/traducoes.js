@@ -1,6 +1,8 @@
 /* ===== INÍCIO: textos da página inicial (serviços) ===== */
 export const traducoesTecnologias = {
   pt: {
+    verProjetos: "Ver projetos",
+    tecnologiasTitulo: "Tecnologias que utilizo ou estudo",
     servicosMarca: "ZTech Solutions",
     servicosTitulo: "Serviços de desenvolvimento web",
     servicosDescricao:
@@ -12,6 +14,8 @@ export const traducoesTecnologias = {
     qrRotulo: "Acessar meu site, zenaldodev.com.br (abre em nova aba)",
   },
   en: {
+    verProjetos: "View projects",
+    tecnologiasTitulo: "Technologies I use or study",
     servicosMarca: "ZTech Solutions",
     servicosTitulo: "Web development services",
     servicosDescricao:
@@ -23,6 +27,8 @@ export const traducoesTecnologias = {
     qrRotulo: "Visit my website, zenaldodev.com.br (opens in a new tab)",
   },
   es: {
+    verProjetos: "Ver proyectos",
+    tecnologiasTitulo: "Tecnologías que uso o estudio",
     servicosMarca: "ZTech Solutions",
     servicosTitulo: "Servicios de desarrollo web",
     servicosDescricao:

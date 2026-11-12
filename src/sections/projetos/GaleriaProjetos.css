@@ -1,0 +1,235 @@
+/* ===== INÍCIO: galeria de projetos ===== */
+/* Um projeto por vez, sem moldura de card (sem borda, fundo ou sombra):
+   mockup → nome → descrição → botões, organizados por espaço e tipografia.
+   A galeria ocupa a altura que sobra na página (section.pagina é uma coluna
+   flexível com min-height: 100%; Projetos.css estica o último filho). */
+.galeria {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  /* Em monitores grandes o palco para de crescer (abaixo): o conjunto fica
+     centralizado na altura em vez de ampliar as capturas */
+  justify-content: center;
+  gap: clamp(10px, 2dvh, 20px);
+  min-height: 0;
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+}
+
+/* ===== palco do mockup ===== */
+/* flex-basis 0: o palco recebe exatamente a altura que sobra depois dos
+   textos e da navegação. As imagens ficam em posição absoluta dentro dele
+   (não empurram a página) e são dimensionadas pela altura E pela largura
+   disponíveis, sempre inteiras (contain), sem corte nem distorção. Piso de
+   180px: em telas muito baixas a página rola em vez de a imagem sumir. Teto
+   de 720px (~1,3× a altura real da captura do monitor, 554px): em 4K a
+   imagem não é ampliada a ponto de borrar. */
+.galeria-palco {
+  container: galeria-palco / inline-size;
+  position: relative;
+  flex: 1 1 0;
+  min-height: 180px;
+  max-height: 720px;
+  border-radius: 12px;
+  outline-offset: 4px;
+  cursor: grab;
+  /* Arraste horizontal troca o projeto; a rolagem vertical segue livre */
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.galeria-palco:active {
+  cursor: grabbing;
+}
+
+.galeria-palco:focus-visible {
+  outline: 2px solid var(--destaque);
+}
+
+.galeria-mockup {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2%;
+}
+
+.galeria-mockup img {
+  display: block;
+  min-width: 0;
+  object-fit: contain;
+  object-position: bottom center;
+  /* Sombra só nos dispositivos (o recorte tem transparência) */
+  filter: drop-shadow(0 18px 28px rgb(0 0 0 / 0.35));
+}
+
+/* Monitor: a imagem principal, com a altura toda do palco */
+.galeria-monitor {
+  width: auto;
+  height: 100%;
+  max-width: 76%;
+}
+
+/* Celular ao lado: 82% da altura do monitor (proporção da composição) */
+.galeria-celular {
+  width: auto;
+  height: 82%;
+  max-width: 22%;
+}
+
+/* Projeto sem mockup de dispositivo: a captura inteira */
+.galeria-captura {
+  width: 100%;
+  height: 100%;
+  object-position: center;
+}
+
+.galeria-sem-imagem {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--texto-secundario);
+}
+
+/* Troca de projeto: fade curto da imagem e dos textos */
+@media (prefers-reduced-motion: no-preference) {
+  .galeria-mockup,
+  .galeria-textos {
+    animation: galeria-entrar 0.35s var(--curva-saida) both;
+  }
+}
+
+@keyframes galeria-entrar {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Alternância computador/celular: só nas áreas estreitas */
+.galeria-vistas {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  gap: 6px;
+}
+
+.galeria-vistas [aria-pressed="true"] {
+  border-color: var(--destaque);
+  color: var(--destaque);
+}
+
+/* Áreas estreitas (celular, tablet em pé): uma imagem por vez, com a
+   largura toda */
+@container galeria-palco (max-width: 639px) {
+  .galeria-vistas {
+    display: flex;
+  }
+
+  .galeria-mockup {
+    align-items: center;
+  }
+
+  .galeria-mockup img {
+    object-position: center;
+  }
+
+  .galeria-monitor {
+    max-width: 100%;
+  }
+
+  .galeria-celular {
+    height: 100%;
+    max-width: 100%;
+  }
+
+  .galeria-mockup[data-vista="computador"] .galeria-celular,
+  .galeria-mockup[data-vista="celular"] .galeria-monitor {
+    display: none;
+  }
+}
+
+/* ===== nome, descrição, botões e navegação ===== */
+/* Desktop: textos à esquerda e navegação discreta à direita, na base */
+.galeria-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 32px;
+}
+
+.galeria-textos {
+  display: grid;
+  flex: 1 1 420px;
+  gap: clamp(4px, 0.9dvh, 8px);
+  min-width: 0;
+}
+
+.galeria-nome {
+  margin: 0;
+  font-size: clamp(20px, min(2vw, 3.6dvh), 26px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Reserva duas linhas: a imagem não muda de tamanho ao trocar de projeto
+   (descrições curtas e longas ocupam o mesmo espaço) */
+.galeria-descricao {
+  min-height: 2lh;
+  max-width: 68ch;
+  margin: 0;
+  color: var(--texto-secundario);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.galeria-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(2px, 0.8dvh, 8px);
+}
+
+.galeria-navegacao {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.galeria-contador {
+  min-width: 7ch;
+  margin: 0;
+  color: var(--texto-secundario);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* Celular: navegação centralizada abaixo dos botões; botões dividem a
+   linha (áreas de toque largas) */
+@media (max-width: 768px) {
+  .galeria-info {
+    justify-content: center;
+  }
+
+  .galeria-descricao {
+    min-height: 3lh;
+    font-size: 14.5px;
+  }
+
+  .galeria-acoes > * {
+    flex: 1 1 auto;
+  }
+
+  .galeria-navegacao {
+    justify-content: center;
+    width: 100%;
+  }
+}
+/* ===== FIM: galeria de projetos ===== */

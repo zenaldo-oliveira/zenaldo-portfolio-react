@@ -20,10 +20,16 @@ function FundoPagina({ pagina }) {
 
   useParallaxFundo(refImagem, temImagem, { voltarAoSair: true });
 
+  // Posição por variável (não inline): o CSS de retrato pode trocá-la
   const estilo = temImagem
     ? {
         backgroundImage: `url("${fundo.imagem}")`,
-        backgroundPosition: fundo.posicao ?? "center",
+        "--fundo-posicao": fundo.posicao ?? "center",
+        ...(fundo.retrato && {
+          "--fundo-retrato-posicao": fundo.retrato.posicao,
+          "--fundo-retrato-fracao": fundo.retrato.fracao,
+          "--fundo-proporcao": fundo.retrato.proporcao,
+        }),
       }
     : undefined;
 
@@ -33,6 +39,7 @@ function FundoPagina({ pagina }) {
       data-pagina={pagina}
       data-imagem={temImagem ? "sim" : "nao"}
       data-pelicula={fundo?.pelicula ?? "tema"}
+      data-retrato={temImagem && fundo?.retrato ? "sim" : undefined}
       style={
         fundo?.opacidade !== undefined
           ? { "--fundo-pagina-opacidade": fundo.opacidade }

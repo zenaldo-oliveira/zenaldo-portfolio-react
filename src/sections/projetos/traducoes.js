@@ -29,6 +29,12 @@ export const traducoesProjetos = {
     resultado: (quantidade, total) =>
       `Mostrando ${quantidade} de ${total} projetos.`,
     detalhes: "Ver detalhes",
+    // Galeria (GaleriaProjetos.jsx)
+    verProjeto: "Ver projeto",
+    vistaComputador: "Ver no computador",
+    vistaCelular: "Ver no celular",
+    vistas: "Imagem do projeto",
+    instrucaoGaleria: "Galeria de projetos. Use as setas esquerda e direita ou arraste para trocar de projeto.",
     funcionalidades: "Funcionalidades",
     contexto: "Contexto",
     participacao: "Minha participação",
@@ -89,6 +95,12 @@ export const traducoesProjetos = {
     resultado: (quantidade, total) =>
       `Showing ${quantidade} of ${total} projects.`,
     detalhes: "View details",
+    // Galeria (GaleriaProjetos.jsx)
+    verProjeto: "View project",
+    vistaComputador: "View on desktop",
+    vistaCelular: "View on phone",
+    vistas: "Project image",
+    instrucaoGaleria: "Project gallery. Use the left and right arrows or drag to switch projects.",
     funcionalidades: "Features",
     contexto: "Context",
     participacao: "My role",
@@ -149,6 +161,12 @@ export const traducoesProjetos = {
     resultado: (quantidade, total) =>
       `Mostrando ${quantidade} de ${total} proyectos.`,
     detalhes: "Ver detalles",
+    // Galeria (GaleriaProjetos.jsx)
+    verProjeto: "Ver proyecto",
+    vistaComputador: "Ver en la computadora",
+    vistaCelular: "Ver en el celular",
+    vistas: "Imagen del proyecto",
+    instrucaoGaleria: "Galería de proyectos. Use las flechas izquierda y derecha o arrastre para cambiar de proyecto.",
     funcionalidades: "Funcionalidades",
     contexto: "Contexto",
     participacao: "Mi participación",

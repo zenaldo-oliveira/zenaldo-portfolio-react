@@ -123,29 +123,42 @@ function Portfolio() {
     document.title = `${textos[paginaAtual]} | Zenaldo Oliveira`;
   }, [paginaAtual, textos]);
 
-  /* ===== INÍCIO: estado da sidebar ===== */
-  // Computador: expandida ou recolhida. Celular: painel aberto ou fechado
-  // (sempre começa fechado; ao voltar para o computador, a preferência de
-  // expandida/recolhida continua a mesma).
+  /* ===== INÍCIO: menu (sidebar) ===== */
+  // Um único estado: painel aberto ou fechado, nos dois tamanhos de tela.
+  // Ao cruzar o breakpoint, o menu volta fechado (o estado guarda em qual
+  // modo foi aberto).
   const celular = useCelular();
-  const [recolhida, setRecolhida] = useState(false);
-  const [painelAberto, setPainelAberto] = useState(false);
-  const sidebarAberta = celular ? painelAberto : !recolhida;
+  const [menu, setMenu] = useState({ aberto: false, celular });
+  const menuAberto = menu.aberto && menu.celular === celular;
 
-  const alternarSidebar = useCallback(() => {
-    if (celular) setPainelAberto((aberto) => !aberto);
-    else setRecolhida((valor) => !valor);
-  }, [celular]);
-  const fecharPainel = useCallback(() => setPainelAberto(false), []);
-  // Com o painel aberto no celular, o resto da página fica inerte (foco preso
-  // no painel, sem leitura do conteúdo por trás)
-  const fundoInerte = celular && painelAberto ? true : undefined;
-  /* ===== FIM: estado da sidebar ===== */
+  const alternarMenu = useCallback(
+    () => setMenu((atual) => ({ aberto: !(atual.aberto && atual.celular === celular), celular })),
+    [celular],
+  );
+  const fecharMenu = useCallback(
+    () => setMenu((atual) => (atual.aberto ? { ...atual, aberto: false } : atual)),
+    [],
+  );
+
+  // Só no celular o painel aberto é sobreposto (modal). No desktop a
+  // sidebar aberta ocupa a faixa já reservada no layout: não cobre nada, e
+  // a página continua utilizável ao lado dela.
+  const menuModal = menuAberto && celular;
+
+  // Trava a rolagem do conteúdo enquanto o painel sobreposto está aberto
+  // (index.css)
+  useEffect(() => {
+    document.documentElement.toggleAttribute("data-menu-aberto", menuModal);
+    return () => document.documentElement.removeAttribute("data-menu-aberto");
+  }, [menuModal]);
+
+  // Com o painel sobreposto aberto, o resto da página fica inerte (foco
+  // preso no painel, sem leitura do conteúdo por trás)
+  const fundoInerte = menuModal ? true : undefined;
+  /* ===== FIM: menu ===== */
 
   const PaginaAtual = paginas[paginaAtual];
   const videoDaPagina = videosPorPagina[paginaAtual];
-  // O currículo saiu do menu; a verificação do PDF segue para o botão em Sobre
-  const paginasDisponiveis = Object.keys(paginas);
   /* ===== FIM: página atual ===== */
 
   // reducedMotion="user": com prefers-reduced-motion, o motion mantém só a
@@ -159,11 +172,10 @@ function Portfolio() {
         <Sidebar
           textos={textos}
           paginaAtual={paginaAtual}
-          paginasDisponiveis={paginasDisponiveis}
           celular={celular}
-          aberta={sidebarAberta}
-          alternar={alternarSidebar}
-          fechar={fecharPainel}
+          aberta={menuAberto}
+          alternar={alternarMenu}
+          fechar={fecharMenu}
         />
 
         <div className="area-principal" inert={fundoInerte}>
@@ -186,8 +198,8 @@ function Portfolio() {
             idioma={idioma}
             setIdioma={setIdioma}
             celular={celular}
-            sidebarAberta={sidebarAberta}
-            alternarSidebar={alternarSidebar}
+            menuAberto={menuAberto}
+            alternarMenu={alternarMenu}
           />
 
           {/* ===== INÍCIO: conteúdo da página ===== */}

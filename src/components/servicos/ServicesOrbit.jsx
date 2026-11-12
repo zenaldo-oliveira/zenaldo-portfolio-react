@@ -104,7 +104,11 @@ function ConteudoServico({ servico, idioma }) {
         <span className="servico-descricao">{servico.descricao[idioma]}</span>
         {servico.destino && (
           <span className="servico-destino">
-            {servico.destino.rotulo[idioma]}
+            {/* No celular o rótulo fica só para leitores de tela e a seta
+                vai para o canto do cartão (o cartão inteiro é o link) */}
+            <span className="servico-destino-texto">
+              {servico.destino.rotulo[idioma]}
+            </span>
             <ArrowUpRight size={14} aria-hidden="true" />
           </span>
         )}

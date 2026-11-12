@@ -1,19 +1,11 @@
 /* ===== INÍCIO: página ===== */
-/* Cabeçalho compacto: a roda e os controles cabem sem rolagem no computador.
-   A reserva de 80px do fim da página (botão do WhatsApp) fica, no computador,
-   só para a barra de controles, centralizada e longe do botão. */
-/* margin-bottom: espaço de 24 a 48px entre o cabeçalho e a roda,
-   proporcional à altura da janela */
-.projetos .pagina-cabecalho {
-  margin-bottom: clamp(24px, 5dvh, 48px);
-  padding-bottom: 10px;
-}
-
-
-@media (min-width: 769px) {
-  section.pagina.projetos {
-    padding-bottom: 8px;
-  }
+/* Cabeçalho com a margem padrão (Pagina.css). A roda (desktop) e o
+   carrossel (celular) ficam centralizados na altura que sobra. */
+section.pagina.projetos > :last-child {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Um único projeto: cartão estático, centralizado */
@@ -27,7 +19,9 @@
 .projeto-status {
   height: auto;
   padding: 3px 8px;
-  font-size: 11px;
+  /* 12px: o mesmo piso de leitura das linhas de apoio das páginas (11px era
+     o menor texto do portfólio) */
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -120,7 +114,7 @@
 .dialogo-fundo {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: var(--z-dialogo);
   background-color: rgba(0, 0, 0, 0.55);
   transition: opacity 0.2s ease;
 }
@@ -129,7 +123,7 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 201;
+  z-index: calc(var(--z-dialogo) + 1);
   width: min(560px, calc(100vw - 32px));
   max-height: min(85dvh, 720px);
   overflow-y: auto;

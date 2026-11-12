@@ -15,10 +15,14 @@
   --respiro-topo: 12px;
   /* Altura visível da janela, num só lugar (layout, sidebar e entrada) */
   --altura-tela: 100dvh;
-  /* Referência das composições que se ajustam à altura (mesma escala
-     usada antes da barra: 16px de padding-top do <main> descontados) */
+  /* Respiro no fim do <main>, acima do rodapé */
+  --respiro-base: 8px;
+  /* Altura útil real do conteúdo de uma página (área interna do <main>):
+     janela − barra superior − respiros − rodapé. As composições que se
+     ajustam à altura (órbita, roda, linha do tempo) partem dela. */
   --altura-livre: calc(
-    var(--altura-tela) - var(--barra-altura) - var(--respiro-topo) + 16px
+    var(--altura-tela) - var(--barra-altura) - var(--respiro-topo) -
+      var(--respiro-base) - var(--rodape-altura)
   );
   /* Divisórias: branco suave no tema escuro (no claro, a cor da borda) */
   --divisoria: rgba(255, 255, 255, 0.14);
@@ -31,12 +35,43 @@
   --destaque: #0891b2;
   /* Película sobre a imagem de fundo das páginas (FundoPagina) */
   --pelicula: rgba(24, 24, 27, 0.84);
-  /* Medidas compartilhadas entre rodapé, faixa de Tecnologias e WhatsApp:
-     o botão fica centralizado na altura da faixa, que termina no rodapé */
-  --rodape-altura: 40px;
-  --faixa-altura: 74px;
-  --whatsapp-tamanho: 60px;
-  --whatsapp-margem: 20px;
+  /* O WhatsApp flutuante fica na faixa do rodapé (Whatsapp.css), à
+     direita: nunca sobre o conteúdo do <main>, então as páginas não
+     reservam espaço no fim para ele */
+  --rodape-altura: 52px;
+  --whatsapp-tamanho: 44px;
+  --whatsapp-margem: 16px;
+  --reserva-whatsapp: 0px;
+
+  /* Sidebar: no desktop o layout reserva a largura da sidebar ABERTA mais
+     uma margem; recolhida (trilho de 72px) ou aberta, ela nunca cobre o
+     conteúdo e o <main> não se desloca */
+  --sidebar-trilho: 72px;
+  --sidebar-aberta: 260px;
+  --sidebar-margem: 16px;
+  --sidebar-reserva: calc(var(--sidebar-aberta) + var(--sidebar-margem));
+
+  /* Estrutura compartilhada das páginas */
+  --conteudo-max: 1440px;
+  --espaco-pagina: 16px;
+
+  /* Camadas (z-index) */
+  --z-flutuante: 50;
+  --z-menu-fundo: 90;
+  --z-menu: 100;
+  --z-dialogo: 200;
+
+  /* Superfícies translúcidas (sidebar e painéis sobre o fundo) */
+  --vidro: color-mix(in srgb, var(--painel) 72%, transparent);
+  --vidro-forte: color-mix(in srgb, var(--painel) 94%, transparent);
+  --vidro-borda: color-mix(in srgb, var(--borda) 70%, transparent);
+  --sombra-painel: 16px 0 48px rgba(0, 0, 0, 0.4);
+  --sobreposicao: rgba(0, 0, 0, 0.5);
+
+  /* Máscara única sobre imagens e vídeos de fundo */
+  --mascara-fundo-opacidade: 0.76;
+
+  --curva-saida: cubic-bezier(0.22, 1, 0.36, 1);
   /* Tokens do shadcn apontam para as cores do portfólio, nos dois temas */
   --background: var(--fundo);
   --foreground: var(--texto);
@@ -85,6 +120,8 @@
   --hover: #dcdce2;
   --divisoria: var(--borda);
   --pelicula: rgba(240, 240, 242, 0.88);
+  --sobreposicao: rgba(15, 23, 42, 0.32);
+  --mascara-fundo-opacidade: 0.84;
 }
 
 html,
@@ -123,31 +160,27 @@ h1 {
 /* ===== FIM: base ===== */
 
 /* ===== INÍCIO: layout ===== */
-/* Sidebar | área principal. Uma única rolagem vertical: a do <main>.
-   Acima da camada fixa de fundo (FundoPagina, z-index 0).
-   A coluna da sidebar (auto) tem a largura REAL da sidebar: aberta 260px,
-   recolhida 72px (Sidebar.css, classe .recolhida definida pelo único estado
-   em Portfolio.jsx). Ao recolher, a área principal (barra superior,
-   conteúdo e carrosséis) ocupa o espaço liberado, acompanhando a transição
-   de largura da sidebar quadro a quadro.
-   No celular a sidebar é um painel sobreposto (fora do fluxo): uma coluna,
-   sem largura reservada. */
+/* Uma única rolagem vertical: a do <main> (só quando o conteúdo não cabe:
+   zoom alto ou telas muito baixas). Acima da camada fixa de fundo
+   (FundoPagina, z-index 0). A sidebar é fixa e fora do fluxo: no desktop o
+   layout reserva a largura dela ABERTA + margem (padding-left), então abrir
+   ou recolher nunca desloca nem cobre o conteúdo. No celular não há reserva
+   (o painel é sobreposto só enquanto o menu está aberto). */
 .layout {
-  --largura-sidebar-aberta: 260px;
-
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
   width: 100%;
   height: var(--altura-tela, 100dvh);
+  padding-left: var(--sidebar-reserva);
   overflow: hidden;
 }
 
 @media (max-width: 768px) {
   .layout {
-    grid-template-columns: minmax(0, 1fr);
+    padding-left: 0;
   }
 }
 
@@ -171,7 +204,7 @@ h1 {
 .area-principal > main {
   /* Espaço interno do conteúdo; a faixa de Tecnologias usa o mesmo valor
      para ir até a borda direita sem criar rolagem horizontal */
-  --espaco-main: 16px;
+  --espaco-main: var(--espaco-pagina);
 
   position: relative;
   flex: 1;
@@ -182,13 +215,17 @@ h1 {
   padding: var(--espaco-main);
   /* Respiro fixo abaixo da barra superior (navegacao/BarraSuperior) */
   padding-top: var(--respiro-topo);
-  /* Ao navegar com Tab, o item focado para acima do botão fixo do WhatsApp
-     (que não muda de lugar) em vez de ficar escondido sob ele */
-  scroll-padding-bottom: calc(
-    var(--whatsapp-tamanho) + 2 * var(--whatsapp-margem)
-  );
+  padding-bottom: var(--respiro-base);
   overflow-x: hidden;
   overflow-y: auto;
+  /* A rolagem pode ser travada (menu aberto) sem a largura mudar */
+  scrollbar-gutter: stable;
+}
+
+/* Menu aberto: o conteúdo por trás não rola (Portfolio.jsx marca o <html>);
+   a posição da rolagem é mantida e volta a funcionar ao fechar */
+:root[data-menu-aberto] .area-principal > main {
+  overflow-y: hidden;
 }
 
 /* O próprio <main> pode receber foco pelo Tab (área rolável sem itens
@@ -198,9 +235,15 @@ h1 {
   outline-offset: -2px;
 }
 
+/* Altura fixa (--rodape-altura): o WhatsApp ocupa a ponta direita desta
+   faixa, por isso o texto tem o mesmo recuo dos dois lados (continua
+   centralizado sem passar por baixo do botão) */
 .area-principal > .footer {
-  min-height: var(--rodape-altura);
-  padding: 8px 16px;
+  display: grid;
+  place-items: center;
+  height: var(--rodape-altura);
+  padding: 0 calc(var(--whatsapp-tamanho) + 2 * var(--whatsapp-margem));
+  font-size: 14px;
   text-align: center;
 }
 
@@ -315,8 +358,10 @@ section.apresentacao {
 
 /* ===== INÍCIO: celular ===== */
 @media (max-width: 768px) {
-  .area-principal > main {
-    --espaco-main: 12px;
+  :root {
+    --espaco-pagina: 12px;
+    /* Faixa da barra no celular (hambúrguer de 44px + 6px de cada lado) */
+    --barra-altura: 56px;
   }
 
   h1 {
@@ -324,6 +369,19 @@ section.apresentacao {
   }
 }
 /* ===== FIM: celular ===== */
+
+/* ===== INÍCIO: telas baixas ===== */
+/* Celulares baixos (ex.: 320 × 568, 360 × 640) e telas deitadas: barra,
+   respiro e rodapé mais finos (botões continuam com 44px), sobrando mais
+   altura para o conteúdo */
+@media (max-width: 768px) and (max-height: 700px), (max-height: 480px) {
+  :root {
+    --barra-altura: 48px;
+    --respiro-topo: 6px;
+    --rodape-altura: 44px;
+  }
+}
+/* ===== FIM: telas baixas ===== */
 
 @theme inline {
   --font-heading: var(--font-sans);

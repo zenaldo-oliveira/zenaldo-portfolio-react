@@ -9,6 +9,9 @@ export const traducoesSobre = {
     apoio: "Quem sou",
     titulo: "Sobre Mim",
     destaque: "Muito além do código.",
+    // Página enxuta (Sobre.jsx): parágrafo único e botão de contato
+    resumo:
+      "Sou Zenaldo Oliveira, desenvolvedor full stack júnior com experiência técnica em manutenção. Desenvolvo interfaces e aplicações web com React, Next.js e Node.js.",
 
     apresentacaoTitulo: "Apresentação",
     apresentacao: [
@@ -68,6 +71,8 @@ export const traducoesSobre = {
     apoio: "Who I am",
     titulo: "About Me",
     destaque: "Far beyond code.",
+    resumo:
+      "I am Zenaldo Oliveira, a junior full stack developer with a technical background in maintenance. I build interfaces and web applications with React, Next.js and Node.js.",
 
     apresentacaoTitulo: "Introduction",
     apresentacao: [
@@ -127,6 +132,8 @@ export const traducoesSobre = {
     apoio: "Quién soy",
     titulo: "Sobre Mí",
     destaque: "Mucho más allá del código.",
+    resumo:
+      "Soy Zenaldo Oliveira, desarrollador full stack júnior con experiencia técnica en mantenimiento. Desarrollo interfaces y aplicaciones web con React, Next.js y Node.js.",
 
     apresentacaoTitulo: "Presentación",
     apresentacao: [

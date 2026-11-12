@@ -16,7 +16,7 @@
 .fundo-pagina-imagem {
   position: absolute;
   inset: -12px;
-  background-position: center;
+  background-position: var(--fundo-posicao, center);
   background-repeat: no-repeat;
   background-size: cover;
   will-change: transform;
@@ -29,6 +29,24 @@
   position: absolute;
   inset: 0;
   background-color: var(--pelicula);
+}
+
+/* ===== Enquadramento em retrato (celular e tablet em pé) ===== */
+/* Imagem horizontal em tela vertical: com cover centralizado, só a faixa do
+   meio aparece (no Sobre, os textos da imagem cortados nas bordas). Aqui a
+   largura é a maior entre: a que cobre a altura da tela (cover) e a que
+   mostra no máximo --fundo-retrato-fracao da imagem. A região vem de
+   --fundo-retrato-posicao (fundos.js). Proporção preservada (altura auto).
+   A camada tem 12px de sobra em cada lado (parallax), daí os 24px. */
+@media (orientation: portrait) and (max-width: 1024px) {
+  .fundo-pagina[data-retrato="sim"] .fundo-pagina-imagem {
+    background-size: max(
+        calc((100vw + 24px) / var(--fundo-retrato-fracao)),
+        calc((100dvh + 24px) * var(--fundo-proporcao))
+      )
+      auto;
+    background-position: var(--fundo-retrato-posicao, var(--fundo-posicao));
+  }
 }
 
 /* ===== Película "marinho" (página Sobre) ===== */
@@ -55,19 +73,4 @@
     );
 }
 
-/* Com imagem carregada (FundoPagina), vídeo em tela cheia
-   (InteractiveVideoBackground telaCheia) ou a rede de partículas de
-   Tecnologias (ParticleNetworkBackground), a sidebar fica translúcida
-   (desktop) para o fundo aparecer atrás de toda a interface. Mesma cor do
-   painel, com desfoque para manter a leitura da navegação. No celular a
-   sidebar é um painel sobre o conteúdo e continua opaca. */
-@media (min-width: 769px) {
-  .fundo-pagina[data-imagem="sim"] ~ .layout .sidebar,
-  .layout:has(.video-fundo[data-tela-cheia="sim"]) .sidebar,
-  .layout:has(.particle-network-background) .sidebar {
-    background-color: color-mix(in srgb, var(--painel) 72%, transparent);
-    -webkit-backdrop-filter: blur(14px) saturate(1.1);
-    backdrop-filter: blur(14px) saturate(1.1);
-  }
-}
 /* ===== FIM: fundo da página ===== */

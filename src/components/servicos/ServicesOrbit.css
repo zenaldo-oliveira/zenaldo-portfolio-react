@@ -10,12 +10,13 @@
 
 .servicos-orbita-composicao {
   --palco: 250px;
-  --cartao-max: 340px;
+  --cartao-max: 420px;
 
   position: relative;
   display: grid;
   gap: 28px;
 }
+
 /* ===== FIM: ServicesOrbit ===== */
 
 /* ===== INÍCIO: conexões (só na composição radial) ===== */
@@ -352,9 +353,11 @@
   /* Em janelas baixas (ex.: 1024x768), palco e vãos encolhem um pouco: os
      cartões ganham largura e a descrição usa menos linhas */
   .servicos-orbita-composicao {
-    --palco: clamp(216px, var(--altura-livre, 100dvh) - 570px, 220px);
-    --vao: clamp(28px, var(--altura-livre, 100dvh) - 740px, 40px);
-    --arco: 14px;
+    /* Palco e vãos pela altura útil real (--altura-livre, index.css): em
+       telas baixas a órbita encolhe antes dos textos */
+    --palco: clamp(140px, var(--altura-livre, 100dvh) - 420px, 180px);
+    --vao: clamp(16px, 3cqi, 32px);
+    --arco: 8px;
 
     display: block;
   }
@@ -382,9 +385,13 @@
     grid-template-rows: repeat(3, auto);
     align-content: center;
     column-gap: var(--vao);
-    row-gap: clamp(12px, var(--altura-livre, 100dvh) - 750px, 24px);
+    row-gap: clamp(8px, var(--altura-livre, 100dvh) - 560px, 20px);
     /* Palco + espaço da legenda abaixo dele, nas duas metades */
     min-height: calc(var(--palco) + 2 * var(--legenda-espaco, 56px));
+    /* A grade cobre a coluna do meio (vazia) por cima do QR Code: só os
+       cartões recebem o ponteiro, e o QR Code continua clicável. O
+       pointermove dos cartões ainda sobe até a lista (spotlight). */
+    pointer-events: none;
   }
 
   .servicos-orbita-lista::before {
@@ -393,6 +400,7 @@
 
   .servico {
     width: min(100%, var(--cartao-max));
+    pointer-events: auto;
   }
 
   /* Três à esquerda (coluna 1), três à direita (coluna 3) */
@@ -434,8 +442,13 @@
   .servico-cartao {
     grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
-    gap: 6px 10px;
-    padding: 12px 14px;
+    gap: 4px 10px;
+    padding: clamp(8px, 1.3dvh, 12px) 14px;
+  }
+
+  .servico-descricao {
+    font-size: 13px;
+    line-height: 1.45;
   }
 
   .servico-textos {
@@ -463,20 +476,22 @@
    altura usa os valores máximos; ~768px, os mínimos). Os textos não mudam. */
 @container servicos (min-width: 940px) {
   .servicos-orbita-composicao {
-    --palco: clamp(220px, var(--altura-livre, 100dvh) - 560px, 300px);
-    /* Vão entre cartões e QR Code proporcional à largura: em notebooks os
-       cartões ganham largura (descrições com menos linhas) */
-    --vao: clamp(36px, 5cqi, 72px);
-    --arco: 40px;
+    /* 526px de altura útil (1366 × 650) → palco de ~200px; 900px de
+       altura de janela ou mais → 280px */
+    --palco: clamp(150px, var(--altura-livre, 100dvh) - 325px, 280px);
+    /* Vão entre cartões e QR Code proporcional à largura; arco discreto:
+       os cartões usam a largura para quebrar menos linhas */
+    --vao: clamp(20px, 3.5cqi, 64px);
+    --arco: 16px;
   }
 
   .servicos-orbita-lista {
-    row-gap: clamp(12px, var(--altura-livre, 100dvh) - 750px, 32px);
+    row-gap: clamp(8px, var(--altura-livre, 100dvh) - 560px, 28px);
     min-height: calc(var(--palco) + 2 * var(--legenda-espaco, 56px));
   }
 
   .servico-cartao {
-    padding: clamp(11px, 1.8dvh, 16px) 18px;
+    padding: clamp(8px, 1.4dvh, 16px) 16px;
   }
 }
 
@@ -743,3 +758,94 @@
   }
 }
 /* ===== FIM: hub interativo ===== */
+
+/* ===== INÍCIO: celular compacto ===== */
+/* No fim do arquivo de propósito: a container query não soma
+   especificidade, então precisa vir depois das regras-base que altera.
+   Celular (composição em lista): o QR Code sai — escanear a própria tela
+   não serve no celular, e ele ocupava ~300px de altura. Os cartões ficam
+   compactos para a lista caber na altura útil. */
+@container servicos (max-width: 679px) {
+  .servicos-orbita-centro,
+  .servicos-orbita-lista::before {
+    display: none;
+  }
+
+  .servicos-orbita-composicao {
+    gap: 0;
+  }
+
+  .servicos-orbita-lista {
+    gap: clamp(6px, 0.8dvh, 10px);
+  }
+
+  .servico-cartao {
+    gap: 10px;
+    padding: clamp(6px, 0.9dvh, 10px) 12px;
+  }
+
+  .servico-icone {
+    width: 30px;
+    height: 30px;
+  }
+
+  .servico-textos {
+    gap: 2px;
+  }
+
+  .servico-descricao {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  /* Cartão com link: só a seta, no canto superior direito; o rótulo
+     continua no nome acessível do link (oculto só visualmente) */
+  .servico-cartao {
+    position: relative;
+  }
+
+  .servico-destino {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    margin: 0;
+    color: var(--destaque);
+  }
+
+  .servico-destino-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .servico-textos {
+    padding-right: 18px;
+  }
+}
+/* ===== FIM: celular compacto ===== */
+
+/* Lista em duas colunas a partir de 440px de composição (ex.: janela de
+   769px com a sidebar reservada, ou celular deitado): ícone e título na
+   mesma linha e a descrição com a largura toda do cartão (texto legível,
+   sem coluna estreita ao lado do ícone) */
+@container servicos (min-width: 440px) and (max-width: 679px) {
+  .servicos-orbita-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .servico-cartao {
+    align-items: center;
+    gap: 4px 10px;
+  }
+
+  .servico-textos {
+    display: contents;
+  }
+
+  .servico-descricao {
+    grid-column: 1 / -1;
+  }
+}

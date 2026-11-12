@@ -31,3 +31,7 @@ backup-src*/
 
 # Mídia original preservada fora de public/ (não vai para o build nem para o Git)
 /midia-original/
+
+# Playwright: resultados e relatórios locais
+/test-results/
+/playwright-report/

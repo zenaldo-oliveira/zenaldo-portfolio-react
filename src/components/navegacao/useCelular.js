@@ -1,19 +1,12 @@
-import { useSyncExternalStore } from "react";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 /* ===== INÍCIO: modo celular ===== */
-// Mesmo limite usado nos CSS da sidebar e da barra superior: até 768px a
-// sidebar vira um painel sobreposto aberto pelo botão da barra superior.
+// Mesmo limite dos CSS (--bp-celular, 768px): abaixo dele a navegação vira
+// um menu hambúrguer na barra superior, e projetos e tecnologias usam as
+// versões estáticas em lista/grade.
 export const CONSULTA_CELULAR = "(max-width: 768px)";
 
-function assinar(avisar) {
-  const consulta = window.matchMedia(CONSULTA_CELULAR);
-  consulta.addEventListener("change", avisar);
-  return () => consulta.removeEventListener("change", avisar);
-}
-
-const ler = () => window.matchMedia(CONSULTA_CELULAR).matches;
-
 export function useCelular() {
-  return useSyncExternalStore(assinar, ler, () => false);
+  return useMediaQuery(CONSULTA_CELULAR);
 }
 /* ===== FIM: modo celular ===== */

@@ -1,34 +1,39 @@
-import { ShimmerButton } from "@/components/ui/shimmer-button";
 import ServicesOrbit from "@/components/servicos/ServicesOrbit";
+import { useCelular } from "@/components/navegacao/useCelular";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { servicos } from "@/data/servicos";
-import { tecnologias, urlIconeTecnologia } from "@/data/tecnologias";
+
+import ListaTecnologias from "./ListaTecnologias";
 import { traducoesTecnologias } from "./traducoes";
 import "./Tecnologias.css";
 
 // Endereço codificado no QR Code central (URL completa, sem rastreamento)
 const URL_SITE = "https://zenaldodev.com.br/";
 
+/* ===== INÍCIO: página inicial ===== */
+// Serviços (cabeçalho + órbita) e tecnologias. Os projetos ficam só na
+// página Projetos (o botão "Ver projetos" leva até ela).
 function Tecnologias({ idioma = "pt" }) {
   const t = traducoesTecnologias[idioma];
+  const celular = useCelular();
 
   return (
-    <section id="inicio" className="tecnologias" aria-labelledby="inicio-titulo">
-      {/* Fundo: camada única de todas as páginas (components/fundo/FundoPagina) */}
-      {/* ===== INÍCIO: cabeçalho do bloco de serviços (único H1) ===== */}
-      <header className="tecnologias-cabecalho">
+    <section id="inicio" className="pagina tecnologias" aria-labelledby="inicio-titulo">
+      <header className="pagina-cabecalho tecnologias-cabecalho">
         <div className="tecnologias-cabecalho-textos">
-          <p className="tecnologias-marca">{t.servicosMarca}</p>
+          <p className="pagina-apoio">{t.servicosMarca}</p>
           <h1 id="inicio-titulo">{t.servicosTitulo}</h1>
-          <p className="tecnologias-descricao">{t.servicosDescricao}</p>
+          <p className="pagina-introducao">{t.servicosDescricao}</p>
         </div>
 
-        <ShimmerButton className="tecnologias-chamada" href="#contato">
-          {t.servicosChamada}
-        </ShimmerButton>
+        <div className="tecnologias-chamadas">
+          <ShimmerButton href="#contato">{t.servicosChamada}</ShimmerButton>
+          <ShimmerButton variante="secundaria" href="#projetos">
+            {t.verProjetos}
+          </ShimmerButton>
+        </div>
       </header>
-      {/* ===== FIM: cabeçalho do bloco de serviços ===== */}
 
-      {/* ===== INÍCIO: serviços da ZTech Solutions ===== */}
       <div className="tecnologias-servicos">
         <ServicesOrbit
           servicos={servicos}
@@ -42,60 +47,21 @@ function Tecnologias({ idioma = "pt" }) {
           rotulo={t.servicosLista}
         />
       </div>
-      {/* ===== FIM: serviços da ZTech Solutions ===== */}
 
-      {/* Legenda e faixa juntas, no fim da página, logo acima do rodapé;
-          a faixa vai até a borda direita e passa por trás do WhatsApp */}
-      <div className="tecnologias-base">
-        <p className="tecnologias-legenda">
-          Tecnologias que utilizo ou estudo nos meus projetos:
-        </p>
-
-        {/* ===== INÍCIO: duas faixas de tecnologias ===== */}
-        <div
-          className="tecnologias-carrosseis"
-          tabIndex={0}
-          role="region"
-          aria-label="Tecnologias utilizadas e estudadas"
+      {/* Faixa de tecnologias: só a partir do tablet. No celular ela fica
+          oculta (prioridade aos serviços na altura disponível). */}
+      {!celular && (
+        <section
+          className="pagina-secao tecnologias-secao"
+          aria-labelledby="inicio-tecnologias"
         >
-          {[1].map((linha) => {
-            const itens = tecnologias;
-
-            return (
-              <div className="tecnologias-carrossel" key={linha}>
-                <div
-                  className={`tecnologias-trilha ${
-                    linha === 1 ? "tecnologias-trilha-reversa" : ""
-                  }`}
-                >
-                  {[0, 1].map((copia) => (
-                    <ul
-                      className="tecnologias-faixa"
-                      key={copia}
-                      aria-hidden={copia === 1 ? true : undefined}
-                    >
-                      {itens.map(({ nome, icone }) => (
-                        <li className="tecnologias-item" key={nome}>
-                          <img
-                            src={urlIconeTecnologia(icone)}
-                            alt=""
-                            width="28"
-                            height="28"
-                          />
-                          <span>{nome}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        {/* ===== FIM: duas faixas de tecnologias ===== */}
-      </div>
+          <h2 id="inicio-tecnologias">{t.tecnologiasTitulo}</h2>
+          <ListaTecnologias rotulo={t.tecnologiasTitulo} />
+        </section>
+      )}
     </section>
   );
 }
+/* ===== FIM: página inicial ===== */
 
 export default Tecnologias;

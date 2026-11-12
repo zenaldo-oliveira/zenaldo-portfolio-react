@@ -1,25 +1,16 @@
-/* ===== INÍCIO: estrutura da página ===== */
-/* O espaçamento externo vem do <main> (--espaco-main). Coluna com a altura
-   da área de conteúdo: cabeçalho compacto, a composição de serviços ocupando
-   o restante e, por último, a faixa de tecnologias (no fluxo, grudada na
-   base). Se o conteúdo não couber (telas baixas), a página rola no <main> e
-   a faixa continua visível na base. */
+/* ===== INÍCIO: página inicial ===== */
+/* Estrutura, cabeçalho e seções vêm de components/pagina/Pagina.css. A
+   órbita de serviços ocupa o restante da primeira tela (min-height da
+   área livre); projetos e tecnologias vêm logo abaixo. */
 section.tecnologias {
   display: flex;
   flex-direction: column;
-  gap: clamp(10px, 1.6dvh, 20px);
-  width: 100%;
   min-height: 100%;
-  padding: 0;
-  color: var(--texto);
 }
 
-/* Entrada discreta ao abrir a página: só opacidade (cards e faixa não se
-   movem). fill-mode backwards: ao terminar, nenhum estilo permanece. O fundo
-   (poster/vídeo) não participa, então não há flash escuro. */
 @media (prefers-reduced-motion: no-preference) {
   section.tecnologias {
-    animation: tecnologias-entrada 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation: tecnologias-entrada 0.8s var(--curva-saida) backwards;
   }
 }
 
@@ -28,137 +19,142 @@ section.tecnologias {
     opacity: 0;
   }
 }
-/* ===== FIM: estrutura da página ===== */
 
-/* ===== INÍCIO: cabeçalho do bloco de serviços ===== */
-/* Discreto: H1 em tamanho de seção, ação principal ao lado no desktop */
-.tecnologias-cabecalho {
+/* Textos e ações lado a lado quando há espaço; ações embaixo no celular.
+   (Duas classes: .pagina-cabecalho, com display: grid, carrega depois e
+   empatava, empurrando os botões para uma segunda linha.) */
+.pagina-cabecalho.tecnologias-cabecalho {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   gap: 12px 24px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--divisoria);
 }
 
-/* Base de 320px: o botão fica ao lado do texto sempre que houver espaço e
-   só desce para a linha de baixo no celular */
 .tecnologias-cabecalho-textos {
-  flex: 1 1 320px;
   display: grid;
+  flex: 1 1 320px;
   gap: 6px;
   min-width: 0;
 }
 
-/* Texto neutro (contraste nos dois temas); o destaque fica no traço */
-.tecnologias-marca {
+.tecnologias-chamadas {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
-  margin: 0;
-  color: var(--texto-secundario);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
-.tecnologias-marca::before {
-  content: "";
-  width: 24px;
-  height: 2px;
-  background-color: var(--destaque);
+/* Celular: os dois botões na mesma linha quando cabem (cada um com a
+   largura do próprio texto, esticando para preencher a linha) */
+@media (max-width: 768px) {
+  .tecnologias-chamadas {
+    width: 100%;
+  }
+
+  .tecnologias-chamadas > * {
+    flex: 1 1 auto;
+  }
 }
 
-.tecnologias-cabecalho h1 {
-  margin: 0;
-  font-size: clamp(22px, 2.2vw, 30px);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-
-/* Uma linha quando houver largura (economiza altura no notebook); o limite
-   de 80ch mantém a leitura confortável em telas grandes */
-.tecnologias-descricao {
-  max-width: 80ch;
-  margin: 0;
-  color: var(--texto-secundario);
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-.tecnologias-chamada {
-  flex-shrink: 0;
-}
-
-.tecnologias-legenda {
-  color: var(--texto-secundario);
-  font-size: 13px;
-}
-/* ===== FIM: cabeçalho do bloco de serviços ===== */
-
-/* ===== INÍCIO: serviços ===== */
-/* Ocupa a altura que sobra e centraliza a composição nela */
 .tecnologias-servicos {
   display: flex;
   flex: 1;
   align-items: center;
   min-height: 0;
 }
-/* ===== FIM: serviços ===== */
 
-/* ===== INÍCIO: carrossel de tecnologias ===== */
-/* Legenda + faixa no fim da página, DENTRO do fluxo do <main> (sticky): a
-   largura é a da área principal, então acompanha a sidebar aberta, recolhida
-   ou em animação e nunca passa por baixo dela. As margens negativas avançam
-   sobre o padding do <main> para ir até a borda direita (por trás do
-   WhatsApp) e encostar no rodapé. */
-.tecnologias-base {
-  position: sticky;
-  /* O sticky mede a partir da borda interna do padding do <main>: o
-     deslocamento negativo deixa a faixa encostar no rodapé (como antes) */
-  bottom: calc(-1 * var(--espaco-main, 16px));
-  z-index: 30;
+/* Faixa de tecnologias compacta, colada ao fim da página (só a partir do
+   tablet: no celular ela não é renderizada) */
+/* Título e faixa na mesma linha: a seção ocupa só a altura de um item */
+.tecnologias-secao {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: clamp(8px, 1.6dvh, 20px);
+}
+
+.pagina-secao.tecnologias-secao h2 {
+  flex-shrink: 0;
+  max-width: 14em;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.tecnologias-secao .tecnologias-carrossel {
+  flex: 1;
+}
+
+/* ===== FIM: página inicial ===== */
+
+/* ===== INÍCIO: tecnologias ===== */
+.tecnologias-faixa {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 0 12px 0 0;
+  list-style: none;
+}
+
+.tecnologias-item {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  padding: clamp(6px, 1.1dvh, 12px) 14px;
+  background-color: var(--painel);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.tecnologias-item img {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+/* Marcas pretas (GitHub, Expo, Vercel…) sumiriam no tema escuro: mesma
+   solução do ícone do GitHub em Contato.css */
+:root:not([data-tema="claro"]) .tecnologias-item img[data-escuro] {
+  filter: invert(1);
+}
+
+/* ===== Grade estática (celular) ===== */
+.tecnologias-grade .tecnologias-faixa {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  padding: 0;
+}
+
+.tecnologias-grade .tecnologias-item {
   min-width: 0;
-  margin: auto calc(-1 * var(--espaco-main, 16px)) calc(-1 * var(--espaco-main, 16px));
+  padding: 10px 12px;
+  font-size: 13px;
+  white-space: normal;
 }
 
-.tecnologias-base .tecnologias-legenda {
-  margin: 0 0 4px;
-  /* Alinhada ao conteúdo da página */
-  padding-left: var(--espaco-main, 16px);
+.tecnologias-grade .tecnologias-item span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-/* Celular: a faixa de tecnologias fica oculta (ocuparia a tela e cobriria
-   os cartões); a página reserva só o espaço do WhatsApp no fim */
-@media (max-width: 768px) {
-  .tecnologias-base {
-    display: none;
-  }
-
-  section.tecnologias {
-    padding-bottom: 80px;
-  }
-}
-
-/* Altura fixa (--faixa-altura) para o WhatsApp ficar centralizado nela.
-   Viewport do carrossel (único elemento com overflow: hidden): começa
-   alinhado ao conteúdo (--espaco-main) e termina antes do WhatsApp (botão +
-   margens), para nenhum card ficar escondido sob ele. Como está no fluxo da
-   área principal, acompanha a sidebar aberta, recolhida ou em animação.
-   Fade nas pontas com mask-image (os cards somem suavemente, sem corte seco). */
+/* ===== Faixa em movimento (desktop) ===== */
+/* Único elemento com overflow: hidden é a janela da faixa; as pontas somem
+   em degradê (mask) em vez de cortar seco */
 .tecnologias-carrossel {
   --carrossel-fade: clamp(24px, 3vw, 56px);
 
   display: flex;
-  align-items: center;
   min-width: 0;
-  height: var(--faixa-altura);
+  padding: 4px 0;
   overflow: hidden;
-  margin: 0 calc(var(--whatsapp-tamanho) + 2 * var(--whatsapp-margem)) 0
-    var(--espaco-main, 16px);
-  padding: 8px 0;
+  border-radius: 12px;
   -webkit-mask-image: linear-gradient(
     to right,
     transparent,
@@ -174,57 +170,18 @@ section.tecnologias {
     transparent
   );
 }
-/* ===== INÍCIO: organização das duas faixas ===== */
-.tecnologias-carrosseis {
-  display: grid;
-  gap: 12px;
-  width: 100%;
-  min-width: 0;
-}
-/* ===== FIM: organização das duas faixas ===== */
 
-/* flex-shrink: 0 — a trilha é item flexível do carrossel e não pode encolher:
-   o laço (translateX -50%) depende da largura real das duas cópias */
+.tecnologias-carrossel:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 2px;
+}
+
+/* flex-shrink: 0 — o laço (translateX -50%) depende da largura real das
+   duas cópias */
 .tecnologias-trilha {
   display: flex;
   flex-shrink: 0;
   width: max-content;
-}
-
-.tecnologias-faixa {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 12px;
-
-  margin: 0;
-  padding: 0 12px 0 0;
-  list-style: none;
-}
-
-.tecnologias-item {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 10px;
-
-  padding: 14px 18px;
-  background-color: var(--painel);
-  color: var(--texto);
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-  white-space: nowrap;
-}
-
-.tecnologias-item img {
-  display: block;
-  object-fit: contain;
-}
-
-/* O elemento focável (tabindex=0) é o grupo .tecnologias-carrosseis */
-.tecnologias-carrosseis:focus-visible {
-  outline: 2px solid var(--texto);
-  outline-offset: -2px;
 }
 
 @keyframes deslizar-tecnologias {
@@ -237,20 +194,17 @@ section.tecnologias {
   .tecnologias-trilha {
     animation: deslizar-tecnologias 40s linear infinite;
   }
+
+  .tecnologias-carrossel:hover .tecnologias-trilha,
+  .tecnologias-carrossel:focus-within .tecnologias-trilha {
+    animation-play-state: paused;
+  }
 }
 
-/* Pausa para facilitar a leitura */
-.tecnologias-carrossel:hover .tecnologias-trilha,
-.tecnologias-carrossel:focus-within .tecnologias-trilha {
-  animation-play-state: paused;
-}
-
+/* Sem animação: a faixa rola à mão, sem a cópia do laço; o recuo do
+   tamanho do degradê deixa o primeiro e o último item nítidos */
 @media (prefers-reduced-motion: reduce) {
-  /* Sem animação a faixa rola à mão (o espaço do WhatsApp já fica fora do
-     viewport); o recuo interno do tamanho do fade deixa o primeiro e o
-     último item chegarem à área nítida */
   .tecnologias-carrossel {
-    height: auto; /* a barra de rolagem não pode cortar os itens */
     overflow-x: auto;
     padding-inline: var(--carrossel-fade);
   }
@@ -259,15 +213,4 @@ section.tecnologias {
     display: none;
   }
 }
-/* ===== FIM: carrossel de tecnologias ===== */
-@media (prefers-reduced-motion: no-preference) {
-  /* Primeira: esquerda para direita */
-  .tecnologias-trilha {
-    animation: deslizar-tecnologias 35s linear infinite reverse;
-  }
-
-  /* Segunda: direita para esquerda */
-  .tecnologias-trilha-reversa {
-    animation-direction: normal;
-  }
-}
+/* ===== FIM: tecnologias ===== */

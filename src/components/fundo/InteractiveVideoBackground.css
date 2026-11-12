@@ -11,6 +11,15 @@
   background-color: var(--fundo);
 }
 
+/* Desktop: a coluna começa depois da faixa reservada para a sidebar aberta
+   (index.css). O vídeo se estende para a esquerda até o trilho, para a faixa
+   vazia ao lado da sidebar recolhida não ficar sem fundo. */
+@media (min-width: 769px) {
+  .video-fundo {
+    left: calc(var(--sidebar-trilho) - var(--sidebar-reserva));
+  }
+}
+
 /* 12px maiores que a área em cada lado: o parallax (até 10px, em
    useParallaxFundo) nunca revela as bordas. O poster é o fallback. */
 .video-fundo-camada {
@@ -36,38 +45,14 @@
   opacity: 1;
 }
 
-/* Película: cor de fundo do tema (escura no escuro, clara no claro), com
-   opacidade ajustável por página (prop overlayOpacity) */
+/* Máscara: cor de fundo do tema (escura no escuro, clara no claro), com a
+   mesma opacidade em todas as páginas */
 .video-fundo::after {
   content: "";
   position: absolute;
   inset: 0;
   background-color: var(--fundo);
-  opacity: var(--video-fundo-opacidade, 0.7);
-}
-
-/* ===== Tela cheia (página Tecnologias) ===== */
-/* Fixo na janela: atrás também da sidebar. Continua com z-index -1 no
-   contexto da .layout, abaixo de toda a interface. */
-.video-fundo[data-tela-cheia="sim"] {
-  position: fixed;
-}
-
-/* ===== Variante "painel" (página Tecnologias) ===== */
-/* Máscara uniforme na cor dos cards (--painel): escura no tema escuro e
-   clara no claro, com a opacidade de overlayOpacity */
-.video-fundo[data-overlay="painel"]::after {
-  background-color: var(--painel);
-}
-
-/* Sem fade da camada: o poster aparece de imediato (sem flash de fundo) e
-   o vídeo surge por cima dele com easing suave */
-.video-fundo[data-overlay="painel"] .video-fundo-camada {
-  animation: none;
-}
-
-.video-fundo[data-overlay="painel"] .video-fundo-video {
-  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: var(--mascara-fundo-opacidade);
 }
 
 @keyframes video-fundo-entrada {

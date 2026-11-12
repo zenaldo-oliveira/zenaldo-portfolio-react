@@ -61,9 +61,8 @@
     margin-top: 14px;
   }
 
-  .contato-corpo {
-    gap: 10px;
-    padding: 16px;
+  .contato-layout {
+    gap: 16px;
   }
 }
 
@@ -251,3 +250,138 @@
   font-size: 13px;
 }
 /* ===== FIM: grade de contatos ===== */
+
+
+/* ===== INÍCIO: áreas estreitas (celular e janelas até ~900px) ===== */
+/* Cada canal vira uma linha compacta: ícone, nome e endereço à esquerda e
+   as ações (só o ícone, 44 × 44px) à direita. A descrição curta do canal
+   fica oculta só aqui; o rótulo das ações continua como nome acessível
+   (.contato-acao-texto). Assim os quatro canais cabem na tela junto com a
+   apresentação. No fim do arquivo: a container query não soma
+   especificidade e precisa vencer as regras-base acima. */
+@container (max-width: 599px) {
+  .contato-layout {
+    gap: clamp(12px, 2dvh, 20px);
+  }
+
+  .contato-cabecalho {
+    margin-bottom: clamp(8px, 1.6dvh, 16px);
+  }
+
+  .contato-chamada {
+    max-width: none;
+    font-size: 18px;
+  }
+
+  .contato-introducao {
+    margin-top: 6px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  /* Localização e link de serviços na mesma linha quando cabem */
+  .contato-apresentacao {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    column-gap: 20px;
+  }
+
+  .contato-cabecalho,
+  .contato-chamada,
+  .contato-introducao {
+    flex-basis: 100%;
+  }
+
+  .contato-local {
+    margin-top: 10px;
+  }
+
+  .contato-servicos {
+    margin-top: 2px;
+  }
+
+  .contato-grade {
+    gap: 8px;
+  }
+
+  .contato-corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px 10px;
+    padding: 10px 10px 10px 12px;
+  }
+
+  .contato-topo {
+    gap: 10px;
+  }
+
+  .contato-icone {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .contato-icone img,
+  .contato-icone svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .cartao .contato-canal {
+    font-size: 15px;
+  }
+
+  .cartao .contato-valor {
+    font-size: 13px;
+  }
+
+  .cartao .contato-descricao {
+    display: none;
+  }
+
+  .contato-acoes {
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .contato-acoes .shimmer-button {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+
+  .contato-acao-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Aviso de erro ao copiar: abaixo da linha, na largura toda */
+  .cartao .contato-aviso:not(.sr-only) {
+    position: absolute;
+    right: 12px;
+    bottom: 2px;
+    left: 12px;
+  }
+}
+/* ===== FIM: áreas estreitas ===== */
+
+
+/* ===== INÍCIO: largura intermediária — cartões ===== */
+/* (Aqui no fim: no bloco intermediário lá em cima, o padding base de
+   .contato-corpo, declarado depois, vencia e o ajuste não tinha efeito.) */
+@container (min-width: 600px) and (max-width: 899px) {
+  .contato-corpo {
+    gap: 8px;
+    padding: 12px 14px;
+  }
+}
+/* ===== FIM: largura intermediária — cartões ===== */
