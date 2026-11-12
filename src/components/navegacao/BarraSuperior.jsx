@@ -5,9 +5,9 @@ import "./BarraSuperior.css";
 
 /* ===== INÍCIO: barra superior da área principal ===== */
 // Faixa própria no topo (espaço reservado, sem sobrepor títulos):
-// - celular: botão de abrir a sidebar à esquerda;
+// - celular: botão hambúrguer à esquerda (abre o menu);
 // - sempre: menu de três pontinhos no canto superior direito.
-function BarraSuperior({ textos, idioma, setIdioma, celular, sidebarAberta, alternarSidebar }) {
+function BarraSuperior({ textos, idioma, setIdioma, celular, menuAberto, alternarMenu }) {
   // Tema (claro/escuro), aplicado em <html data-tema> e escolhido no menu
   const [tema, setTema] = useTema();
 
@@ -16,10 +16,9 @@ function BarraSuperior({ textos, idioma, setIdioma, celular, sidebarAberta, alte
       {celular && (
         <BotaoSidebar
           id="botao-abrir-sidebar"
-          aberta={sidebarAberta}
-          celular
+          aberta={menuAberto}
           textos={textos}
-          onClick={alternarSidebar}
+          onClick={alternarMenu}
         />
       )}
 

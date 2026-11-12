@@ -1,0 +1,73 @@
+/* ===== INÍCIO: vídeo de fundo da área de conteúdo ===== */
+/* Preenche a .area-principal (position: relative). z-index -1 dentro do
+   contexto da .layout: abaixo da barra superior, do <main> e do rodapé, e
+   acima da camada fixa FundoPagina. Não recebe cliques nem rolagem. */
+.video-fundo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--fundo);
+}
+
+/* Desktop: a coluna começa depois da faixa reservada para a sidebar aberta
+   (index.css). O vídeo se estende para a esquerda até o trilho, para a faixa
+   vazia ao lado da sidebar recolhida não ficar sem fundo. */
+@media (min-width: 769px) {
+  .video-fundo {
+    left: calc(var(--sidebar-trilho) - var(--sidebar-reserva));
+  }
+}
+
+/* 12px maiores que a área em cada lado: o parallax (até 10px, em
+   useParallaxFundo) nunca revela as bordas. O poster é o fallback. */
+.video-fundo-camada {
+  position: absolute;
+  inset: -12px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  will-change: transform;
+  animation: video-fundo-entrada 0.6s ease-out both;
+}
+
+.video-fundo-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.video-fundo[data-estado="pronto"] .video-fundo-video {
+  opacity: 1;
+}
+
+/* Máscara: cor de fundo do tema (escura no escuro, clara no claro), com a
+   mesma opacidade em todas as páginas */
+.video-fundo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--fundo);
+  opacity: var(--mascara-fundo-opacidade);
+}
+
+@keyframes video-fundo-entrada {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-fundo-camada {
+    animation: none;
+  }
+
+  .video-fundo-video {
+    transition: none;
+  }
+}
+/* ===== FIM: vídeo de fundo da área de conteúdo ===== */

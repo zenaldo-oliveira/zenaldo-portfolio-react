@@ -1,20 +1,29 @@
 /* ===== INÍCIO: estrutura das páginas ===== */
-/* O espaçamento externo vem do <main> (16px; 12px no celular).
-   80px no fim: o botão flutuante do WhatsApp não cobre o último conteúdo. */
+/* Base de todas as páginas: o espaçamento externo vem do <main>
+   (--espaco-pagina) e a largura máxima é a mesma em todas (centralizada em
+   telas grandes). Cada página ocupa a altura útil do <main> (coluna
+   flexível): as composições crescem ou encolhem nesse espaço em vez de
+   criar rolagem. O WhatsApp fica no rodapé, sem reserva aqui. */
 section.pagina {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  padding: 0 0 80px;
+  max-width: var(--conteudo-max);
+  min-height: 100%;
+  margin-inline: auto;
+  padding: 0 0 var(--reserva-whatsapp);
   color: var(--texto);
 }
 
 /* Cabeçalho padrão de todas as páginas, no modelo da página Tecnologias:
    linha de apoio em versalete com traço de destaque, H1 de 22–30px,
-   introdução de 15px e divisória fina (branco suave no tema escuro) */
+   introdução de 15px e divisória fina (branco suave no tema escuro). Os
+   vãos acompanham a altura da janela (mais compactos em notebooks). */
 .pagina-cabecalho {
   display: grid;
-  gap: 6px;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
+  gap: clamp(2px, 0.8dvh, 6px);
+  margin-bottom: clamp(10px, 2.4dvh, 20px);
+  padding-bottom: clamp(8px, 1.4dvh, 12px);
   border-bottom: 1px solid var(--divisoria);
 }
 
@@ -39,7 +48,7 @@ section.pagina {
 
 .pagina-cabecalho h1 {
   margin: 0;
-  font-size: clamp(22px, 2.2vw, 30px);
+  font-size: clamp(22px, min(2.2vw, 4.2dvh), 30px);
   line-height: 1.2;
   letter-spacing: -0.01em;
 }
@@ -163,6 +172,20 @@ section.pagina {
 /* ===== FIM: ações e links ===== */
 
 /* ===== INÍCIO: celular ===== */
+/* Celulares baixos: cabeçalho mais justo e introdução um pouco menor
+   (ainda 14px) */
+@media (max-width: 768px) and (max-height: 700px) {
+  .pagina-cabecalho {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+  }
+
+  .pagina-introducao {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
 @media (max-width: 768px) {
   .cartao {
     padding: 20px;

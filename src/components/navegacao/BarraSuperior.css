@@ -19,14 +19,15 @@
   margin-left: auto;
 }
 
-/* Celular: mesma faixa de 56px que antes era reservada para o botão fixo */
+/* Celular: faixa de --barra-altura (56px; 48px em telas baixas, index.css)
+   com o botão de 44px centralizado na vertical */
 @media (max-width: 768px) {
   .barra-superior {
     --espaco-barra: 12px;
 
-    min-height: 56px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    min-height: var(--barra-altura);
+    padding-top: calc((var(--barra-altura) - 44px) / 2);
+    padding-bottom: calc((var(--barra-altura) - 44px) / 2);
   }
 }
 /* ===== FIM: barra superior ===== */
@@ -68,7 +69,7 @@
    suaves (--divisoria). Em telas pequenas, a largura e a altura se limitam
    ao espaço disponível (com rolagem interna se a altura não couber). */
 .menu-opcoes-posicao {
-  z-index: 200;
+  z-index: var(--z-dialogo);
 }
 
 .menu-opcoes {

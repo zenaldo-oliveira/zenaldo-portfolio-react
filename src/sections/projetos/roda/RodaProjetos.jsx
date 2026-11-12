@@ -8,9 +8,15 @@ import { traduzir } from "@/i18n/traduzir";
 import CartaoDestaque from "../destaque/CartaoDestaque";
 import "./RodaProjetos.css";
 
-// Avanço automático e distância mínima (px) para um arraste trocar o projeto
+// Avanço automático e regras do arraste
 const INTERVALO_AUTOMATICO_MS = 5000;
-const ARRASTE_MINIMO_PX = 40;
+// Troca o projeto ao arrastar 25% da largura do card...
+const ARRASTE_FRACAO_TROCA = 0.25;
+// ...ou num gesto rápido (px/ms) de pelo menos ARRASTE_MINIMO_RAPIDO_PX
+const ARRASTE_VELOCIDADE_TROCA = 0.4;
+const ARRASTE_MINIMO_RAPIDO_PX = 24;
+// Deslocamento a partir do qual o gesto é classificado (horizontal/vertical)
+const ARRASTE_DECISAO_PX = 8;
 
 // Resto sempre positivo: posição (que cresce sem limite) → índice do projeto
 const modulo = (valor, total) => ((valor % total) + total) % total;
@@ -35,6 +41,7 @@ function RodaProjetos({ projetos, idioma, t }) {
   const [focoDentro, setFocoDentro] = useState(false);
   const [dialogoAberto, setDialogoAberto] = useState(false);
   const areaRef = useRef(null);
+  const palcoRef = useRef(null);
   const arrasteRef = useRef(null);
   const arrastouRef = useRef(false);
 
@@ -101,21 +108,80 @@ function RodaProjetos({ projetos, idioma, t }) {
   /* ===== FIM: teclado ===== */
 
   /* ===== INÍCIO: toque e arraste ===== */
-  // Arraste horizontal troca o projeto; a rolagem vertical continua livre
-  // (touch-action: pan-y no palco). O clique que encerra um arraste é ignorado.
+  // Gesto horizontal gira a roda; vertical continua sendo rolagem da página
+  // (touch-action: pan-y no palco). Enquanto arrasta, a roda acompanha o dedo
+  // pela variável --arraste no palco (direto no DOM, sem re-render). Ao soltar,
+  // troca o projeto com 25% da largura do card ou num gesto rápido; senão
+  // volta ao lugar. O clique que encerra um arraste é ignorado.
+  function definirArraste(fracao) {
+    palcoRef.current?.style.setProperty("--arraste", String(fracao));
+  }
+
+  function encerrarArraste() {
+    arrasteRef.current = null;
+    definirArraste(0);
+    areaRef.current?.removeAttribute("data-arrastando");
+  }
+
   function aoPressionar(evento) {
     if (!evento.isPrimary) return;
-    arrasteRef.current = evento.clientX;
+    const card = palcoRef.current?.querySelector(".roda-item");
+    arrasteRef.current = {
+      x: evento.clientX,
+      y: evento.clientY,
+      inicio: evento.timeStamp,
+      largura: card?.getBoundingClientRect().width || 300,
+      horizontal: null,
+      id: evento.pointerId,
+    };
     arrastouRef.current = false;
   }
 
+  function aoMover(evento) {
+    const arraste = arrasteRef.current;
+    if (!arraste || evento.pointerId !== arraste.id) return;
+    const dx = evento.clientX - arraste.x;
+    const dy = evento.clientY - arraste.y;
+
+    if (arraste.horizontal === null) {
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < ARRASTE_DECISAO_PX) return;
+      arraste.horizontal = Math.abs(dx) > Math.abs(dy);
+      // Gesto vertical: é rolagem, a roda não participa
+      if (!arraste.horizontal) {
+        arrasteRef.current = null;
+        return;
+      }
+      // Captura: o arraste continua mesmo se o dedo sair do palco. Pode falhar
+      // se o ponteiro já foi liberado (gesto cancelado); o arraste segue sem ela.
+      try {
+        evento.currentTarget.setPointerCapture(evento.pointerId);
+      } catch {
+        /* sem captura */
+      }
+      areaRef.current?.setAttribute("data-arrastando", "");
+    }
+
+    // Movimento reduzido: sem acompanhar o dedo (só a troca ao soltar)
+    if (reduzir) return;
+    const fracao = Math.max(-1, Math.min(1, -dx / arraste.largura));
+    definirArraste(fracao);
+  }
+
   function aoSoltar(evento) {
-    if (arrasteRef.current === null) return;
-    const distancia = evento.clientX - arrasteRef.current;
-    arrasteRef.current = null;
-    if (Math.abs(distancia) < ARRASTE_MINIMO_PX) return;
+    const arraste = arrasteRef.current;
+    if (!arraste || evento.pointerId !== arraste.id) return;
+    const dx = evento.clientX - arraste.x;
+    const duracao = Math.max(evento.timeStamp - arraste.inicio, 1);
+    const horizontal = arraste.horizontal;
+    encerrarArraste();
+    if (!horizontal) return;
+
+    const longo = Math.abs(dx) >= arraste.largura * ARRASTE_FRACAO_TROCA;
+    const rapido =
+      Math.abs(dx) >= ARRASTE_MINIMO_RAPIDO_PX &&
+      Math.abs(dx) / duracao >= ARRASTE_VELOCIDADE_TROCA;
     arrastouRef.current = true;
-    avancar(distancia < 0 ? 1 : -1);
+    if (longo || rapido) avancar(dx < 0 ? 1 : -1);
   }
 
   function aoClicarCaptura(evento) {
@@ -149,12 +215,17 @@ function RodaProjetos({ projetos, idioma, t }) {
       {/* ===== INÍCIO: palco 3D ===== */}
       <div
         className="roda-palco"
+        ref={palcoRef}
         // Focável: com foco no palco, ← → Home End giram a roda
         tabIndex={0}
         aria-label={t.instrucaoRoda}
         onPointerDown={aoPressionar}
+        onPointerMove={aoMover}
         onPointerUp={aoSoltar}
-        onPointerCancel={() => (arrasteRef.current = null)}
+        onPointerCancel={encerrarArraste}
+        // Drag-and-drop nativo (seleção, link) cancela o ponteiro e trava
+        // o giro: no palco, arrastar é sempre girar a roda
+        onDragStart={(evento) => evento.preventDefault()}
         onClickCapture={aoClicarCaptura}
       >
         <ul className="roda-anel">
@@ -173,7 +244,6 @@ function RodaProjetos({ projetos, idioma, t }) {
                 data-distancia={Math.abs(distancia)}
                 aria-roledescription={t.slide}
                 aria-label={t.posicao(indice + 1, total)}
-                onClick={ehAtivo ? undefined : () => irPara(indice)}
               >
                 <div className="roda-face" inert={!ehAtivo}>
                   <CartaoDestaque
@@ -235,6 +305,12 @@ function RodaProjetos({ projetos, idioma, t }) {
             ))}
           </div>
 
+          {/* Áreas estreitas: contador no lugar dos indicadores (CSS). A
+              posição já é anunciada pela região viva abaixo. */}
+          <p className="carrossel-contador" aria-hidden="true">
+            {ativo + 1} / {total}
+          </p>
+
           <Button
             variant="outline"
             size="icon-lg"
@@ -244,6 +320,7 @@ function RodaProjetos({ projetos, idioma, t }) {
           >
             <ChevronRight aria-hidden="true" />
           </Button>
+
         </div>
       )}
       {/* ===== FIM: controles ===== */}

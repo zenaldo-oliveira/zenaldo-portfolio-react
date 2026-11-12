@@ -46,7 +46,9 @@ function CopiarEmail({ email, t }) {
         onClick={copiar}
       >
         {copiado ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-        <span aria-hidden={copiado || undefined}>{copiado ? t.copiado : t.copiar}</span>
+        <span className="contato-acao-texto" aria-hidden={copiado || undefined}>
+          {copiado ? t.copiado : t.copiar}
+        </span>
         {copiado && <span className="sr-only">{t.copiar}</span>}
       </ShimmerButton>
       <p

@@ -11,18 +11,25 @@ import "./FundoPagina.css";
 // o conteúdo. A imagem só é aplicada se o arquivo existir e for uma imagem;
 // senão fica var(--fundo). A película (::after) garante a legibilidade.
 // Com imagem, a camada interna acompanha o mouse em até 10px (parallax),
-// só no desktop e sem reduced motion.
+// só no desktop e sem reduced motion, e volta ao centro quando o mouse sai
+// da janela. pelicula "marinho": máscara azul-marinho (FundoPagina.css).
 function FundoPagina({ pagina }) {
   const fundo = fundosPorPagina[pagina];
   const temImagem = useArquivoDisponivel(fundo?.imagem, "image/");
   const refImagem = useRef(null);
 
-  useParallaxFundo(refImagem, temImagem);
+  useParallaxFundo(refImagem, temImagem, { voltarAoSair: true });
 
+  // Posição por variável (não inline): o CSS de retrato pode trocá-la
   const estilo = temImagem
     ? {
         backgroundImage: `url("${fundo.imagem}")`,
-        backgroundPosition: fundo.posicao ?? "center",
+        "--fundo-posicao": fundo.posicao ?? "center",
+        ...(fundo.retrato && {
+          "--fundo-retrato-posicao": fundo.retrato.posicao,
+          "--fundo-retrato-fracao": fundo.retrato.fracao,
+          "--fundo-proporcao": fundo.retrato.proporcao,
+        }),
       }
     : undefined;
 
@@ -31,6 +38,13 @@ function FundoPagina({ pagina }) {
       className="fundo-pagina"
       data-pagina={pagina}
       data-imagem={temImagem ? "sim" : "nao"}
+      data-pelicula={fundo?.pelicula ?? "tema"}
+      data-retrato={temImagem && fundo?.retrato ? "sim" : undefined}
+      style={
+        fundo?.opacidade !== undefined
+          ? { "--fundo-pagina-opacidade": fundo.opacidade }
+          : undefined
+      }
       aria-hidden="true"
     >
       {temImagem && (

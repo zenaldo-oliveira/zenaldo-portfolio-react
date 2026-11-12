@@ -36,9 +36,9 @@ function Periodo({ periodo, t }) {
 }
 
 // Um único componente para todos os marcos: tudo vem de src/data/trajetoria.js.
-// lado: só visual (o HTML segue a ordem da sequência). O card é informativo e
-// não recebe foco; só o link opcional.
-function ItemTrajetoria({ item, lado, idioma, t }) {
+// oculto: etapa de outro grupo (LinhaDoTempo mostra um grupo por vez). O
+// card é informativo e não recebe foco; só o link opcional.
+function ItemTrajetoria({ item, oculto, idioma, t }) {
   const idTitulo = `trajetoria-${item.id}`;
   const Icone = ICONES[item.categoria];
   const periodo = partesPeriodo(item);
@@ -55,7 +55,7 @@ function ItemTrajetoria({ item, lado, idioma, t }) {
   return (
     <li
       className="linha-tempo-item"
-      data-lado={lado}
+      hidden={oculto}
       data-categoria={item.categoria}
       data-status={status ?? undefined}
     >

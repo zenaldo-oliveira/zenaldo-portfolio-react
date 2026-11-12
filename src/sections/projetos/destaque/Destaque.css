@@ -117,10 +117,106 @@
   border-radius: 11px 11px 0 0;
 }
 
-/* Fora da roda (um único projeto), o palco segue a proporção 2:1 */
-.projeto-unico .destaque-cartao-vertical .projeto-palco {
-  aspect-ratio: 2 / 1;
+/* Fora da roda (grade e projeto único), o palco tem a proporção da roda
+   (largura / 1,72): a composição monitor + celular aparece inteira, na
+   largura toda do card, sem corte */
+:is(.projeto-unico, .grade-projetos) .destaque-cartao-vertical .projeto-palco {
+  aspect-ratio: 1.72 / 1;
 }
+
+/* ===== INÍCIO: grade de projetos ===== */
+/* Celular (até 768px): um card por linha, na largura toda da página (as
+   margens laterais são as da página, --espaco-pagina) */
+.grade-projetos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Cards da mesma linha com a mesma altura e as ações no rodapé */
+.grade-projetos > li {
+  display: flex;
+  min-width: 0;
+}
+
+.grade-projetos .destaque-cartao-vertical {
+  flex: 1;
+  grid-template-rows: auto 1fr;
+}
+
+/* Tablets (600 a 768px): duas colunas; um card só na largura toda ficaria
+   alto demais (imagem com mais de 400px) */
+@media (min-width: 600px) {
+  .grade-projetos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.grade-projetos .destaque-conteudo {
+  gap: 10px;
+  padding: 14px 16px 16px;
+}
+
+.grade-projetos .destaque-acoes {
+  margin-top: auto;
+  padding-top: 6px;
+}
+/* ===== FIM: grade de projetos ===== */
+
+/* ===== INÍCIO: carrossel de projetos (CarrosselProjetos) ===== */
+/* Um card por vez (celular e janelas até 899px). Card de até 480px,
+   centralizado; a imagem cede altura em telas baixas para card, controles
+   e rodapé caberem juntos. Piso de 130px: abaixo disso a legenda do mockup
+   cobria a imagem (celulares de 640px de altura ou menos rolam um pouco).
+   Deslize horizontal troca o projeto; a rolagem vertical continua com o
+   navegador. */
+.carrossel-projetos-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  touch-action: pan-y;
+}
+
+.carrossel-projetos-lista > li {
+  display: flex;
+  justify-content: center;
+  container-type: inline-size;
+}
+
+.carrossel-projetos .destaque-cartao-vertical {
+  width: min(100%, 480px);
+}
+
+.carrossel-projetos .destaque-cartao-vertical .projeto-palco {
+  aspect-ratio: auto;
+  height: clamp(
+    130px,
+    var(--altura-livre, 100dvh) - 440px,
+    min(100cqi, 480px) / 1.72
+  );
+}
+
+.carrossel-projetos .destaque-conteudo {
+  gap: clamp(6px, 1dvh, 8px);
+  padding: clamp(10px, 1.6dvh, 12px) 14px clamp(10px, 1.8dvh, 14px);
+}
+
+.carrossel-projetos-contador {
+  min-width: 6ch;
+  margin: 0;
+  color: var(--texto-secundario);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.carrossel-projetos .carrossel-controles {
+  margin-top: clamp(8px, 1.4dvh, 12px);
+}
+/* ===== FIM: carrossel de projetos ===== */
 
 /* ===== INÍCIO: palco do mockup ===== */
 /* Mesmo fundo do card (--painel, definido nos temas claro e escuro), sem

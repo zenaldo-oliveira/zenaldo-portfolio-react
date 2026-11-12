@@ -1,18 +1,12 @@
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
-/* ===== INÍCIO: botão de abrir/fechar a sidebar ===== */
-// aberta: sidebar visível (computador: expandida; celular: painel aberto).
-// O nome acessível diz a ação ("Recolher menu", "Abrir menu"...) e
+/* ===== INÍCIO: botão hambúrguer do menu ===== */
+// Mesmo botão no trilho da sidebar (desktop), na barra superior (celular) e
+// dentro do painel aberto (fechar). O nome acessível diz a ação e
 // aria-expanded informa o estado. Área de toque de 44 × 44 px.
-function BotaoSidebar({ aberta, celular, textos, onClick, ref, id }) {
-  const rotulo = celular
-    ? aberta
-      ? textos.fecharMenu
-      : textos.abrirMenu
-    : aberta
-      ? textos.recolherMenu
-      : textos.expandirMenu;
-  const Icone = aberta ? PanelLeftClose : PanelLeftOpen;
+function BotaoSidebar({ aberta, textos, onClick, ref, id }) {
+  const rotulo = aberta ? textos.fecharMenu : textos.abrirMenu;
+  const Icone = aberta ? X : Menu;
 
   return (
     <button
@@ -30,6 +24,6 @@ function BotaoSidebar({ aberta, celular, textos, onClick, ref, id }) {
     </button>
   );
 }
-/* ===== FIM: botão de abrir/fechar a sidebar ===== */
+/* ===== FIM: botão hambúrguer do menu ===== */
 
 export default BotaoSidebar;

@@ -17,7 +17,9 @@
 }
 
 .roda-palco {
-  --cartao: min(86cqi, 460px);
+  /* 460px; em telas largas cresce até 540px (36% da largura útil); em
+     áreas estreitas, 92% da largura útil */
+  --cartao: min(92cqi, clamp(460px, 36cqi, 540px));
   --folga: 32px;
   --passo: calc(360deg / var(--total));
   --passo-raio: min(var(--passo), 120deg);
@@ -38,6 +40,11 @@
   touch-action: pan-y;
   cursor: grab;
   border-radius: 14px;
+  /* O arraste com mouse selecionava o texto do card; o arraste seguinte
+     virava drag-and-drop nativo da seleção (pointercancel) e a roda parava
+     de girar. O texto continua selecionável no diálogo de detalhes. */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .roda-palco:active {
@@ -57,8 +64,9 @@
   padding: 0;
   list-style: none;
   transform-style: preserve-3d;
+  /* --arraste: fração do passo enquanto o dedo/mouse arrasta (RodaProjetos) */
   transform: translateZ(calc(var(--raio) * -1))
-    rotateY(calc(var(--posicao) * var(--passo) * -1));
+    rotateY(calc((var(--posicao) + var(--arraste, 0)) * var(--passo) * -1));
 }
 
 /* align-self: start: cada card com a altura do próprio conteúdo (sem
@@ -73,8 +81,14 @@
   transform: rotateY(calc(var(--indice) * var(--passo))) translateZ(var(--raio));
 }
 
+/* Só o card da frente recebe toque e mouse. Os outros, mesmo atrás dele na
+   profundidade 3D, eram escolhidos como alvo sobre o "Ver detalhes": no
+   Chromium os de trás (virados de costas); no WebKit, que não ordena o
+   toque pela profundidade, até os vizinhos. Os demais projetos vêm à frente
+   pelas setas, pelos indicadores, pelo teclado e pelo arraste (que começa
+   no palco). */
 .roda-item:not([data-ativo]) {
-  cursor: pointer;
+  pointer-events: none;
 }
 
 /* Frente (o card) e verso (painel liso) ocupam o mesmo lugar; cada um some
@@ -89,15 +103,16 @@
   height: auto;
 }
 
-/* Altura do palco da imagem: metade da largura útil do card quando há
-   altura; em janelas baixas encolhe até 130px (a imagem continua inteira,
-   só menor) para tudo caber. A largura segue a proporção da imagem. */
+/* Altura do palco da imagem: pela largura do card (composição monitor +
+   celular, proporção ~1,77, mais o respiro), limitada pela altura útil da
+   página (--altura-livre menos cabeçalho, textos do card e controles, ~430px):
+   em notebooks baixos a imagem encolhe (até 130px) para card, controles e
+   rodapé caberem na mesma tela. A composição continua inteira (contain). */
 .roda-face .destaque-cartao-vertical {
-  /* ~55% do card: composição com proporção 1,77 na largura do card; em
-     janelas baixas cede para tudo caber (mínimo 150px) */
-  --palco-altura: min(
-    calc(var(--cartao) / 1.72),
-    max(150px, calc(var(--altura-livre, 100dvh) - 530px))
+  --palco-altura: clamp(
+    130px,
+    var(--altura-livre, 100dvh) - 430px,
+    var(--cartao) / 1.72
   );
 }
 
@@ -113,6 +128,10 @@
   border-radius: 12px;
   opacity: 0.35;
   transform: rotateY(180deg);
+  /* Só decoração: com certos ângulos acumulados da roda, o verso de um card
+     de trás interceptava o toque sobre o botão do card da frente (e o clique
+     ia para o <li> daquele card distante) */
+  pointer-events: none;
 }
 
 /* Profundidade: vizinhos esmaecidos conforme a distância; do terceiro em
@@ -128,10 +147,6 @@
 .roda-item:not([data-distancia="0"], [data-distancia="1"], [data-distancia="2"])
   .roda-face {
   opacity: 0;
-}
-
-.roda-item:is([data-distancia="1"], [data-distancia="2"]):hover .roda-face {
-  opacity: 0.92;
 }
 
 .roda-item[data-ativo] .destaque-cartao {
@@ -159,6 +174,23 @@
 .roda[data-movimento="reduzido"] .roda-verso {
   transition: none;
 }
+
+/* Botões dentro da roda 3D: nenhuma transformação, nem ao pressionar.
+   Qualquer transform no botão (o translateZ(0) do ShimmerButton ou o
+   translateY(1px) do :active) muda o plano 3D dele e o Chromium recalcula o
+   alvo entre pointerdown e pointerup: o pointerup caía em .destaque-acoes e
+   o clique em "Ver detalhes" se perdia. O realce de pressionar (sombra
+   interna) continua. */
+.roda-face .shimmer-button,
+.roda-face .shimmer-button:active:not([data-inativo]) {
+  transform: none;
+}
+
+/* Durante o arraste a roda segue o dedo sem atraso; ao soltar, a transição
+   volta e o encaixe no projeto é suave */
+.roda[data-arrastando] .roda-anel {
+  transition: none;
+}
 /* ===== FIM: roda 3D de projetos ===== */
 
 /* ===== INÍCIO: controles ===== */
@@ -171,16 +203,37 @@
   margin-top: 12px;
 }
 
-/* Áreas estreitas: botões numa linha e indicadores na de baixo. Os
-   indicadores (44px cada) deixam livre, dos dois lados, a faixa do botão
-   fixo do WhatsApp: quebram em duas linhas em vez de passar sob ele no fim
-   da rolagem, e continuam centralizados. */
+/* Contador "3 / 11": só nas áreas estreitas (abaixo) */
+.carrossel-contador {
+  display: none;
+  min-width: 5ch;
+  margin: 0;
+  color: var(--texto-secundario);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* Áreas estreitas: os 11 indicadores (44px cada) quebravam em duas linhas
+   (~52px a mais de altura). No lugar deles, o contador; anterior/próximo,
+   teclado e arraste continuam dando acesso a todos os projetos. */
 @container (max-width: 779px) {
+  /* Card mais estreito: as descrições quebram em mais linhas, e a altura do
+     palco é a do card mais alto. A imagem cede mais altura aqui. */
+  .roda-face .destaque-cartao-vertical {
+    --palco-altura: clamp(
+      120px,
+      var(--altura-livre, 100dvh) - 530px,
+      var(--cartao) / 1.72
+    );
+  }
+
   .carrossel-indicadores {
-    order: 3;
-    flex-basis: 100%;
-    max-width: calc(100% - 2 * (var(--whatsapp-tamanho, 60px) + var(--whatsapp-margem, 20px)));
-    margin-inline: auto;
+    display: none;
+  }
+
+  .carrossel-contador {
+    display: block;
   }
 }
 
@@ -233,3 +286,4 @@
   outline-offset: 2px;
 }
 /* ===== FIM: controles ===== */
+

@@ -1,17 +1,15 @@
 /* ===== INÍCIO: botão do WhatsApp ===== */
-/* Única definição do botão (antes repetida também no index.css).
-   Fixo e na frente do conteúdo (z-index acima do <main>). A altura é a do
-   centro da faixa de Tecnologias, que termina sobre o rodapé, para a faixa
-   parecer sair de trás dele; é a mesma em todas as páginas (não muda de
-   lugar ao navegar). bottom considera a área segura do iPhone. */
+/* Fixo, na mesma posição em todas as páginas: centralizado na faixa do
+   rodapé, à direita. Nunca fica sobre o conteúdo do <main> (as páginas não
+   precisam de reserva no fim). bottom considera a área segura do iPhone. */
 .whatsapp-fixo {
   position: fixed;
   right: var(--whatsapp-margem);
   bottom: calc(
-    var(--rodape-altura) + (var(--faixa-altura) - var(--whatsapp-tamanho)) / 2 +
+    (var(--rodape-altura) - var(--whatsapp-tamanho)) / 2 +
       env(safe-area-inset-bottom, 0px)
   );
-  z-index: 50; /* acima do <main> e da faixa de tecnologias */
+  z-index: var(--z-flutuante);
 
   display: grid;
   place-items: center;
@@ -21,16 +19,22 @@
   background-color: #25d366;
   border-radius: 50%;
   text-decoration: none;
-  animation: pulsar-whatsapp 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .whatsapp-fixo {
+    animation: pulsar-whatsapp 2.4s ease-in-out infinite;
+  }
 }
 
 .whatsapp-fixo img {
   display: block;
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
 }
 
-/* Pulsação (a versão que já estava em vigor) */
+/* Pulsação discreta: chama atenção sem competir com o conteúdo (escala de
+   até 6%: continua dentro da faixa do rodapé) */
 @keyframes pulsar-whatsapp {
   0%,
   100% {
@@ -39,8 +43,8 @@
   }
 
   50% {
-    transform: scale(1.2);
-    box-shadow: 0 0 40px 14px rgba(37, 211, 102, 0.65);
+    transform: scale(1.06);
+    box-shadow: 0 0 16px 4px rgba(37, 211, 102, 0.45);
   }
 }
 
@@ -49,10 +53,9 @@
   animation-play-state: paused;
 }
 
-/* Sem pulsação para quem prefere menos movimento */
-@media (prefers-reduced-motion: reduce) {
-  .whatsapp-fixo {
-    animation: none;
-  }
+.whatsapp-fixo:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 4px;
 }
+
 /* ===== FIM: botão do WhatsApp ===== */

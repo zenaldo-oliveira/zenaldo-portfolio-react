@@ -45,14 +45,23 @@ function SecaoLista({ titulo, itens, idioma }) {
 // compacto: botão menor (mini cards da grade).
 // O gatilho renderiza o próprio ShimmerButton (um único <button>).
 // onAbrirFechar: avisa quem precisa reagir (ex.: pausar o carrossel).
-function DetalhesProjeto({ projeto, nome, idioma, compacto = false, onAbrirFechar, t }) {
+// variante: "principal" quando "Ver detalhes" é a única ação do projeto.
+function DetalhesProjeto({
+  projeto,
+  nome,
+  idioma,
+  compacto = false,
+  variante = "secundaria",
+  onAbrirFechar,
+  t,
+}) {
 
   return (
     <Dialog.Root onOpenChange={(aberto) => onAbrirFechar?.(aberto)}>
       <Dialog.Trigger
         render={
           <ShimmerButton
-            variante="secundaria"
+            variante={variante}
             tamanho={compacto ? "pequeno" : "padrao"}
             className="projeto-detalhes-botao"
           />

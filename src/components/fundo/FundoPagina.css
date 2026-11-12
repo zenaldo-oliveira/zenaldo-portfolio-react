@@ -16,7 +16,7 @@
 .fundo-pagina-imagem {
   position: absolute;
   inset: -12px;
-  background-position: center;
+  background-position: var(--fundo-posicao, center);
   background-repeat: no-repeat;
   background-size: cover;
   will-change: transform;
@@ -30,4 +30,47 @@
   inset: 0;
   background-color: var(--pelicula);
 }
+
+/* ===== Enquadramento em retrato (celular e tablet em pé) ===== */
+/* Imagem horizontal em tela vertical: com cover centralizado, só a faixa do
+   meio aparece (no Sobre, os textos da imagem cortados nas bordas). Aqui a
+   largura é a maior entre: a que cobre a altura da tela (cover) e a que
+   mostra no máximo --fundo-retrato-fracao da imagem. A região vem de
+   --fundo-retrato-posicao (fundos.js). Proporção preservada (altura auto).
+   A camada tem 12px de sobra em cada lado (parallax), daí os 24px. */
+@media (orientation: portrait) and (max-width: 1024px) {
+  .fundo-pagina[data-retrato="sim"] .fundo-pagina-imagem {
+    background-size: max(
+        calc((100vw + 24px) / var(--fundo-retrato-fracao)),
+        calc((100dvh + 24px) * var(--fundo-proporcao))
+      )
+      auto;
+    background-position: var(--fundo-retrato-posicao, var(--fundo-posicao));
+  }
+}
+
+/* ===== Película "marinho" (página Sobre) ===== */
+/* Preto azul-marinho profundo com vinheta: centro na opacidade base (70%)
+   e bordas ~14 pontos mais escuras. O centro não é clareado porque a imagem
+   tem textos próprios ali, que não podem competir com o conteúdo.
+   Só no tema escuro; no claro continua --pelicula (texto escuro). */
+:root:not([data-tema="claro"])
+  .fundo-pagina[data-pelicula="marinho"][data-imagem="sim"]::after {
+  background-color: transparent;
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgb(2 5 14 / 0.25),
+      transparent 30%,
+      transparent 70%,
+      rgb(2 5 14 / 0.3)
+    ),
+    radial-gradient(
+      ellipse 80% 75% at 55% 45%,
+      rgb(5 12 30 / var(--fundo-pagina-opacidade, 0.7)) 0%,
+      rgb(3 8 22 / calc(var(--fundo-pagina-opacidade, 0.7) + 0.06)) 55%,
+      rgb(2 4 12 / calc(var(--fundo-pagina-opacidade, 0.7) + 0.14)) 100%
+    );
+}
+
 /* ===== FIM: fundo da página ===== */

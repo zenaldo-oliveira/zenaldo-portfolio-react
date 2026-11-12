@@ -4,13 +4,15 @@ import { Revelar } from "@/components/pagina/animacao";
 import { projetos } from "@/data/projetos";
 
 import CartaoDestaque from "./destaque/CartaoDestaque";
-import RodaProjetos from "./roda/RodaProjetos";
+import GaleriaProjetos from "./GaleriaProjetos";
 import { traducoesProjetos } from "./traducoes";
 import "./Projetos.css";
 import "./destaque/Destaque.css";
 
 /* ===== INÍCIO: página Projetos ===== */
-// Cabeçalho compacto e todos os projetos (src/data/projetos.js) numa roda 3D.
+// Cabeçalho compacto e a galeria (src/data/projetos.js): um projeto em
+// destaque por vez, em todos os tamanhos de tela. A roda 3D (roda/) e o
+// cartão em destaque continuam no projeto, fora desta página.
 function Projetos({ idioma }) {
   const t = traducoesProjetos[idioma];
 
@@ -26,7 +28,7 @@ function Projetos({ idioma }) {
       );
     }
 
-    return <RodaProjetos projetos={projetos} idioma={idioma} t={t} />;
+    return <GaleriaProjetos projetos={projetos} idioma={idioma} t={t} />;
   }
 
   return (

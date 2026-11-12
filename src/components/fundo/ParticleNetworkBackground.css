@@ -1,0 +1,39 @@
+/* Tela cheia, atrás de toda a interface: z-index -1 dentro do contexto da
+   .layout (z-index 1), como o vídeo de fundo. Com z-index 0 a camada opaca
+   seria pintada por cima da sidebar e da barra superior. Fica acima do
+   FundoPagina (fora da .layout). */
+.particle-network-background {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background: #080e19;
+}
+
+/* Tema claro (mesmo atributo do sistema de temas: <html data-tema>) */
+:root[data-tema="claro"] .particle-network-background {
+  background: #f5f8fc;
+}
+
+/* O <div id> criado pelo <Particles> não tem altura própria: sem isto o
+   canvas ficava com a proporção padrão (altura = metade da largura) e a parte
+   de baixo da tela ficava sem a rede */
+.particle-network-background > div {
+  width: 100%;
+  height: 100%;
+}
+
+.particle-network-background canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle-network-background canvas {
+    display: none;
+  }
+}

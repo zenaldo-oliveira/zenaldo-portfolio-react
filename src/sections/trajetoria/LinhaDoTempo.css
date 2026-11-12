@@ -1,85 +1,77 @@
-/* ===== INÍCIO: linha do tempo ===== */
-/* O layout segue a largura real do <main> (ao lado da sidebar), por
-   container query. Medidas compartilhadas:
-   --marcador: diâmetro do marcador; --vao: distância da linha até o card
-   (o traço de conexão ocupa esse vão); --topo: altura do marcador, alinhado
-   à linha da data no card. */
+/* ===== INÍCIO: linha do tempo em grupos ===== */
+/* Linha horizontal com as etapas do grupo lado a lado (--por-grupo vem de
+   LinhaDoTempo.jsx: 4, 3, 2 ou 1 pela largura real da área). Cada etapa tem
+   o marcador sobre a linha e o card logo abaixo. O bloco ocupa a altura que
+   sobra na página e fica centralizado nela; os controles ficam embaixo.
+   --marcador: diâmetro do marcador; --vao: espaço entre os cards. */
 .linha-tempo-container {
-  container: linha-tempo / inline-size;
-
   --marcador: 32px;
-  --vao: 40px;
-  --topo: 10px;
+  --vao: clamp(12px, 1.6vw, 20px);
   --linha-cor: color-mix(in srgb, var(--destaque) 45%, var(--borda));
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(10px, 2dvh, 20px);
+  min-height: 0;
+}
+
+.linha-tempo-container:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 4px;
 }
 
 .linha-tempo {
   position: relative;
-  max-width: 1120px;
+  display: grid;
+  grid-template-columns: repeat(var(--por-grupo, 1), minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--vao);
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0;
   list-style: none;
 }
 
-/* Linha vertical no centro */
+/* Linha horizontal na altura do centro dos marcadores */
 .linha-tempo::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 2px;
+  top: calc(var(--marcador) / 2 - 1px);
+  right: 0;
+  left: 0;
+  height: 2px;
   background-color: var(--linha-cor);
-  translate: -50% 0;
 }
 
 .linha-tempo-item {
   position: relative;
-  width: 50%;
-  padding-bottom: 20px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: clamp(4px, 1dvh, 10px);
+  min-width: 0;
 }
 
-/* Lados opostos se sobrepõem na vertical: menos vazio entre os cards, sem
-   colisão (cada card é bem mais alto que a sobreposição) */
-.linha-tempo-item + .linha-tempo-item {
-  margin-top: -48px;
+/* hidden: etapa de outro grupo (o atributo vence o display: grid) */
+.linha-tempo-item[hidden] {
+  display: none;
 }
 
-.linha-tempo-item:last-child {
-  padding-bottom: 0;
-}
-
-/* Alternância só visual: a ordem do HTML continua cronológica */
-.linha-tempo-item[data-lado="esquerda"] {
-  padding-right: var(--vao);
-}
-
-.linha-tempo-item[data-lado="direita"] {
-  margin-left: 50%;
-  padding-left: var(--vao);
-}
-
-/* Marcador sobre a linha, na altura da data do card */
+/* Marcador sobre a linha, alinhado à esquerda do card */
 .linha-tempo-marcador {
-  position: absolute;
-  top: var(--topo);
+  position: relative;
   z-index: 1;
   display: grid;
   place-items: center;
   width: var(--marcador);
   height: var(--marcador);
+  margin-left: 16px;
   border: 2px solid var(--destaque);
   border-radius: 999px;
   background-color: var(--fundo);
   color: var(--destaque);
-}
-
-.linha-tempo-item[data-lado="esquerda"] .linha-tempo-marcador {
-  right: calc(var(--marcador) / -2);
-}
-
-.linha-tempo-item[data-lado="direita"] .linha-tempo-marcador {
-  left: calc(var(--marcador) / -2);
 }
 
 /* Marco em andamento (status confirmado): marcador preenchido */
@@ -88,24 +80,28 @@
   color: var(--fundo);
 }
 
-/* Traço discreto ligando o marcador ao card */
-.linha-tempo-item::before {
-  content: "";
-  position: absolute;
-  top: calc(var(--topo) + var(--marcador) / 2 - 1px);
-  width: calc(var(--vao) - var(--marcador) / 2);
-  height: 2px;
-  background-color: var(--linha-cor);
+/* Cards do grupo com a mesma altura; espaçamento interno do Card (shadcn,
+   16px) acompanha a altura da janela */
+.linha-tempo-item > .linha-tempo-cartao {
+  --card-spacing: clamp(10px, 1.8dvh, 16px);
+
+  height: 100%;
 }
 
-.linha-tempo-item[data-lado="esquerda"]::before {
-  right: calc(var(--marcador) / 2);
+/* Troca de grupo: as etapas novas entram com um fade curto */
+@media (prefers-reduced-motion: no-preference) {
+  .linha-tempo-item:not([hidden]) {
+    animation: linha-tempo-entrar 0.35s var(--curva-saida) both;
+  }
 }
 
-.linha-tempo-item[data-lado="direita"]::before {
-  left: calc(var(--marcador) / 2);
+@keyframes linha-tempo-entrar {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
 }
-/* ===== FIM: linha do tempo ===== */
+/* ===== FIM: linha do tempo em grupos ===== */
 
 /* ===== INÍCIO: card do acontecimento ===== */
 /* shadcn Card: a borda é um ring (box-shadow). No hover a borda fica ciano e
@@ -194,7 +190,7 @@
 
 .linha-tempo-cartao h2 {
   margin: 2px 0 0;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   line-height: 1.3;
   text-wrap: balance;
@@ -222,8 +218,8 @@
   max-width: 62ch;
   margin: 0;
   color: var(--texto-secundario);
-  font-size: 14.5px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 /* Link opcional (ShimmerButton secundário pequeno), alinhado à esquerda */
@@ -232,101 +228,42 @@
 }
 /* ===== FIM: card do acontecimento ===== */
 
-/* ===== INÍCIO: entrada ao rolar ===== */
-/* Só onde o navegador tem animação ligada à rolagem e sem movimento
-   reduzido. Sem suporte (ou se a animação não rodar), o card simplesmente
-   fica visível. Desloca 8px do lado em que o card está (no máximo o padding
-   do <main> no celular, para não criar rolagem horizontal). */
-@keyframes linha-tempo-entrar {
-  from {
-    opacity: 0;
-    translate: var(--deslocamento, 0) 0;
-  }
-
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
+/* ===== INÍCIO: controles dos grupos ===== */
+.linha-tempo-controles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 }
 
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .linha-tempo-cartao {
-      animation: linha-tempo-entrar linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 70%;
-    }
-
-    .linha-tempo-item[data-lado="esquerda"] .linha-tempo-cartao {
-      --deslocamento: -8px;
-    }
-
-    .linha-tempo-item[data-lado="direita"] .linha-tempo-cartao {
-      --deslocamento: 8px;
-    }
-  }
-}
-/* ===== FIM: entrada ao rolar ===== */
-
-/* ===== INÍCIO: telas largas ===== */
-/* Composição maior, com faixas livres simétricas nas laterais (a da direita
-   fica sob o botão fixo do WhatsApp, que não muda de lugar). O texto continua
-   limitado a ~62ch dentro dos cards. */
-@container linha-tempo (min-width: 1000px) {
-  .linha-tempo {
-    max-width: calc(1120px + 2 * 84px);
-    padding-inline: 84px;
-  }
-
-  .linha-tempo::before {
-    left: 50%;
-  }
+/* Área de toque de 44px de altura */
+.linha-tempo-botao {
+  min-height: 44px;
 }
 
-@container linha-tempo (min-width: 1300px) {
-  .linha-tempo {
-    --vao: 48px;
+.linha-tempo-contador {
+  min-width: 13ch;
+  margin: 0;
+  color: var(--texto-secundario);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
 
-    max-width: calc(1360px + 2 * 84px);
+/* Celular: botões só com a seta (o nome continua como nome acessível) */
+@media (max-width: 600px) {
+  .linha-tempo-botao {
+    width: 44px;
+    padding: 0;
+  }
+
+  .linha-tempo-botao-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
-/* ===== FIM: telas largas ===== */
-
-/* ===== INÍCIO: uma coluna (celular ou pouco espaço) ===== */
-/* Linha à esquerda e todos os cards à direita dela */
-@container linha-tempo (max-width: 640px) {
-  /* (variáveis em .linha-tempo: o container não é afetado pela própria query) */
-  .linha-tempo {
-    --vao: 20px;
-  }
-
-  .linha-tempo::before {
-    left: calc(var(--marcador) / 2);
-  }
-
-  .linha-tempo-item,
-  .linha-tempo-item[data-lado="direita"],
-  .linha-tempo-item + .linha-tempo-item {
-    width: 100%;
-    margin-top: 0;
-    margin-left: 0;
-    padding-right: 0;
-    padding-left: calc(var(--marcador) + var(--vao));
-  }
-
-  .linha-tempo-item[data-lado] .linha-tempo-marcador {
-    right: auto;
-    left: 0;
-  }
-
-  .linha-tempo-item[data-lado]::before {
-    right: auto;
-    left: var(--marcador);
-    width: var(--vao);
-  }
-
-  .linha-tempo-item[data-lado] .linha-tempo-cartao {
-    --deslocamento: 8px;
-  }
-}
-/* ===== FIM: uma coluna ===== */
+/* ===== FIM: controles dos grupos ===== */
